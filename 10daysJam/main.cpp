@@ -42,6 +42,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// ゲームループで使う変数の宣言
 	int iguigu;
 	int iguiug8;
+	int fumiya;
 
 	int superrrrrrrrrrrrrrrr;
 
