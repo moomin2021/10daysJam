@@ -44,7 +44,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int iguiug8;
 	int fumiya;
 	int moomin;
-	int test;
+	int test0;
 
 	int superrrrrrrrrrrrrrrr;
 
