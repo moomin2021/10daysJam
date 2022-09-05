@@ -43,6 +43,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	int iguigu;
 	int iguiug8;
 
+	int superrrrrrrrrrrrrrrr;
+
 	// 最新のキーボード情報用
 	char keys[256] = {0};
 
