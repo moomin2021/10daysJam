@@ -134,10 +134,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="JoyPadInput.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Input.h" />
+    <ClInclude Include="JoyPadInput.h" />
+    <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
