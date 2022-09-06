@@ -69,19 +69,24 @@ void GameScene::Update() {
 
 #pragma region 針の座標計算
 
+	//Lボタンで短針のステートを「反転」に
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::normal) {
+		hourHand.state = State::reverse;
+	}
+
 	//ステートが通常なら短針は自動回転
-	if (player->GetState() == State::normal) {
+	if (hourHand.state == State::normal) {
 		hourHand.radian += 2.0f;
 
 		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ステートが反転しているなら短針を逆走させる
-	else if (player->GetState() == State::reverse) {
+	else if (hourHand.state == State::reverse) {
 		hourHand.radian -= reverseSpd;
 		//針が0度以下になるならステートを戻す
 		//将来的にここにカメラシェイクを付ける
 		if (hourHand.radian < reverseSpd) {
 			hourHand.radian = 0;
-			player->SetState(State::normal);
+			hourHand.state = State::normal;
 		}
 	}
 
@@ -125,4 +130,7 @@ void GameScene::Draw() {
 	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
 	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+
+	//目印用０時の針
+	DrawLine(clock.x, clock.y, clock.x, clock.y - clock.radius + 16, 0x60ffbf, 6);
 }

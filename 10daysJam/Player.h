@@ -3,10 +3,7 @@
 #include "JoyPadInput.h"
 #include "Util.h"
 
-enum class State {
-	normal,
-	reverse
-};
+
 
 class Player {
 	/// --メンバ変数-- ///
@@ -28,9 +25,6 @@ private:
 
 	// --プレイヤーの速度-- //
 	float playerSpd;
-
-	//プレイヤーの状態
-	State state;
 
 	//色
 	int color = 0xffffff;
@@ -59,13 +53,6 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	Circle GetPlayer()const { return player; }
-
-	/// <summary>
-	/// プレイヤーのステートのセッター
-	/// </summary>
-	void SetState(State state_);
-
-	State GetState() const { return state; }
 
 private:
 	// --コンストラクタ-- //

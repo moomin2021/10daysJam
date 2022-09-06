@@ -2,6 +2,11 @@
 #include <Math.h>
 #include "Vector2.h"
 
+enum class State {
+	normal,
+	reverse
+};
+
 struct  Circle
 {
 	float x;
@@ -15,6 +20,7 @@ struct Line {
 	float length;
 	float radian;
 	int color;
+	State state = State::normal;
 };
 
 void DrawCircle(Circle c, int color, bool fillFlag);
