@@ -2,7 +2,8 @@
 #include"Input.h"
 #include"Vector2.h"
 #include"JoyPadInput.h"
-#include "Util.h"
+#define PI 3.14159265359
+#include<cmath>
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
@@ -23,9 +24,13 @@ struct  Circle
 struct Line {
 	Vector2 start;
 	Vector2 end;
+	float radian;
+	int color;
 };
 
 void DrawCircle(Circle c, int color, bool fillFlag);
+
+void DrawLine(Line l, int thickness = 1);
 
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
@@ -57,6 +62,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 画像などのリソースデータの変数宣言と読み込み
 
+
 	// ゲームループで使う変数の宣言
 	int iguigu;
 	int iguiug8;
@@ -80,10 +86,28 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		16
 	};
 
+	//長針(自動で動くオブジェクト)
+	Line longHand{
+		{WIN_WIDTH / 2,WIN_HEIGHT / 2},
+		{WIN_WIDTH / 2,0},
+		0,
+		0xff0000
+	};
+
+	//短針(プレイヤーの移動できる針)
+	Line hourHand{
+	{WIN_WIDTH / 2,WIN_HEIGHT / 2},
+	{WIN_WIDTH / 2,32},
+	0,
+	0xff
+	};
+
 	float playerSpd = 2.0f;
 
 	//インプット系クラス宣言
 	Input key{};
+
+
 
 	// ゲームループ
 	while (true) {
@@ -91,12 +115,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//キーボード更新
 		key.KeyUpdate();
 
+
 		// 画面クリア
 		ClearDrawScreen();
 		//---------  ここからプログラムを記述  ----------//
 
 		//---------  更新処理  -----------------------//
 
+#pragma region 自機移動関係
 		//自機移動
 		if (key.IsPress(KEY_INPUT_A) || key.IsPress(KEY_INPUT_S) || key.IsPress(KEY_INPUT_W) || key.IsPress(KEY_INPUT_D)) {
 
@@ -108,11 +134,33 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		playerSpd += ((key.IsPress(KEY_INPUT_E) - key.IsPress(KEY_INPUT_Q)) * 0.2f);
 		if (key.IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
 
+#pragma endregion
+
+#pragma region 針の座標計算
+
+		//長針を常時回転
+		longHand.radian -= 1.0f;
+		//-360度超えたら0に戻す
+		longHand.radian = fmodf(longHand.radian, 360.0f);
+		//針の角度で終点座標を計算
+		longHand.end.x = (WIN_HEIGHT / 2 * sinf(longHand.radian / 180 * PI)) + WIN_WIDTH / 2;
+		longHand.end.y = (WIN_HEIGHT / 2 * cosf(longHand.radian / 180 * PI)) + WIN_HEIGHT / 2;
+
+
+#pragma endregion
+
 		//---------  描画処理  -----------------------//
 
 		DrawCircle(player, 0xffffff, true);
 		DrawCircle(clock, 0xffffff, false);
+		DrawLine(longHand, 4);
+		DrawLine(hourHand);
 		DrawFormatString(0, 0, 0x00ffff, "playerSpeed:%f", playerSpd);
+		DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
+		DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
+		DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+
+
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
@@ -142,4 +190,9 @@ void DrawCircle(Circle c, int color, bool fillFlag)
 {
 
 	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
+}
+
+void DrawLine(Line l, int thickness)
+{
+	DrawLine(l.start.x, l.start.y, l.end.x, l.end.y, l.color, thickness);
 }
