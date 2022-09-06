@@ -24,6 +24,7 @@ struct  Circle
 struct Line {
 	Vector2 start;
 	Vector2 end;
+	float length;
 	float radian;
 	int color;
 };
@@ -77,7 +78,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Circle clock{
 		WIN_WIDTH / 2,
 		WIN_HEIGHT / 2,
-		WIN_HEIGHT / 2
+		WIN_HEIGHT / 2 - 64
 	};
 
 	Circle player{
@@ -90,7 +91,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Line longHand{
 		{WIN_WIDTH / 2,WIN_HEIGHT / 2},
 		{WIN_WIDTH / 2,0},
-		0,
+		clock.radius,
+		180,
 		0xff0000
 	};
 
@@ -98,7 +100,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	Line hourHand{
 	{WIN_WIDTH / 2,WIN_HEIGHT / 2},
 	{WIN_WIDTH / 2,32},
-	0,
+	clock.radius - 32,
+	180,
 	0xff
 	};
 
@@ -139,12 +142,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 #pragma region j‚ÌÀ•WŒvZ
 
 		//’·j‚ğí‰ñ“]
-		longHand.radian -= 1.0f;
+		longHand.radian -= 0.5f;
 		//-360“x’´‚¦‚½‚ç0‚É–ß‚·
 		longHand.radian = fmodf(longHand.radian, 360.0f);
 		//j‚ÌŠp“x‚ÅI“_À•W‚ğŒvZ
-		longHand.end.x = (WIN_HEIGHT / 2 * sinf(longHand.radian / 180 * PI)) + WIN_WIDTH / 2;
-		longHand.end.y = (WIN_HEIGHT / 2 * cosf(longHand.radian / 180 * PI)) + WIN_HEIGHT / 2;
+		longHand.end.x = (longHand.length *  sinf(longHand.radian / 180 * PI)) + clock.x;
+		longHand.end.y = (longHand.length *  cosf(longHand.radian / 180 * PI)) + clock.y;
+
+		//’·j‚ğí‰ñ“]
+		hourHand.radian -= 2.0f;
+		//-360“x’´‚¦‚½‚ç0‚É–ß‚·
+		hourHand.radian = fmodf(hourHand.radian, 360.0f);
+		//j‚ÌŠp“x‚ÅI“_À•W‚ğŒvZ
+		hourHand.end.x = (hourHand.length * sinf(hourHand.radian / 180 * PI)) + clock.x;
+		hourHand.end.y = (hourHand.length * cosf(hourHand.radian / 180 * PI)) + clock.y;
 
 
 #pragma endregion
