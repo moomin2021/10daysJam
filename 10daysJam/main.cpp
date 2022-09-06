@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include "JoyPadInput.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
@@ -40,14 +41,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 
 	// ゲームループで使う変数の宣言
-	int iguigu;
-	int iguiug8;
-	int fumiya;
-	int moomin;
-	int test01;
-	int test072;
 
-	int superrrrrrrrrrrrrrrr;
+
+	// --コントローラー入力クラスインスタンス取得-- //
+	JoyPadInput* padInput = JoyPadInput::GetInstance();
 
 	// 最新のキーボード情報用
 	char keys[256] = {0};
@@ -72,6 +69,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// 更新処理
 
+		// --コントローラー入力更新-- //
+		padInput->Update();
 
 		// 描画処理
 
