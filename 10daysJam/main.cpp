@@ -2,6 +2,7 @@
 #include"Input.h"
 #include"Vector2.h"
 #include"JoyPadInput.h"
+#define PI 3.14159265359
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
@@ -17,6 +18,11 @@ struct  Circle
 	float x;
 	float y;
 	float radius;
+};
+
+struct Line {
+	Vector2 start;
+	Vector2 end;
 };
 
 void DrawCircle(Circle c, int color, bool fillFlag);
@@ -53,10 +59,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 
 	// ゲームループで使う変数の宣言
+	int iguigu;
+	int iguiug8;
+	int fumiya;
+	int moomin;
+	int test01;
+	int test072;
+	int gitTest;
 
-
-	// --コントローラー入力クラスインスタンス取得-- //
-	JoyPadInput* padInput = JoyPadInput::GetInstance();
+	int superrrrrrrrrrrrrrrr;
 
 	Circle clock{
 		WIN_WIDTH / 2,
@@ -92,16 +103,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//自機移動
 		if (key.IsPress(KEY_INPUT_A) || key.IsPress(KEY_INPUT_S) || key.IsPress(KEY_INPUT_W) || key.IsPress(KEY_INPUT_D)) {
-		
+
 			player.x += ((key.IsPress(KEY_INPUT_D) - key.IsPress(KEY_INPUT_A)) * playerSpd);
 			player.y += ((key.IsPress(KEY_INPUT_S) - key.IsPress(KEY_INPUT_W)) * playerSpd);
 		}
 
 		//アローキーで自機速度変更
-		playerSpd += ( (key.IsPress(KEY_INPUT_E) - key.IsPress(KEY_INPUT_Q)) * 0.2f);
+		playerSpd += ((key.IsPress(KEY_INPUT_E) - key.IsPress(KEY_INPUT_Q)) * 0.2f);
+		if (key.IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
 
-		// --コントローラー入力更新-- //
-		padInput->Update();
+		//---------  描画処理  -----------------------//
 
 		DrawCircle(player, 0xffffff, true);
 		DrawCircle(clock, 0xffffff, false);
@@ -133,6 +144,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 void DrawCircle(Circle c, int color, bool fillFlag)
 {
-	
+
 	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
 }
