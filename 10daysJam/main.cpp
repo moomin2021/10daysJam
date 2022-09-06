@@ -1,17 +1,29 @@
 #include "DxLib.h"
-#include "JoyPadInput.h"
+#include"Input.h"
+#include"Vector2.h"
+#include"JoyPadInput.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
 
 // ウィンドウ横幅
-const int WIN_WIDTH = 600;
+const int WIN_WIDTH = 1280;
 
 // ウィンドウ縦幅
-const int WIN_HEIGHT = 400;
+const int WIN_HEIGHT = 960;
+
+struct  Circle
+{
+	float x;
+	float y;
+	float radius;
+};
+
+void DrawCircle(Circle c, int color, bool fillFlag);
+
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
-                   _In_ int nCmdShow) {
+	_In_ int nCmdShow) {
 	// ウィンドウモードに設定
 	ChangeWindowMode(TRUE);
 
@@ -46,33 +58,54 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// --コントローラー入力クラスインスタンス取得-- //
 	JoyPadInput* padInput = JoyPadInput::GetInstance();
 
-	// 最新のキーボード情報用
-	char keys[256] = {0};
+	Circle clock{
+		WIN_WIDTH / 2,
+		WIN_HEIGHT / 2,
+		WIN_HEIGHT / 2
+	};
 
-	// 1ループ(フレーム)前のキーボード情報
-	char oldkeys[256] = {0};
+	Circle player{
+		0,
+		0,
+		16
+	};
+
+	float playerSpd = 2.0f;
+
+	//インプット系クラス宣言
+	Input key{};
+
+
 
 	// ゲームループ
 	while (true) {
-		// 最新のキーボード情報だったものは1フレーム前のキーボード情報として保存
-		for (int i = 0; i < 256; i++)
-		{
-			oldkeys[i] = keys[i];
-		}
 
-		// 最新のキーボード情報を取得
-		GetHitKeyStateAll(keys);
+		//キーボード更新
+		key.KeyUpdate();
+
 
 		// 画面クリア
 		ClearDrawScreen();
 		//---------  ここからプログラムを記述  ----------//
 
-		// 更新処理
+		//---------  更新処理  -----------------------//
+
+		//自機移動
+		if (key.IsPress(KEY_INPUT_A) || key.IsPress(KEY_INPUT_S) || key.IsPress(KEY_INPUT_W) || key.IsPress(KEY_INPUT_D)) {
+		
+			player.x += ((key.IsPress(KEY_INPUT_D) - key.IsPress(KEY_INPUT_A)) * playerSpd);
+			player.y += ((key.IsPress(KEY_INPUT_S) - key.IsPress(KEY_INPUT_W)) * playerSpd);
+		}
+
+		//アローキーで自機速度変更
+		playerSpd += ( (key.IsPress(KEY_INPUT_E) - key.IsPress(KEY_INPUT_Q)) * 0.2f);
 
 		// --コントローラー入力更新-- //
 		padInput->Update();
 
-		// 描画処理
+		DrawCircle(player, 0xffffff, true);
+		DrawCircle(clock, 0xffffff, false);
+		DrawFormatString(0, 0, 0x00ffff, "playerSpeed:%f", playerSpd);
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
@@ -96,4 +129,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 正常終了
 	return 0;
+}
+
+void DrawCircle(Circle c, int color, bool fillFlag)
+{
+	
+	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
 }
