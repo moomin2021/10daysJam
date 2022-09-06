@@ -70,38 +70,39 @@ void GameScene::Update() {
 #pragma region j‚ÌÀ•WŒvZ
 
 	//Lƒ{ƒ^ƒ“‚Å’Zj‚ÌƒXƒe[ƒg‚ğu”½“]v‚É
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::normal) {
-		hourHand.state = State::reverse;
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal) {
+		hourHand.state = State::Reverse;
 	}
 
 	//ƒXƒe[ƒg‚ª’Êí‚È‚ç’Zj‚Í©“®‰ñ“]
-	if (hourHand.state == State::normal) {
-		//hourHand.radian += 2.0f;
+	if (hourHand.state == State::Normal) {
+		hourHand.radian += 2.0f;
 
 		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ƒXƒe[ƒg‚ª”½“]‚µ‚Ä‚¢‚é‚È‚ç’Zj‚ğ‹t‘–‚³‚¹‚é
-	else if (hourHand.state == State::reverse) {
+	else if (hourHand.state == State::Reverse) {
 		hourHand.radian -= reverseSpd;
-		//’Zj‚ª’·j‚É’Ç‚¢‚Â‚¢‚½‚ç’·j‚ÌƒXƒe[ƒg‚ğu”½“]v‚É
-		if (hourHand.radian < longHand.radian && hourHand.radian > longHand.radian - reverseSpd){
-			longHand.state = State::reverse;
+		//’Zj‚ª’·j‚É’Ç‚¢‚Â‚¢‚½‚ç’·j‚ÌƒXƒe[ƒg‚ğu”½“]v‚ÉA’Zj‚Í~‚Ü‚é
+		if (hourHand.radian < longHand.radian + reverseSpd && hourHand.radian > longHand.radian - reverseSpd){
+			longHand.state = State::Reverse;
+			hourHand.state = State::Stop;
 		}
 	}
 
 	//ƒXƒe[ƒg‚ª’Êí‚È‚ç’·j‚Í©“®‰ñ“]
-	if (longHand.state == State::normal) {
+	if (longHand.state == State::Normal) {
 		longHand.radian += 0.5f;
 	}//ƒXƒe[ƒg‚ªu”½“]v‚È‚ç‹t‘–
-	else if (longHand.state == State::reverse) {
+	else if (longHand.state == State::Reverse) {
 		//‘¬“x‚Í’Zj‚Æ“™‘¬
-		longHand.radian -= reverseSpd;
+		longHand.radian -= reverseSpd * 2;
 		
 		//’·j‚ÌŠp“x‚ª0‚É‚È‚Á‚½‚ç’·j‚Æ’Zj‚ÌƒXƒe[ƒg‚ğ–ß‚µAŠp“x‚à‰Šú‰»
 		if (longHand.radian < reverseSpd) {
-			longHand.state = State::normal;
-			hourHand.state = State::normal;
+			longHand.state = State::Normal;
+			hourHand.state = State::Normal;
 			longHand.radian = 0;
-			hourHand.radian = 0;
+			//hourHand.radian = 0;
 		}
 	}
 
