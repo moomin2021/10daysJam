@@ -58,6 +58,14 @@ public:
 	// --描画処理-- //
 	void Draw();
 
+	/// <summary>
+	/// 円と円の衝突判定
+	/// </summary>
+	/// <param name="cA"></param>
+	/// <param name="cB"></param>
+	/// <returns></returns>
+	bool CollisionCtoC(Circle cA, Circle cB);
+
 private:
 	// --コンストラクタ-- //
 	GameScene();

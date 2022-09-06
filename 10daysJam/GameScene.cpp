@@ -14,6 +14,25 @@ GameScene* GameScene::GetInstance() {
 	return myInstance;
 }
 
+bool GameScene::CollisionCtoC(Circle cA, Circle cB)
+{
+	bool flag;
+	Vector2 vecAtoB;
+	float radius;
+	vecAtoB.x = cB.x - cA.x;
+	vecAtoB.y = cB.y - cA.y;
+	radius = cA.radius + cB.radius;
+
+	if (vecAtoB.length() <= radius) {
+		flag = true;
+	}
+	else {
+		flag = false;
+	}
+
+	return flag;
+}
+
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ 640, 480, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 180, 0xFF0000},
@@ -100,10 +119,16 @@ void GameScene::Update() {
 				enemy[i].y = enemyPos.y;
 				//タイマーをリセット
 				spawnTimer = spawnInterval;
-				spawnDelay = delayMax;
+				//spawnDelay = delayMax;
 				break;
 			}
 		}
+	}
+#pragma endregion
+
+#pragma region 自機と敵の当たり判定(今のところ円と円の判定)
+	if (CollisionCtoC(player->GetPlayer(), enemy[0])) {
+		DrawFormatString(500, 500, 0xff00ff, "衝突");
 	}
 #pragma endregion
 }

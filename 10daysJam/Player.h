@@ -39,6 +39,12 @@ public:
 	// --描画処理-- //
 	void Draw();
 
+	/// <summary>
+	/// プレイヤーのゲッター
+	/// </summary>
+	/// <returns></returns>
+	Circle GetPlayer()const { return player; }
+
 private:
 	// --コンストラクタ-- //
 	Player();
