@@ -1,6 +1,8 @@
 #pragma once
 #include "Vector2.h"
 #include "Input.h"
+#include<list>
+#include<vector>
 
 struct  Circle
 {
@@ -33,12 +35,16 @@ private:
 
 	// --プレイヤー-- //
 	Circle player;
+	float playerPos;	//自機の針の上での処理
 
 	// --長針-- //
 	Line longHand;
 
 	// --短針-- //
 	Line hourHand;
+
+	//エネミー
+	//std::list<Circle> enemys;
 
 	// --プレイヤーの速度-- //
 	float playerSpd = 2.0f;
