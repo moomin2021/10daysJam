@@ -35,8 +35,8 @@ bool GameScene::CollisionCtoC(Circle cA, Circle cB)
 
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ 640, 480, 416 },
-longHand{ {640, 480}, {640, 0}, clock.radius, 180, 0xFF0000},
-hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 180, 0xFF }
+longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000},
+hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }
 {
 	// --入力クラスインスタンス取得-- //
 	input = Input::GetInstance();
@@ -71,23 +71,40 @@ void GameScene::Update() {
 
 #pragma region 針の座標計算
 
+	//ステートが通常なら短針は自動回転
+	if (player->GetState() == State::normal) {
+		hourHand.radian += 2.0f;
+
+		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
+	}//ステートが反転しているなら短針を逆走させる
+	else if (player->GetState() == State::reverse) {
+		hourHand.radian -= reverseSpd;
+		//針が0度以下になるならステートを戻す
+		//将来的にここにカメラシェイクを付ける
+		if (hourHand.radian < reverseSpd) {
+			hourHand.radian = 0;
+			player->SetState(State::normal);
+		}
+	}
+
 	//長針を常時回転
-	longHand.radian -= 0.5f;
+longHand.radian += 0.5f;
+
 	//-360度超えたら0に戻す
 	longHand.radian = fmodf(longHand.radian, 360.0f);
-	//針の角度で終点座標を計算
-	longHand.end.x = (longHand.length * sinf(longHand.radian / 180 * PI)) + clock.x;
-	longHand.end.y = (longHand.length * cosf(longHand.radian / 180 * PI)) + clock.y;
-
-	//長針を常時回転
-	//hourHand.radian -= 2.0f;
-	hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
-
 	//-360度超えたら0に戻す
 	hourHand.radian = fmodf(hourHand.radian, 360.0f);
+
+	//位置調整件描画用のラジアン宣言
+	float radL = longHand.radian - 90;
+	float radH = hourHand.radian -90;
+
 	//針の角度で終点座標を計算
-	hourHand.end.x = (hourHand.length * sinf(hourHand.radian / 180 * PI)) + clock.x;
-	hourHand.end.y = (hourHand.length * cosf(hourHand.radian / 180 * PI)) + clock.y;
+	longHand.end.x = (longHand.length * cosf(radL / 180 * PI)) + clock.x;
+	longHand.end.y = (longHand.length * sinf(radL / 180 * PI)) + clock.y;
+	//針の角度で終点座標を計算
+	hourHand.end.x = (hourHand.length * cosf(radH  / 180 * PI)) + clock.x;
+	hourHand.end.y = (hourHand.length * sinf(radH  / 180 * PI)) + clock.y;
 
 
 #pragma endregion
@@ -147,6 +164,7 @@ void GameScene::Draw() {
 	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
 	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+	DrawLine(clock.x,clock.y,clock.x,clock.y - clock.radius,0x00ff7f,6);
 	for (int i = 0; i < 10; i++) {
 		DrawCircle(enemy[i], 0xffff00, true);
 	}

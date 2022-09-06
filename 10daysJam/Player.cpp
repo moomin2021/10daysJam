@@ -21,6 +21,11 @@ Player::Player() : player{ 0, 0, 16 }, playerSpd(2.0f), playerPos(0){
 	pad = JoyPadInput::GetInstance();
 }
 
+void Player::SetState(State state_)
+{
+	state = state_;
+}
+
 // --デストラクタ-- //
 Player::~Player() {
 
@@ -28,7 +33,8 @@ Player::~Player() {
 
 // --初期化処理-- //
 void Player::Initialize() {
-
+	//状態は通常に
+	state = State::normal;
 }
 
 // --更新処理-- //
@@ -109,10 +115,21 @@ void Player::Update(Line hourHand, Circle clock) {
 	playerSpd += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
 	if (input->IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
 
+	if (pad->GetButtonTrigger(PAD_INPUT_5)) {
+		SetState(State::reverse);
+	}
+
+	if (state == State::normal) {
+		color = 0xffffff;
+	}
+	else if (state == State::reverse) {
+		color = 0xff00ff;
+	}
+
 #pragma endregion
 }
 
 // --描画処理-- //
 void Player::Draw() {
-	DrawCircle(player, 0xffffff, true);
+	DrawCircle(player, color, true);
 }

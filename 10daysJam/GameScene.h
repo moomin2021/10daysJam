@@ -6,6 +6,8 @@
 #include "Player.h"
 #include "JoyPadInput.h"
 
+
+
 class GameScene {
 
 	/// --メンバ変数-- ///
@@ -31,6 +33,7 @@ private:
 
 	// --短針-- //
 	Line hourHand;
+	float reverseSpd = 4.0f;
 
 	// --エネミー--//
 	std::list<Circle> enemys;
