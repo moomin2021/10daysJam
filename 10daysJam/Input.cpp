@@ -1,7 +1,25 @@
 #include "Input.h"
 #include"DxLib.h"
 
-void Input::KeyUpdate()
+// --インスタンスにNULLを代入-- //
+Input* Input::myInstance = nullptr;
+
+// --インスタンス読み込み-- //
+Input* Input::GetInstance() {
+	// --インスタンスが無かったら生成する-- //
+	if (myInstance == nullptr) myInstance = new Input();
+
+	// --インスタンスを返す-- //
+	return myInstance;
+}
+
+// --コンストラクタ-- //
+Input::Input() {
+
+}
+
+// --更新処理-- //
+void Input::Update()
 {
 	for (int i = 0; i < 256; i++)
 	{
@@ -12,23 +30,11 @@ void Input::KeyUpdate()
 	GetHitKeyStateAll(keys);
 }
 
-bool Input::IsTrigger(char key)
-{
-	bool flag;
-	flag = (keys[key] && !oldkeys[key]);
-	return flag;
-}
+// --キーが押された瞬間か-- //
+bool Input::IsTrigger(char key) { return (keys[key] && !oldkeys[key]); }
 
-bool Input::IsPress(char key)
-{
-	bool flag;
-	flag = keys[key];
-	return flag;
-}
+// --キーが押されているか-- //
+bool Input::IsPress(char key) { return keys[key]; }
 
-bool Input::IsRelease(char key)
-{
-	bool flag;
-	flag = (!keys[key] && oldkeys[key]);
-	return flag;
-}
+// --キーが離された瞬間か-- //
+bool Input::IsRelease(char key) { return (!keys[key] && oldkeys[key]); }

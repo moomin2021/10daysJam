@@ -1,11 +1,29 @@
 #pragma once
 class Input
 {
+	/// --メンバ変数-- ///
 public:
-	/// <summary>
-	/// キー情報更新処理
-	/// </summary>
-	void KeyUpdate();
+
+private:
+	char keys[256];
+	char oldkeys[256];
+
+	// --インスタンス-- //
+	static Input* myInstance;
+
+	/// --メンバ変数END-- ///
+	/// --------------- ///
+	/// --メンバ関数-- ///
+public:
+	// --インスタンス取得-- //
+	static Input* GetInstance();
+
+	// --デストラクタ-- //
+	~Input();
+
+	// --更新処理-- //
+	void Update();
+
 	/// <summary>
 	/// キーが押された瞬間か
 	/// </summary>
@@ -19,8 +37,10 @@ public:
 	/// </summary>
 	bool IsRelease(char key);
 
-public:
-	char keys[256];
-	char oldkeys[256];
+private:
+	// --コンストラクタ-- //
+	Input();
+
+	/// --メンバ関数END-- ///
 };
 

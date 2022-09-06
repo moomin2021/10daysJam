@@ -1,8 +1,7 @@
 #include "DxLib.h"
-#include"Input.h"
-#include"Vector2.h"
-#include"JoyPadInput.h"
 #include "Util.h"
+#include"Input.h"
+#include"JoyPadInput.h"
 #include "SceneManager.h"
 
 // ウィンドウのタイトルに表示する文字列
@@ -13,25 +12,6 @@ const int WIN_WIDTH = 1280;
 
 // ウィンドウ縦幅
 const int WIN_HEIGHT = 960;
-
-struct  Circle
-{
-	float x;
-	float y;
-	float radius;
-};
-
-struct Line {
-	Vector2 start;
-	Vector2 end;
-	float length;
-	float radian;
-	int color;
-};
-
-void DrawCircle(Circle c, int color, bool fillFlag);
-
-void DrawLine(Line l, int thickness = 1);
 
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
@@ -72,48 +52,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// --シーン管理クラス初期化-- //
 	sceneM->Initialize();
 
-	Circle clock{
-		WIN_WIDTH / 2,
-		WIN_HEIGHT / 2,
-		WIN_HEIGHT / 2 - 64
-	};
-
-	Circle player{
-		0,
-		0,
-		16
-	};
-
-	//長針(自動で動くオブジェクト)
-	Line longHand{
-		{WIN_WIDTH / 2,WIN_HEIGHT / 2},
-		{WIN_WIDTH / 2,0},
-		clock.radius,
-		180,
-		0xff0000
-	};
-
-	//短針(プレイヤーの移動できる針)
-	Line hourHand{
-	{WIN_WIDTH / 2,WIN_HEIGHT / 2},
-	{WIN_WIDTH / 2,32},
-	clock.radius - 32,
-	180,
-	0xff
-	};
-
-	float playerSpd = 2.0f;
-
-	//インプット系クラス宣言
-	Input key{};
-
-
+	// --入力クラス-- //
+	Input* key = Input::GetInstance();
 
 	// ゲームループ
 	while (true) {
 
 		//キーボード更新
-		key.KeyUpdate();
+		key->Update();
 
 
 		// 画面クリア
@@ -122,56 +68,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//---------  更新処理  -----------------------//
 
-#pragma region 自機移動関係
-		//自機移動
-		if (key.IsPress(KEY_INPUT_A) || key.IsPress(KEY_INPUT_S) || key.IsPress(KEY_INPUT_W) || key.IsPress(KEY_INPUT_D)) {
-
-			player.x += ((key.IsPress(KEY_INPUT_D) - key.IsPress(KEY_INPUT_A)) * playerSpd);
-			player.y += ((key.IsPress(KEY_INPUT_S) - key.IsPress(KEY_INPUT_W)) * playerSpd);
-		}
-
-		//アローキーで自機速度変更
-		playerSpd += ((key.IsPress(KEY_INPUT_E) - key.IsPress(KEY_INPUT_Q)) * 0.2f);
-		if (key.IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
-
-#pragma endregion
-
-#pragma region 針の座標計算
-
-		//長針を常時回転
-		longHand.radian -= 0.5f;
-		//-360度超えたら0に戻す
-		longHand.radian = fmodf(longHand.radian, 360.0f);
-		//針の角度で終点座標を計算
-		longHand.end.x = (longHand.length *  sinf(longHand.radian / 180 * Util::PI)) + clock.x;
-		longHand.end.y = (longHand.length *  cosf(longHand.radian / 180 * Util::PI)) + clock.y;
-
-		//長針を常時回転
-		hourHand.radian -= 2.0f;
-		//-360度超えたら0に戻す
-		hourHand.radian = fmodf(hourHand.radian, 360.0f);
-		//針の角度で終点座標を計算
-		hourHand.end.x = (hourHand.length * sinf(hourHand.radian / 180 * Util::PI)) + clock.x;
-		hourHand.end.y = (hourHand.length * cosf(hourHand.radian / 180 * Util::PI)) + clock.y;
-
-
-#pragma endregion
+		// --シーン管理クラスの更新処理-- //
+		sceneM->Update();
 
 		//---------  描画処理  -----------------------//
 
 		// --シーン管理クラス描画処理-- //
 		sceneM->Draw();
-
-		DrawCircle(player, 0xffffff, true);
-		DrawCircle(clock, 0xffffff, false);
-		DrawLine(longHand, 4);
-		DrawLine(hourHand);
-		DrawFormatString(0, 0, 0x00ffff, "playerSpeed:%f", playerSpd);
-		DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
-		DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
-		DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-
-
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
@@ -195,15 +98,4 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 正常終了
 	return 0;
-}
-
-void DrawCircle(Circle c, int color, bool fillFlag)
-{
-
-	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
-}
-
-void DrawLine(Line l, int thickness)
-{
-	DrawLine(l.start.x, l.start.y, l.end.x, l.end.y, l.color, thickness);
 }

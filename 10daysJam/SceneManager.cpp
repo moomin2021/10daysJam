@@ -4,7 +4,7 @@
 SceneManager* SceneManager::myInstance = nullptr;
 
 // --シーンの初期化-- //
-int SceneManager::scene = TITLESCENE;
+int SceneManager::scene = GAMESCENE;
 
 // --インスタンス読み込み-- //
 SceneManager* SceneManager::GetInstance() {
@@ -17,7 +17,7 @@ SceneManager* SceneManager::GetInstance() {
 
 // --コンストラクタ-- //
 SceneManager::SceneManager() {
-
+	gameScene = GameScene::GetInstance();
 }
 
 // --デストラクタ-- //
@@ -27,7 +27,8 @@ SceneManager::~SceneManager() {
 
 // --初期化処理-- //
 void SceneManager::Initialize() {
-
+	// --ゲームシーン初期化処理-- //
+	gameScene->Initialize();
 }
 
 // --更新処理-- //
@@ -39,7 +40,8 @@ void SceneManager::Update() {
 
 	// --ゲームシーン更新処理-- //
 	else if (scene == GAMESCENE) {
-
+		// --ゲームシーン更新処理-- //
+		gameScene->Update();
 	}
 
 	// --ゲームクリアシーン更新処理-- //
@@ -62,7 +64,8 @@ void SceneManager::Draw() {
 
 	// --ゲームシーン描画処理-- //
 	else if (scene == GAMESCENE) {
-
+		// --ゲームシーン描画-- //
+		gameScene->Draw();
 	}
 
 	// --ゲームクリアシーン描画処理-- //
