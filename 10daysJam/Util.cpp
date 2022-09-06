@@ -1,5 +1,7 @@
 #include "Util.h"
 #include "DxLib.h"
+#include<random>
+using namespace std;
 
 void DrawCircle(Circle c, int color, bool fillFlag)
 {
@@ -45,4 +47,28 @@ float Util::Radian2Degree(float radian)
 float Util::Degree2Radian(float degree)
 {
 	return degree * PI / 180.0f;
+}
+
+int Util::Random(int min, int max)
+{
+	//—”
+	random_device seed_gem;
+	//‚ß‚é‚¹‚ñ‚Ê‚Â‚¢‚·‚½
+	mt19937_64 engine(seed_gem());
+	//—””ÍˆÍ
+	uniform_real_distribution<float> rand(min, max);
+
+	return rand(engine);
+}
+
+float Util::Random(float min, float max)
+{
+	//—”
+	random_device seed_gem;
+	//‚ß‚é‚¹‚ñ‚Ê‚Â‚¢‚·‚½
+	mt19937_64 engine(seed_gem());
+	//—””ÍˆÍ
+	uniform_real_distribution<float> rand(min, max);
+
+	return rand(engine);
 }

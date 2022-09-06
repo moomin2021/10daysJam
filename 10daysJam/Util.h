@@ -61,4 +61,20 @@ namespace Util {
 	/// <returns></returns>
 	float Degree2Radian(float degree);
 
+	/// <summary>
+	/// 乱数生成関数
+	/// </summary>
+	/// <param name="min">最小値</param>
+	/// <param name="max">最大値</param>
+	/// <returns></returns>
+	int Random(int min, int max);
+
+	/// <summary>
+	/// 乱数生成関数
+	/// </summary>
+	/// <param name="min">最小値</param>
+	/// <param name="max">最大値</param>
+	/// <returns></returns>
+	float Random(float min, float max);
+
 } // namespace MathUtility
