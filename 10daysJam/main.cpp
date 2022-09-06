@@ -7,11 +7,19 @@
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
 
 // ウィンドウ横幅
-const int WIN_WIDTH = 600;
+const int WIN_WIDTH = 1280;
 
 // ウィンドウ縦幅
-const int WIN_HEIGHT = 400;
+const int WIN_HEIGHT = 960;
 
+struct  Circle
+{
+	float x;
+	float y;
+	float radius;
+};
+
+void DrawCircle(Circle c, int color, bool fillFlag);
 
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
@@ -55,8 +63,19 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	int superrrrrrrrrrrrrrrr;
 
+	Circle clock{
+		WIN_WIDTH / 2,
+		WIN_HEIGHT / 2,
+		WIN_HEIGHT / 2
+	};
 
+	Circle player{
+		0,
+		0,
+		16
+	};
 
+	float playerSpd = 2.0f;
 
 	//インプット系クラス宣言
 	Input key{};
@@ -74,10 +93,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		ClearDrawScreen();
 		//---------  ここからプログラムを記述  ----------//
 
-		// 更新処理
+		//---------  更新処理  -----------------------//
 
+		//自機移動
+		if (key.IsPress(KEY_INPUT_A) || key.IsPress(KEY_INPUT_S) || key.IsPress(KEY_INPUT_W) || key.IsPress(KEY_INPUT_D)) {
+		
+			player.x += ((key.IsPress(KEY_INPUT_D) - key.IsPress(KEY_INPUT_A)) * playerSpd);
+			player.y += ((key.IsPress(KEY_INPUT_S) - key.IsPress(KEY_INPUT_W)) * playerSpd);
+		}
 
-		// 描画処理
+		//アローキーで自機速度変更
+		playerSpd += ( (key.IsPress(KEY_INPUT_E) - key.IsPress(KEY_INPUT_Q)) * 0.2f);
+
+		//---------  描画処理  -----------------------//
+
+		DrawCircle(player, 0xffffff, true);
+		DrawCircle(clock, 0xffffff, false);
+		DrawFormatString(0, 0, 0x00ffff, "playerSpeed:%f", playerSpd);
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
@@ -101,4 +133,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 正常終了
 	return 0;
+}
+
+void DrawCircle(Circle c, int color, bool fillFlag)
+{
+	
+	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
 }
