@@ -1,5 +1,6 @@
 #pragma once
 #include "Input.h"
+#include "JoyPadInput.h"
 #include "Util.h"
 
 class Player {
@@ -12,6 +13,9 @@ private:
 
 	// --入力クラス-- //
 	Input* input;
+
+	// --コントローラークラス-- //
+	JoyPadInput* pad;
 
 	// --プレイヤー-- //
 	Circle player;

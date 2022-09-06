@@ -18,6 +18,7 @@ Player* Player::GetInstance() {
 // --ƒRƒ“ƒXƒgƒ‰ƒNƒ^-- //
 Player::Player() : player{ 0, 0, 16 }, playerSpd(2.0f), playerPos(0){
 	input = Input::GetInstance();
+	pad = JoyPadInput::GetInstance();
 }
 
 // --ƒfƒXƒgƒ‰ƒNƒ^-- //
@@ -32,14 +33,66 @@ void Player::Initialize() {
 
 // --XVˆ—-- //
 void Player::Update(Line hourHand, Circle clock) {
+
 #pragma region Ž©‹@ˆÚ“®ŠÖŒW
+	// --’Zj‚ÌŠp“x‚ð‹‚ß‚é-- //
+	Vector2 lStickVec = {(float)pad->GetLeftStickX(), -(float)pad->GetLeftStickY()};
+	float stickAngle = lStickVec.dot(Vector2(0, 1)) / (lStickVec.length() * Vector2(0, 1).length());
+	stickAngle = acos(stickAngle);
+	stickAngle = Util::Radian2Degree(stickAngle);
+	if (pad->GetLeftStickX() < 0) {
+		stickAngle = 180 + (180 - stickAngle);
+	}
+
+	Vector2 hourHandVec = { hourHand.end.x - hourHand.start.x, -(hourHand.end.y - hourHand.start.y) };
+	float hourHandAngle = hourHandVec.dot(Vector2(0, 1)) / (hourHandVec.length() * Vector2(0, 1).length());
+	hourHandAngle = acos(hourHandAngle);
+	hourHandAngle = Util::Radian2Degree(hourHandAngle);
+	if (hourHandVec.x < 0) {
+		hourHandAngle = 180 + (180 - hourHandAngle);
+	}
+
+	int playerMoveAdd = 0;
+
+	if (((hourHandAngle + 45) > stickAngle) && ((hourHandAngle - 45) < stickAngle)) {
+		playerMoveAdd = 1;
+	}
+
+	if (hourHandAngle + 45.0f > 360.0f) {
+		if ((hourHandAngle + 45.0f) - 360.0f > stickAngle) playerMoveAdd = 1;
+	}
+
+	if (hourHandAngle - 45.0f < 0) {
+		if (360 - (hourHandAngle - 45.0f) < stickAngle) playerMoveAdd = 1;
+	}
+
+	//stickAngle = stickAngle + 180.0f
+
+	//if (((hourHandAngle + 45) > stickAngle) && ((hourHandAngle - 45) < stickAngle)) {
+	//	playerMoveAdd = 1;
+	//}
+
+	//if (hourHandAngle + 45.0f > 360.0f) {
+	//	if ((hourHandAngle + 45.0f) - 360.0f > stickAngle) playerMoveAdd = 1;
+	//}
+
+	//if (hourHandAngle - 45.0f < 0) {
+	//	if (360 - (hourHandAngle - 45.0f) < stickAngle) playerMoveAdd = 1;
+	//}
+
+	//DrawFormatString(100, 100, 0xFFFFFF, "%f, %f", (float)pad->GetLeftStickX(), (float)pad->GetLeftStickY());
+	//DrawFormatString(0, 100, 0xFFFFFF, "%f", stickAngle);
+	//DrawFormatString(100, 120, 0xFFFFFF, "%f, %f", hourHand.end.x, hourHand.end.y);
+	//DrawFormatString(0, 120, 0xFFFFFF, "%f", hourHandAngle);
+	//DrawFormatString(0, 140, 0xFFFFFF, "%d", playerMoveAdd);
+
+	//ADƒL[‚Å’Zjã‚Å‚ÌˆÊ’u‚ð•ÏX
+	playerPos += playerMoveAdd;
+	//Å‘å’l‚Í’Zj‚Ì’·‚³
+	if (playerPos > hourHand.length)playerPos = hourHand.length;
+
 	//Ž©‹@ˆÚ“®
 	if (input->IsPress(KEY_INPUT_A) || input->IsPress(KEY_INPUT_S) || input->IsPress(KEY_INPUT_W) || input->IsPress(KEY_INPUT_D)) {
-
-		//ADƒL[‚Å’Zjã‚Å‚ÌˆÊ’u‚ð•ÏX
-		playerPos += ((input->IsPress(KEY_INPUT_D) - input->IsPress(KEY_INPUT_A)) * playerSpd);
-		//Å‘å’l‚Í’Zj‚Ì’·‚³
-		if (playerPos > hourHand.length)playerPos = hourHand.length;
 
 	}
 

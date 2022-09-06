@@ -24,6 +24,8 @@ hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 180, 0xFF }
 
 	// --プレイヤークラスインスタンス取得-- //
 	player = Player::GetInstance();
+
+	pad = JoyPadInput::GetInstance();
 }
 
 // --デストラクタ-- //
@@ -52,7 +54,9 @@ void GameScene::Update() {
 	longHand.end.y = (longHand.length * cosf(longHand.radian / 180 * PI)) + clock.y;
 
 	//長針を常時回転
-	hourHand.radian -= 2.0f;
+	//hourHand.radian -= 2.0f;
+	hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
+
 	//-360度超えたら0に戻す
 	hourHand.radian = fmodf(hourHand.radian, 360.0f);
 	//針の角度で終点座標を計算

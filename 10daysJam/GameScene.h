@@ -4,6 +4,7 @@
 #include<vector>
 #include "Util.h"
 #include "Player.h"
+#include "JoyPadInput.h"
 
 class GameScene {
 
@@ -16,6 +17,8 @@ private:
 
 	// --入力クラス-- //
 	Input* input;
+
+	JoyPadInput* pad;
 
 	// --プレイヤークラス-- //
 	Player* player;

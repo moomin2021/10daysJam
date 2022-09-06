@@ -55,11 +55,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// --入力クラス-- //
 	Input* key = Input::GetInstance();
 
+	// --コントローラークラスインスタンス取得-- //
+	JoyPadInput* pad = JoyPadInput::GetInstance();
+
 	// ゲームループ
 	while (true) {
 
 		//キーボード更新
 		key->Update();
+		pad->Update();
 
 
 		// 画面クリア

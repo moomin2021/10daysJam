@@ -1,4 +1,5 @@
 #pragma once
+#include "DxLib.h"
 
 class JoyPadInput {
 /// --メンバ変数-- ///
@@ -88,17 +89,9 @@ private:
 };
 
 // コントローラーのボタン入力定義
-// XINPUT_BUTTON_DPAD_UP		(0)		// デジタル方向ボタン上
-// XINPUT_BUTTON_DPAD_DOWN		(1)		// デジタル方向ボタン下
-// XINPUT_BUTTON_DPAD_LEFT		(2)		// デジタル方向ボタン左
-// XINPUT_BUTTON_DPAD_RIGHT		(3)		// デジタル方向ボタン右
-// XINPUT_BUTTON_START			(4)		// STARTボタン
-// XINPUT_BUTTON_BACK			(5)		// BACKボタン
-// XINPUT_BUTTON_LEFT_THUMB		(6)		// 左スティック押し込み
-// XINPUT_BUTTON_RIGHT_THUMB	(7)		// 右スティック押し込み
-// XINPUT_BUTTON_LEFT_SHOULDER	(8)		// LBボタン
-// XINPUT_BUTTON_RIGHT_SHOULDER	(9)		// RBボタン
-// XINPUT_BUTTON_A				(12)	// Aボタン
-// XINPUT_BUTTON_B				(13)	// Bボタン
-// XINPUT_BUTTON_X				(14)	// Xボタン
-// XINPUT_BUTTON_Y				(15)	// Yボタン
+// PAD_INPUT_1 Aボタン
+// PAD_INPUT_2 Bボタン
+// PAD_INPUT_3 Xボタン
+// PAD_INPUT_4 Yボタン
+// PAD_INPUT_5 LBボタン
+// PAD_INPUT_6 RBボタン
