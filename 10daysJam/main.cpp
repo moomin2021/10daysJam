@@ -1,4 +1,7 @@
 #include "DxLib.h"
+#include"Input.h"
+#include"Vector2.h"
+#include"JoyPadInput.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
@@ -9,8 +12,10 @@ const int WIN_WIDTH = 600;
 // ウィンドウ縦幅
 const int WIN_HEIGHT = 400;
 
+
+
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
-                   _In_ int nCmdShow) {
+	_In_ int nCmdShow) {
 	// ウィンドウモードに設定
 	ChangeWindowMode(TRUE);
 
@@ -50,22 +55,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	int superrrrrrrrrrrrrrrr;
 
-	// 最新のキーボード情報用
-	char keys[256] = {0};
 
-	// 1ループ(フレーム)前のキーボード情報
-	char oldkeys[256] = {0};
+
+
+	//インプット系クラス宣言
+	Input key{};
+
+
 
 	// ゲームループ
 	while (true) {
-		// 最新のキーボード情報だったものは1フレーム前のキーボード情報として保存
-		for (int i = 0; i < 256; i++)
-		{
-			oldkeys[i] = keys[i];
-		}
 
-		// 最新のキーボード情報を取得
-		GetHitKeyStateAll(keys);
+		//キーボード更新
+		key.KeyUpdate();
+
 
 		// 画面クリア
 		ClearDrawScreen();
