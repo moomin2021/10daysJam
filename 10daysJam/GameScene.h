@@ -3,8 +3,12 @@
 #include<list>
 #include<vector>
 #include "Util.h"
+#include "Player.h"
+
+void NewDrawCircle(Circle c, int color, bool fillFlag);
 
 class GameScene {
+
 	/// --メンバ変数-- ///
 public:
 
@@ -15,12 +19,11 @@ private:
 	// --入力クラス-- //
 	Input* input;
 
+	// --プレイヤークラス-- //
+	Player* player;
+
 	// --時計-- //
 	Circle clock;
-
-	// --プレイヤー-- //
-	Circle player;
-	float playerPos;	//自機の針の上での処理
 
 	// --長針-- //
 	Line longHand;
@@ -33,9 +36,6 @@ private:
 	float spawnDelay;	//敵の発生の遅延度
 	int spawnInterval;	//次に敵が発生するまでの間隔
 	int spawnTimer;		//敵の発生タイマー
-
-	// --プレイヤーの速度-- //
-	float playerSpd = 2.0f;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///

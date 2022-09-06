@@ -2,8 +2,6 @@
 #include "SceneManager.h"
 using namespace Util;
 
-void DrawCircle(Circle c, int color, bool fillFlag);
-
 void DrawLine(Line l, int thickness = 1);
 
 // --インスタンスにNULLを代入-- //
@@ -19,17 +17,20 @@ GameScene* GameScene::GetInstance() {
 }
 
 // --コンストラクタ-- //
-GameScene::GameScene() : clock{ 640, 480, 416 }, player{ 0, 0, 16 }, playerSpd(2.0f),
+GameScene::GameScene() : clock{ 640, 480, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 180, 0xFF0000},
 hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 180, 0xFF }
 {
 	// --入力クラスインスタンス取得-- //
 	input = Input::GetInstance();
+
+	// --プレイヤークラスインスタンス取得-- //
+	player = Player::GetInstance();
 }
 
 // --デストラクタ-- //
 GameScene::~GameScene() {
-
+	delete player;
 }
 
 // --初期化処理-- //
@@ -63,44 +64,23 @@ void GameScene::Update() {
 
 #pragma endregion
 
-#pragma region 自機移動関係
-	//自機移動
-	if (input->IsPress(KEY_INPUT_A) || input->IsPress(KEY_INPUT_S) || input->IsPress(KEY_INPUT_W) || input->IsPress(KEY_INPUT_D)) {
-
-		//ADキーで短針上での位置を変更
-		playerPos += ((input->IsPress(KEY_INPUT_D) - input->IsPress(KEY_INPUT_A)) * playerSpd);
-		//最大値は短針の長さ
-		if (playerPos > hourHand.length)playerPos = hourHand.length;
-	
-	}
-
-	//短針上での自機の位置を参照して自機座標計算
-	//自機は短針上に位置するので、角度は短針のものを使う
-	player.x = (playerPos * sinf(hourHand.radian / 180 * PI)) + clock.x;
-	player.y = (playerPos * cosf(hourHand.radian / 180 * PI)) + clock.y;
-
-
-	//アローキーで自機速度変更
-	playerSpd += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
-	if (input->IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
-
-#pragma endregion
-
+	// --プレイヤークラス更新処理-- //
+	player->Update(hourHand, clock);
 }
 
 // --描画処理-- //
 void GameScene::Draw() {
-	DrawCircle(player, 0xffffff, true);
-	DrawCircle(clock, 0xffffff, false);
+	// --プレイヤーの描画処理-- //
+	player->Draw();
+	NewDrawCircle(clock, 0xffffff, false);
 	DrawLine(longHand, 4);
 	DrawLine(hourHand);
-	DrawFormatString(0, 0, 0x00ffff, "playerSpeed:%f", playerSpd);
 	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
 	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
 }
 
-void DrawCircle(Circle c, int color, bool fillFlag)
+void NewDrawCircle(Circle c, int color, bool fillFlag)
 {
 
 	DrawCircle(c.x, c.y, c.radius, color, fillFlag);

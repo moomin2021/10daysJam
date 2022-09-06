@@ -1,4 +1,6 @@
 #pragma once
+#include "Input.h"
+#include "Util.h"
 
 class Player {
 	/// --メンバ変数-- ///
@@ -7,6 +9,16 @@ public:
 private:
 	// --インスタンス-- //
 	static Player* myInstance;
+
+	// --入力クラス-- //
+	Input* input;
+
+	// --プレイヤー-- //
+	Circle player;
+	float playerPos;	//自機の針の上での処理
+
+	// --プレイヤーの速度-- //
+	float playerSpd;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -22,7 +34,7 @@ public:
 	void Initialize();
 
 	// --更新処理-- //
-	void Update();
+	void Update(Line hourHand, Circle clock);
 
 	// --描画処理-- //
 	void Draw();
