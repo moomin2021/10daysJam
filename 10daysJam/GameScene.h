@@ -5,8 +5,6 @@
 #include "Util.h"
 #include "Player.h"
 
-void NewDrawCircle(Circle c, int color, bool fillFlag);
-
 class GameScene {
 
 	/// --ƒƒ“ƒo•Ï”-- ///

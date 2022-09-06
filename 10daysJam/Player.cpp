@@ -58,5 +58,5 @@ void Player::Update(Line hourHand, Circle clock) {
 
 // --•`‰æˆ—-- //
 void Player::Draw() {
-	NewDrawCircle(player, 0xffffff, true);
+	DrawCircle(player, 0xffffff, true);
 }

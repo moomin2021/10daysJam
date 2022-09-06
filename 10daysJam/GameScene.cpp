@@ -2,8 +2,6 @@
 #include "SceneManager.h"
 using namespace Util;
 
-void DrawLine(Line l, int thickness = 1);
-
 // --インスタンスにNULLを代入-- //
 GameScene* GameScene::myInstance = nullptr;
 
@@ -72,21 +70,10 @@ void GameScene::Update() {
 void GameScene::Draw() {
 	// --プレイヤーの描画処理-- //
 	player->Draw();
-	NewDrawCircle(clock, 0xffffff, false);
+	DrawCircle(clock, 0xffffff, false);
 	DrawLine(longHand, 4);
 	DrawLine(hourHand);
 	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
 	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-}
-
-void NewDrawCircle(Circle c, int color, bool fillFlag)
-{
-
-	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
-}
-
-void DrawLine(Line l, int thickness)
-{
-	DrawLine(l.start.x, l.start.y, l.end.x, l.end.y, l.color, thickness);
 }

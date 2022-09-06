@@ -17,6 +17,10 @@ struct Line {
 	int color;
 };
 
+void DrawCircle(Circle c, int color, bool fillFlag);
+
+void DrawLine(Line l, int thickness = 1);
+
 namespace Util {
 
 	const float PI = 3.141592654f;

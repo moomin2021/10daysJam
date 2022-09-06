@@ -1,4 +1,17 @@
 #include "Util.h"
+#include "DxLib.h"
+
+void DrawCircle(Circle c, int color, bool fillFlag)
+{
+
+	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
+}
+
+void DrawLine(Line l, int thickness)
+{
+	DrawLine(l.start.x, l.start.y, l.end.x, l.end.y, l.color, thickness);
+}
+
 
 int Util::Clamp(int value, int max, int min)
 {
