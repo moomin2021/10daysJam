@@ -4,6 +4,7 @@
 #include<vector>
 #include "Util.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "JoyPadInput.h"
 
 
@@ -25,6 +26,9 @@ private:
 	// --プレイヤークラス-- //
 	Player* player;
 
+	// --エネミークラス-- //
+	Enemy* enemy;
+
 	// --時計-- //
 	Circle clock;
 
@@ -34,16 +38,6 @@ private:
 	// --短針-- //
 	Line hourHand;
 	float reverseSpd = 4.0f;
-
-	// --エネミー--//
-	std::list<Circle> enemys;
-	Circle enemy[10];
-	int spawnDelay;		//敵のスポーン遅延の残り時間
-	int delayMax;		//敵のスポーン位置を確定してからスポーンさせるまでの時間
-	int spawnInterval;	//次に敵が発生するまでの間隔
-	int spawnTimer;		//敵の発生タイマー
-	float enemyLength;	//敵が短針上のどこでスポーンするかの変数 
-	Vector2 enemyPos;	//確定した敵のスポーン位置を保存する用変数
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
