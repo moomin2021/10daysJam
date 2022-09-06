@@ -72,3 +72,8 @@ void Enemy::Draw() {
 		DrawCircle(enemys[i], 0xffff00, true);
 	}
 }
+
+void Enemy::AllEnemyDeath()
+{
+	enemys.clear();
+}

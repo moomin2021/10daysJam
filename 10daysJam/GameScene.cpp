@@ -76,14 +76,15 @@ void GameScene::Update() {
 
 	//ƒXƒe[ƒg‚ª’Êí‚È‚ç’Zj‚Í©“®‰ñ“]
 	if (hourHand.state == State::normal) {
-		//hourHand.radian += 2.0f;
+		hourHand.radian += 2.0f;
 
+		//”CˆÓ‚ÌƒL[‚Å’Zj‚ğ“®‚©‚·(ƒfƒoƒbƒO—p)
 		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ƒXƒe[ƒg‚ª”½“]‚µ‚Ä‚¢‚é‚È‚ç’Zj‚ğ‹t‘–‚³‚¹‚é
 	else if (hourHand.state == State::reverse) {
 		hourHand.radian -= reverseSpd;
 		//’Zj‚ª’·j‚É’Ç‚¢‚Â‚¢‚½‚ç’·j‚ÌƒXƒe[ƒg‚ğu”½“]v‚É
-		if (hourHand.radian < longHand.radian && hourHand.radian > longHand.radian - reverseSpd){
+		if (hourHand.radian < longHand.radian + reverseSpd && hourHand.radian > longHand.radian - reverseSpd){
 			longHand.state = State::reverse;
 		}
 	}
@@ -102,6 +103,7 @@ void GameScene::Update() {
 			hourHand.state = State::normal;
 			longHand.radian = 0;
 			hourHand.radian = 0;
+			enemy->AllEnemyDeath();
 		}
 	}
 
