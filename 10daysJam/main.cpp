@@ -2,7 +2,7 @@
 #include"Input.h"
 #include"Vector2.h"
 #include"JoyPadInput.h"
-#define PI 3.14159265359
+#include "Util.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
@@ -57,7 +57,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 画像などのリソースデータの変数宣言と読み込み
 
-
 	// ゲームループで使う変数の宣言
 	int iguigu;
 	int iguiug8;
@@ -86,14 +85,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	//インプット系クラス宣言
 	Input key{};
 
-
-
 	// ゲームループ
 	while (true) {
 
 		//キーボード更新
 		key.KeyUpdate();
-
 
 		// 画面クリア
 		ClearDrawScreen();
