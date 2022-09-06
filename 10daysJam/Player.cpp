@@ -86,6 +86,7 @@ void Player::Update(Line hourHand, Circle clock) {
 	//DrawFormatString(100, 100, 0xFFFFFF, "%f, %f", (float)pad->GetLeftStickX(), (float)pad->GetLeftStickY());
 	//DrawFormatString(0, 100, 0xFFFFFF, "%f", stickAngle);
 	//DrawFormatString(100, 120, 0xFFFFFF, "%f, %f", hourHand.end.x, hourHand.end.y);
+	//DrawFormatString(100, 140, 0xFFFFFF, "%f, %f", hourHand.start.x, hourHand.start.y);
 	//DrawFormatString(0, 120, 0xFFFFFF, "%f", hourHandAngle);
 	//DrawFormatString(0, 140, 0xFFFFFF, "%d", playerMoveAdd);
 
@@ -102,8 +103,8 @@ void Player::Update(Line hourHand, Circle clock) {
 
 	//短針上での自機の位置を参照して自機座標計算
 	//自機は短針上に位置するので、角度は短針のものを使う
-	player.x = (playerPos * sinf(hourHand.radian / 180 * PI)) + clock.x;
-	player.y = (playerPos * cosf(hourHand.radian / 180 * PI)) + clock.y;
+	player.x = (playerPos * cosf((hourHand.radian - 90) / 180 * PI)) + clock.x;
+	player.y = (playerPos * sinf((hourHand.radian - 90) / 180 * PI)) + clock.y;
 
 
 	//アローキーで自機速度変更
