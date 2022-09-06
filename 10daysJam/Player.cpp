@@ -34,7 +34,7 @@ void Player::Initialize() {
 // --XVˆ—-- //
 void Player::Update(Line hourHand, Circle clock) {
 
-	float range = 60.0f;
+	float range = 90.0f;
 
 #pragma region ©‹@ˆÚ“®ŠÖŒW
 	// --’Zj‚ÌŠp“x‚ğ‹‚ß‚é-- //
