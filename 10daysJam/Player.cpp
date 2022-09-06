@@ -34,6 +34,8 @@ void Player::Initialize() {
 // --XVˆ—-- //
 void Player::Update(Line hourHand, Circle clock) {
 
+	float range = 60.0f;
+
 #pragma region Ž©‹@ˆÚ“®ŠÖŒW
 	// --’Zj‚ÌŠp“x‚ð‹‚ß‚é-- //
 	Vector2 lStickVec = {(float)pad->GetLeftStickX(), -(float)pad->GetLeftStickY()};
@@ -54,31 +56,31 @@ void Player::Update(Line hourHand, Circle clock) {
 
 	int playerMoveAdd = 0;
 
-	if (((hourHandAngle + 45) > stickAngle) && ((hourHandAngle - 45) < stickAngle)) {
+	if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
 		playerMoveAdd = 1;
 	}
 
-	if (hourHandAngle + 45.0f > 360.0f) {
-		if ((hourHandAngle + 45.0f) - 360.0f > stickAngle) playerMoveAdd = 1;
+	if (hourHandAngle + range > 360.0f) {
+		if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = 1;
 	}
 
-	if (hourHandAngle - 45.0f < 0) {
-		if (360 - (hourHandAngle - 45.0f) < stickAngle) playerMoveAdd = 1;
+	if (hourHandAngle - range < 0) {
+		if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = 1;
 	}
 
-	//stickAngle = stickAngle + 180.0f
+	hourHandAngle = fmodf(hourHandAngle + 180.0f, 360.0f);
 
-	//if (((hourHandAngle + 45) > stickAngle) && ((hourHandAngle - 45) < stickAngle)) {
-	//	playerMoveAdd = 1;
-	//}
+	if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
+		playerMoveAdd = -1;
+	}
 
-	//if (hourHandAngle + 45.0f > 360.0f) {
-	//	if ((hourHandAngle + 45.0f) - 360.0f > stickAngle) playerMoveAdd = 1;
-	//}
+	if (hourHandAngle + range > 360.0f) {
+		if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = -1;
+	}
 
-	//if (hourHandAngle - 45.0f < 0) {
-	//	if (360 - (hourHandAngle - 45.0f) < stickAngle) playerMoveAdd = 1;
-	//}
+	if (hourHandAngle - range < 0) {
+		if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = -1;
+	}
 
 	//DrawFormatString(100, 100, 0xFFFFFF, "%f, %f", (float)pad->GetLeftStickX(), (float)pad->GetLeftStickY());
 	//DrawFormatString(0, 100, 0xFFFFFF, "%f", stickAngle);
@@ -87,9 +89,10 @@ void Player::Update(Line hourHand, Circle clock) {
 	//DrawFormatString(0, 140, 0xFFFFFF, "%d", playerMoveAdd);
 
 	//ADƒL[‚Å’Zjã‚Å‚ÌˆÊ’u‚ð•ÏX
-	playerPos += playerMoveAdd;
-	//Å‘å’l‚Í’Zj‚Ì’·‚³
-	if (playerPos > hourHand.length)playerPos = hourHand.length;
+	playerPos += playerMoveAdd * playerSpd;
+	
+	// --ƒvƒŒƒCƒ„[‚ªˆÚ“®‚Å‚«‚é‚Ì‚ð§ŒÀ-- //
+	playerPos = Clamp(playerPos, hourHand.length, 0.0f);
 
 	//Ž©‹@ˆÚ“®
 	if (input->IsPress(KEY_INPUT_A) || input->IsPress(KEY_INPUT_S) || input->IsPress(KEY_INPUT_W) || input->IsPress(KEY_INPUT_D)) {
