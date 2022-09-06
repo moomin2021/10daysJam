@@ -43,8 +43,11 @@ private:
 	// --短針-- //
 	Line hourHand;
 
-	//エネミー
-	//std::list<Circle> enemys;
+	// --エネミー--//
+	std::list<Circle> enemys;
+	float spawnDelay;	//敵の発生の遅延度
+	int spawnInterval;	//次に敵が発生するまでの間隔
+	int spawnTimer;		//敵の発生タイマー
 
 	// --プレイヤーの速度-- //
 	float playerSpd = 2.0f;
