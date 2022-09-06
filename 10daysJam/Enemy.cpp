@@ -44,8 +44,9 @@ void Enemy::Update(Line hourHand, Circle clock) {
 		//スポーンタイマーが0になった瞬間のみ位置を決める(短針の位置を参照するため
 		if (spawnDelay == delayMax) {
 			enemyLength = Random(0.0f, hourHand.length);
-			enemyPos.x = (enemyLength * sinf(hourHand.radian / 180 * PI)) + clock.x;
-			enemyPos.y = (enemyLength * cosf(hourHand.radian / 180 * PI)) + clock.y;
+			float rad = hourHand.radian - 90;
+			enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.x;
+			enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.y;
 			//ディレイタイマーを減らす
 			spawnDelay--;
 		}//ディレイタイマーが0出ないなら
