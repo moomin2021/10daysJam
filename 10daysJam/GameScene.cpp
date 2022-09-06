@@ -76,27 +76,41 @@ void GameScene::Update() {
 
 	//ステートが通常なら短針は自動回転
 	if (hourHand.state == State::normal) {
-		hourHand.radian += 2.0f;
+		//hourHand.radian += 2.0f;
 
 		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ステートが反転しているなら短針を逆走させる
 	else if (hourHand.state == State::reverse) {
 		hourHand.radian -= reverseSpd;
-		//針が0度以下になるならステートを戻す
-		//将来的にここにカメラシェイクを付ける
-		if (hourHand.radian < reverseSpd) {
-			hourHand.radian = 0;
-			hourHand.state = State::normal;
+		//短針が長針に追いついたら長針のステートを「反転」に
+		if (hourHand.radian < longHand.radian && hourHand.radian > longHand.radian - reverseSpd){
+			longHand.state = State::reverse;
 		}
 	}
 
-	//長針を常時回転
-longHand.radian += 0.5f;
+	//ステートが通常なら長針は自動回転
+	if (longHand.state == State::normal) {
+		longHand.radian += 0.5f;
+	}//ステートが「反転」なら逆走
+	else if (longHand.state == State::reverse) {
+		//速度は短針と等速
+		longHand.radian -= reverseSpd;
+		
+		//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
+		if (longHand.radian < reverseSpd) {
+			longHand.state = State::normal;
+			hourHand.state = State::normal;
+			longHand.radian = 0;
+			hourHand.radian = 0;
+		}
+	}
 
-	//-360度超えたら0に戻す
+	//360度超えたら0に戻し、0を下回ったら360加算する
 	longHand.radian = fmodf(longHand.radian, 360.0f);
-	//-360度超えたら0に戻す
+	if (longHand.radian <= 0)longHand.radian += 360.0f;
+	//360度超えたら0に戻し、0を下回ったら360加算する
 	hourHand.radian = fmodf(hourHand.radian, 360.0f);
+	if (hourHand.radian <= 0)hourHand.radian += 360.0f;
 
 	//位置調整件描画用のラジアン宣言
 	float radL = longHand.radian - 90;
