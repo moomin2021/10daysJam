@@ -3,6 +3,7 @@
 #include"Vector2.h"
 #include"JoyPadInput.h"
 #include "Util.h"
+#include "SceneManager.h"
 
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
@@ -58,15 +59,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// 画像などのリソースデータの変数宣言と読み込み
 
 	// ゲームループで使う変数の宣言
-	int iguigu;
-	int iguiug8;
-	int fumiya;
-	int moomin;
-	int test01;
-	int test072;
-	int gitTest;
+	
+	// --シーン管理クラスインスタンス取得-- //
+	SceneManager* sceneM = SceneManager::GetInstance();
 
-	int superrrrrrrrrrrrrrrr;
+	// --シーン管理クラス初期化-- //
+	sceneM->Initialize();
 
 	Circle clock{
 		WIN_WIDTH / 2,
@@ -97,6 +95,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//---------  更新処理  -----------------------//
 
+		// --シーン管理クラス更新処理-- //
+		sceneM->Update();
+
 		//自機移動
 		if (key.IsPress(KEY_INPUT_A) || key.IsPress(KEY_INPUT_S) || key.IsPress(KEY_INPUT_W) || key.IsPress(KEY_INPUT_D)) {
 
@@ -109,6 +110,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		if (key.IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
 
 		//---------  描画処理  -----------------------//
+
+		// --シーン管理クラス描画処理-- //
+		sceneM->Draw();
 
 		DrawCircle(player, 0xffffff, true);
 		DrawCircle(clock, 0xffffff, false);
