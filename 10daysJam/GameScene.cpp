@@ -1,6 +1,5 @@
 #include "GameScene.h"
 #include "SceneManager.h"
-#include "Util.h"
 using namespace Util;
 
 void DrawCircle(Circle c, int color, bool fillFlag);

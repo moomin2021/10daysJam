@@ -1,23 +1,8 @@
 #pragma once
-#include "Vector2.h"
 #include "Input.h"
 #include<list>
 #include<vector>
-
-struct  Circle
-{
-	float x;
-	float y;
-	float radius;
-};
-
-struct Line {
-	Vector2 start;
-	Vector2 end;
-	float length;
-	float radian;
-	int color;
-};
+#include "Util.h"
 
 class GameScene {
 	/// --ƒƒ“ƒo•Ï”-- ///

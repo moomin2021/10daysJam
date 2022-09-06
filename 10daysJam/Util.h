@@ -1,5 +1,21 @@
 #pragma once
 #include <Math.h>
+#include "Vector2.h"
+
+struct  Circle
+{
+	float x;
+	float y;
+	float radius;
+};
+
+struct Line {
+	Vector2 start;
+	Vector2 end;
+	float length;
+	float radian;
+	int color;
+};
 
 namespace Util {
 
