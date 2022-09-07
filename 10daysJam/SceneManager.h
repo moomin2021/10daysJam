@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "GameScene.h"
+#include "Score.h"
 
 class SceneManager {
 
@@ -21,6 +22,9 @@ private:
 
 	// --ゲームシーン-- //
 	GameScene* gameScene;
+
+	// --スコア-- //
+	Score* score;
 
 	// --シーンの番号-- //
 	static int scene;

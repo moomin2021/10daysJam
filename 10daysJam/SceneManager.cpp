@@ -17,12 +17,15 @@ SceneManager* SceneManager::GetInstance() {
 
 // --コンストラクタ-- //
 SceneManager::SceneManager() {
+	// --インスタンス読み込み-- //
 	gameScene = GameScene::GetInstance();
+	score = Score::GetInstance();
 }
 
 // --デストラクタ-- //
 SceneManager::~SceneManager() {
-
+	delete gameScene;
+	delete score;
 }
 
 // --初期化処理-- //
@@ -42,6 +45,9 @@ void SceneManager::Update() {
 	else if (scene == GAMESCENE) {
 		// --ゲームシーン更新処理-- //
 		gameScene->Update();
+
+		// --スコア更新処理-- //
+		score->Update();
 	}
 
 	// --ゲームクリアシーン更新処理-- //
@@ -66,6 +72,9 @@ void SceneManager::Draw() {
 	else if (scene == GAMESCENE) {
 		// --ゲームシーン描画-- //
 		gameScene->Draw();
+
+		// --スコア描画-- //
+		score->Draw();
 	}
 
 	// --ゲームクリアシーン描画処理-- //

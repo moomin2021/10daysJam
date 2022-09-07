@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 using namespace Util;
+#include "Score.h"
 
 // --インスタンスにNULLを代入-- //
 GameScene* GameScene::myInstance = nullptr;
@@ -141,6 +142,8 @@ void GameScene::Update() {
 			//	hourHand.radian = 0;
 			enemys.clear();
 			LevelReset();
+			// --スコア加算-- //
+			Score::AddScore(1000);
 		}
 	}
 
@@ -271,6 +274,7 @@ void GameScene::PlayerAndEnemyCol() {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
 			enemys.erase(enemys.begin() + i);
 			point++;
+			Score::AddScore(100);
 		}
 	}
 
