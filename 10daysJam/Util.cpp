@@ -6,7 +6,7 @@ using namespace std;
 void DrawCircle(Circle c, int color, bool fillFlag)
 {
 
-	DrawCircle(c.x, c.y, c.radius, color, fillFlag);
+	DrawCircle(c.pos.x, c.pos.y, c.radius, color, fillFlag);
 }
 
 void DrawLine(Line l, int thickness)

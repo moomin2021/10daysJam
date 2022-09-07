@@ -19,8 +19,8 @@ bool GameScene::CollisionCtoC(Circle cA, Circle cB)
 	bool flag;
 	Vector2 vecAtoB;
 	float radius;
-	vecAtoB.x = cB.x - cA.x;
-	vecAtoB.y = cB.y - cA.y;
+	vecAtoB.x = cB.pos.x - cA.pos.x;
+	vecAtoB.y = cB.pos.y - cA.pos.y;
 	radius = cA.radius + cB.radius;
 
 	if (vecAtoB.length() <= radius) {
@@ -34,7 +34,7 @@ bool GameScene::CollisionCtoC(Circle cA, Circle cB)
 }
 
 // --コンストラクタ-- //
-GameScene::GameScene() : clock{ 640, 480, 416 },
+GameScene::GameScene() : clock{ {640, 480}, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000},
 hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }
 {
@@ -44,22 +44,20 @@ hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }
 	// --プレイヤークラスインスタンス取得-- //
 	player = Player::GetInstance();
 
-	// --エネミークラスインスタンス取得-- //
-	enemy = Enemy::GetInstance();
-
 	pad = JoyPadInput::GetInstance();
 }
 
 // --デストラクタ-- //
 GameScene::~GameScene() {
 	delete player;
-	delete enemy;
 }
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	// --エネミー初期化-- //
-	enemy->Initialize();
+	delayMax = 1;
+	spawnDelay = delayMax;
+	spawnInterval = 20;
+	spawnTimer = spawnInterval;
 }
 
 // --更新処理-- //
@@ -103,7 +101,7 @@ void GameScene::Update() {
 			hourHand.state = State::normal;
 			longHand.radian = 0;
 			hourHand.radian = 0;
-			enemy->AllEnemyDeath();
+			enemys.clear();
 		}
 	}
 
@@ -119,11 +117,11 @@ void GameScene::Update() {
 	float radH = hourHand.radian -90;
 
 	//針の角度で終点座標を計算
-	longHand.end.x = (longHand.length * cosf(radL / 180 * PI)) + clock.x;
-	longHand.end.y = (longHand.length * sinf(radL / 180 * PI)) + clock.y;
+	longHand.end.x = (longHand.length * cosf(radL / 180 * PI)) + clock.pos.x;
+	longHand.end.y = (longHand.length * sinf(radL / 180 * PI)) + clock.pos.y;
 	//針の角度で終点座標を計算
-	hourHand.end.x = (hourHand.length * cosf(radH  / 180 * PI)) + clock.x;
-	hourHand.end.y = (hourHand.length * sinf(radH  / 180 * PI)) + clock.y;
+	hourHand.end.x = (hourHand.length * cosf(radH  / 180 * PI)) + clock.pos.x;
+	hourHand.end.y = (hourHand.length * sinf(radH  / 180 * PI)) + clock.pos.y;
 
 
 #pragma endregion
@@ -132,14 +130,24 @@ void GameScene::Update() {
 	player->Update(hourHand, clock);
 
 	// --エネミークラス更新処理-- //
-	enemy->Update(hourHand, clock);
+	for (int i = 0; i < enemys.size(); i++) {
+		enemys[i].Update();
+	}
+
+	// --エネミーのスポーン処理-- //
+	EnemySpawn();
 }
 
 // --描画処理-- //
 void GameScene::Draw() {
 	// --プレイヤーの描画処理-- //
 	player->Draw();
-	enemy->Draw();
+	
+	// --エネミーの描画処理-- //
+	for (int i = 0; i < enemys.size(); i++) {
+		enemys[i].Draw();
+	}
+
 	DrawCircle(clock, 0xffffff, false);
 	DrawLine(longHand, 4);
 	DrawLine(hourHand);
@@ -148,5 +156,50 @@ void GameScene::Draw() {
 	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
 
 	//目印用０時の針
-	DrawLine(clock.x, clock.y, clock.x, clock.y - clock.radius + 16, 0x60ffbf, 6);
+	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);
 }
+
+// --敵のスポーン処理-- //
+void GameScene::EnemySpawn() {
+	//スポーンタイマーを減らす
+	if (spawnTimer > 0) {
+		spawnTimer--;
+		//タイマーが0になったらスポーン位置を決める
+	}
+	else if (spawnTimer == 0) {
+
+
+		//スポーンタイマーが0になった瞬間のみ位置を決める(短針の位置を参照するため
+		if (spawnDelay == delayMax) {
+			enemyLength = Random(0.0f, hourHand.length);
+			float rad = hourHand.radian - 90;
+			enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
+			enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
+			//ディレイタイマーを減らす
+			spawnDelay--;
+		}//ディレイタイマーが0出ないなら
+		else if (spawnDelay > 0) {
+			//ディレイタイマーを減らす
+			spawnDelay--;
+		}//ディレイタイマーが0になったら座標を確定
+		else if (spawnDelay == 0) {
+			for (int i = 0; i < 10; i++) {
+				enemys.push_back({ enemyPos, 8.0f });
+				//タイマーをリセット
+				spawnTimer = spawnInterval;
+				spawnDelay = delayMax;
+				break;
+			}
+		}
+	}
+}
+
+// --自機と敵の当たり判定処理-- //
+//void GameScene::PlayerAndEnemyCol() {
+//	// --自機と敵の当たり判定を行う-- //
+//	for (int i = 0; i < enemy->enemys.size();i++) {
+//		if (CollisionCtoC(player->player, enemy->enemys[i])) {
+//			enemy->enemys.erase(enemy->enemys.begin() + i);
+//		}
+//	}
+//}

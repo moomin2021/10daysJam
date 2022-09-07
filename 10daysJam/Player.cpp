@@ -16,7 +16,7 @@ Player* Player::GetInstance() {
 }
 
 // --コンストラクタ-- //
-Player::Player() : player{ 0, 0, 16 }, playerSpd(2.0f), playerPos(0){
+Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f){
 	input = Input::GetInstance();
 	pad = JoyPadInput::GetInstance();
 }
@@ -35,84 +35,81 @@ void Player::Initialize() {
 // --更新処理-- //
 void Player::Update(Line hourHand, Circle clock) {
 
-	float range = 90.0f;
-
 #pragma region 自機移動関係
+	// --左スティックが倒れている角度を求める-- //
+	float stickAngle;
+	{
+		// --スティックのベクトル-- //
+		Vector2 lStickVec = { (float)pad->GetLeftStickX(), (float)pad->GetLeftStickY() };
+
+		// --2つのベクトルのなす角を求める-- //
+		stickAngle = lStickVec.dot(Vector2(0, -1)) / (lStickVec.length() * Vector2(0, -1).length());
+		stickAngle = acos(stickAngle);
+		stickAngle = Util::Radian2Degree(stickAngle);
+
+		if (pad->GetLeftStickX() < 0) stickAngle = 180 + (180 - stickAngle);
+	}
+
 	// --短針の角度を求める-- //
-	Vector2 lStickVec = {(float)pad->GetLeftStickX(), -(float)pad->GetLeftStickY()};
-	float stickAngle = lStickVec.dot(Vector2(0, 1)) / (lStickVec.length() * Vector2(0, 1).length());
-	stickAngle = acos(stickAngle);
-	stickAngle = Util::Radian2Degree(stickAngle);
-	if (pad->GetLeftStickX() < 0) {
-		stickAngle = 180 + (180 - stickAngle);
+	float hourHandAngle;
+	{
+		// --短針のベクトル-- //
+		Vector2 hourHandVec = { hourHand.end.x - hourHand.start.x, hourHand.end.y - hourHand.start.y };
+		
+		// --2つのベクトルのなす角を求める-- //
+		hourHandAngle = hourHandVec.dot(Vector2(0, -1)) / (hourHandVec.length() * Vector2(0, -1).length());
+		hourHandAngle = acos(hourHandAngle);
+		hourHandAngle = Util::Radian2Degree(hourHandAngle);
+
+		if (hourHandVec.x < 0) hourHandAngle = 180 + (180 - hourHandAngle);
 	}
 
-	Vector2 hourHandVec = { hourHand.end.x - hourHand.start.x, -(hourHand.end.y - hourHand.start.y) };
-	float hourHandAngle = hourHandVec.dot(Vector2(0, 1)) / (hourHandVec.length() * Vector2(0, 1).length());
-	hourHandAngle = acos(hourHandAngle);
-	hourHandAngle = Util::Radian2Degree(hourHandAngle);
-	if (hourHandVec.x < 0) {
-		hourHandAngle = 180 + (180 - hourHandAngle);
-	}
-
+	// --プレイヤーが外側内側どちらに進むか（1 = 外側, -1 = 内側）-- //
 	int playerMoveAdd = 0;
 
-	if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
-		playerMoveAdd = 1;
+	// --判定-- //
+	{
+		if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
+			playerMoveAdd = 1;
+		}
+
+		if (hourHandAngle + range > 360.0f) {
+			if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = 1;
+		}
+
+		if (hourHandAngle - range < 0) {
+			if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = 1;
+		}
+
+		hourHandAngle = fmodf(hourHandAngle + 180.0f, 360.0f);
+
+		if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
+			playerMoveAdd = -1;
+		}
+
+		if (hourHandAngle + range > 360.0f) {
+			if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = -1;
+		}
+
+		if (hourHandAngle - range < 0) {
+			if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = -1;
+		}
 	}
 
-	if (hourHandAngle + range > 360.0f) {
-		if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = 1;
-	}
-
-	if (hourHandAngle - range < 0) {
-		if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = 1;
-	}
-
-	hourHandAngle = fmodf(hourHandAngle + 180.0f, 360.0f);
-
-	if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
-		playerMoveAdd = -1;
-	}
-
-	if (hourHandAngle + range > 360.0f) {
-		if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = -1;
-	}
-
-	if (hourHandAngle - range < 0) {
-		if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = -1;
-	}
-
-	//DrawFormatString(100, 100, 0xFFFFFF, "%f, %f", (float)pad->GetLeftStickX(), (float)pad->GetLeftStickY());
-	//DrawFormatString(0, 100, 0xFFFFFF, "%f", stickAngle);
-	//DrawFormatString(100, 120, 0xFFFFFF, "%f, %f", hourHand.end.x, hourHand.end.y);
-	//DrawFormatString(100, 140, 0xFFFFFF, "%f, %f", hourHand.start.x, hourHand.start.y);
-	//DrawFormatString(0, 120, 0xFFFFFF, "%f", hourHandAngle);
-	//DrawFormatString(0, 140, 0xFFFFFF, "%d", playerMoveAdd);
-
-	//ADキーで短針上での位置を変更
-	playerPos += playerMoveAdd * playerSpd;
+	// --中心からのプレイヤーの距離-- //
+	playerLength += playerMoveAdd * playerSpd;
 	
 	// --プレイヤーが移動できるのを制限-- //
-	playerPos = Clamp(playerPos, hourHand.length, 0.0f);
-
-	//自機移動
-	if (input->IsPress(KEY_INPUT_A) || input->IsPress(KEY_INPUT_S) || input->IsPress(KEY_INPUT_W) || input->IsPress(KEY_INPUT_D)) {
-
-	}
+	playerLength = Clamp(playerLength, hourHand.length, player.radius);
 
 	//短針上での自機の位置を参照して自機座標計算
 	//自機は短針上に位置するので、角度は短針のものを使う
-	player.x = (playerPos * cosf((hourHand.radian - 90) / 180 * PI)) + clock.x;
-	player.y = (playerPos * sinf((hourHand.radian - 90) / 180 * PI)) + clock.y;
-
+	player.pos.x = (playerLength * cosf((hourHand.radian - 90) / 180 * PI)) + clock.pos.x;
+	player.pos.y = (playerLength * sinf((hourHand.radian - 90) / 180 * PI)) + clock.pos.y;
 
 	//アローキーで自機速度変更
 	playerSpd += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
 	if (input->IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
-
-
-
 #pragma endregion
 }
 

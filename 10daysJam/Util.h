@@ -7,10 +7,9 @@ enum class State {
 	reverse
 };
 
-struct  Circle
+struct Circle
 {
-	float x;
-	float y;
+	Vector2 pos;
 	float radius;
 };
 

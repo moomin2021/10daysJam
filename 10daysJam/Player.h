@@ -3,11 +3,11 @@
 #include "JoyPadInput.h"
 #include "Util.h"
 
-
-
 class Player {
 	/// --メンバ変数-- ///
 public:
+	// --プレイヤー-- //
+	Circle player;
 
 private:
 	// --インスタンス-- //
@@ -19,12 +19,14 @@ private:
 	// --コントローラークラス-- //
 	JoyPadInput* pad;
 
-	// --プレイヤー-- //
-	Circle player;
-	float playerPos;	//自機の針の上での処理
+	// --中心からのプレイヤーの距離-- //
+	float playerLength;
 
 	// --プレイヤーの速度-- //
 	float playerSpd;
+
+	// --スティックの範囲-- //
+	float range;
 
 	//色
 	int color = 0xffffff;

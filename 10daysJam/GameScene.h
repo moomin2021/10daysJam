@@ -7,8 +7,6 @@
 #include "Enemy.h"
 #include "JoyPadInput.h"
 
-
-
 class GameScene {
 
 	/// --メンバ変数-- ///
@@ -26,8 +24,15 @@ private:
 	// --プレイヤークラス-- //
 	Player* player;
 
-	// --エネミークラス-- //
-	Enemy* enemy;
+	// --エネミー-- //
+	std::vector<Enemy> enemys;
+
+	int spawnDelay;		//敵のスポーン遅延の残り時間
+	int delayMax;		//敵のスポーン位置を確定してからスポーンさせるまでの時間
+	int spawnInterval;	//次に敵が発生するまでの間隔
+	int spawnTimer;		//敵の発生タイマー
+	float enemyLength;	//敵が短針上のどこでスポーンするかの変数 
+	Vector2 enemyPos;	//確定した敵のスポーン位置を保存する用変数
 
 	// --時計-- //
 	Circle clock;
@@ -57,6 +62,12 @@ public:
 
 	// --描画処理-- //
 	void Draw();
+
+	// --自機と敵の当たり判定処理-- //
+	void PlayerAndEnemyCol();
+
+	// --敵のスポーン処理-- //
+	void EnemySpawn();
 
 	/// <summary>
 	/// 円と円の衝突判定
