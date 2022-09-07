@@ -39,7 +39,7 @@ void Player::Update(Line hourHand, Circle clock) {
 
 #pragma region Ž©‹@ˆÚ“®ŠÖŒW
 	// --’Zj‚ÌŠp“x‚ð‹‚ß‚é-- //
-	Vector2 lStickVec = {(float)pad->GetLeftStickX(), -(float)pad->GetLeftStickY()};
+	Vector2 lStickVec = { (float)pad->GetLeftStickX(), -(float)pad->GetLeftStickY() };
 	float stickAngle = lStickVec.dot(Vector2(0, 1)) / (lStickVec.length() * Vector2(0, 1).length());
 	stickAngle = acos(stickAngle);
 	stickAngle = Util::Radian2Degree(stickAngle);
@@ -86,12 +86,13 @@ void Player::Update(Line hourHand, Circle clock) {
 	//DrawFormatString(100, 100, 0xFFFFFF, "%f, %f", (float)pad->GetLeftStickX(), (float)pad->GetLeftStickY());
 	//DrawFormatString(0, 100, 0xFFFFFF, "%f", stickAngle);
 	//DrawFormatString(100, 120, 0xFFFFFF, "%f, %f", hourHand.end.x, hourHand.end.y);
+	//DrawFormatString(100, 140, 0xFFFFFF, "%f, %f", hourHand.start.x, hourHand.start.y);
 	//DrawFormatString(0, 120, 0xFFFFFF, "%f", hourHandAngle);
 	//DrawFormatString(0, 140, 0xFFFFFF, "%d", playerMoveAdd);
 
 	//ADƒL[‚Å’Zjã‚Å‚ÌˆÊ’u‚ð•ÏX
 	playerPos += playerMoveAdd * playerSpd;
-	
+
 	// --ƒvƒŒƒCƒ„[‚ªˆÚ“®‚Å‚«‚é‚Ì‚ð§ŒÀ-- //
 	playerPos = Clamp(playerPos, hourHand.length, 0.0f);
 
@@ -102,15 +103,13 @@ void Player::Update(Line hourHand, Circle clock) {
 
 	//’Zjã‚Å‚ÌŽ©‹@‚ÌˆÊ’u‚ðŽQÆ‚µ‚ÄŽ©‹@À•WŒvŽZ
 	//Ž©‹@‚Í’Zjã‚ÉˆÊ’u‚·‚é‚Ì‚ÅAŠp“x‚Í’Zj‚Ì‚à‚Ì‚ðŽg‚¤
-	player.x = (playerPos * sinf(hourHand.radian / 180 * PI)) + clock.x;
-	player.y = (playerPos * cosf(hourHand.radian / 180 * PI)) + clock.y;
+	player.x = (playerPos * cosf((hourHand.radian - 90) / 180 * PI)) + clock.x;
+	player.y = (playerPos * sinf((hourHand.radian - 90) / 180 * PI)) + clock.y;
 
 
 	//ƒAƒ[ƒL[‚ÅŽ©‹@‘¬“x•ÏX
 	playerSpd += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
 	if (input->IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
-
-
 
 #pragma endregion
 }
