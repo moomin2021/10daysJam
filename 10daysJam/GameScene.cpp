@@ -33,39 +33,44 @@ bool GameScene::CollisionCtoC(Circle cA, Circle cB)
 	return flag;
 }
 
-bool GameScene::CollisionCtoL(Circle c, Line l)
+bool GameScene::CollisionCtoL(Circle c, Line l, float lineSpd)
 {
 	//必要変数宣言
-	Vector2 vecLine, vecCircle,vecCircle2, vecN, vecNtoC;
+	Vector2 vecLine, vecCircle, vecCircle2, vecN, vecNtoC;
 	float len;
-	vecLine = l.end - l.start;
-	vecLine = vecLine.normalize();
-	vecCircle = c.pos - l.start;
-	vecCircle2 = c.pos - l.end;
-	len = vecLine.dot(vecCircle);
-	vecN = vecLine * len;
-	vecNtoC = vecCircle - vecN;
+	float rad = l.radian - 90;
 
+	for (int i = 0; i < (int)lineSpd; i++) {
+		//線の終点座標を変更
 
+		l.end.x = (l.length * cosf((rad) / 180 * PI)) + l.start.x;
+		l.end.y = (l.length * sinf((rad) / 180 * PI)) + l.start.y;
 
-	if (vecNtoC.length() < c.radius){
-		if (vecLine.dot(vecCircle) * vecLine.dot(vecCircle2) <= 0.0f) {
-			return true;
+		vecLine = l.end - l.start;
+		vecLine = vecLine.normalize();
+		vecCircle = c.pos - l.start;
+		vecCircle2 = c.pos - l.end;
+		len = vecLine.dot(vecCircle);
+		vecN = vecLine * len;
+		vecNtoC = vecCircle - vecN;
+
+		if (vecNtoC.length() < c.radius) {
+			if (vecLine.dot(vecCircle) * vecLine.dot(vecCircle2) <= 0.0f) {
+				return true;
+			}
+			else if (vecCircle.length() < c.radius || vecCircle2.length() < c.radius) {
+
+				return true;
+			}
 		}
-	 
-		if (vecCircle.length() < c.radius || vecCircle2.length() < c.radius) {
-
-			return true;
-		}
-
-		return false;
+		else rad--;
 	}
-	else return false;
+	return false;
 }
 
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ {640, 480}, 416 },
-longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000},
+longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000 },
 hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 8 }
 {
 	// --入力クラスインスタンス取得-- //
@@ -113,7 +118,7 @@ void GameScene::Update() {
 	else if (hourHand.state == State::Reverse) {
 		hourHand.radian -= reverseSpd;
 		//短針が長針に追いついたら長針のステートを「反転」に
-		if (hourHand.radian < longHand.radian + reverseSpd && hourHand.radian > longHand.radian - reverseSpd){
+		if (hourHand.radian < longHand.radian + reverseSpd && hourHand.radian > longHand.radian - reverseSpd) {
 			longHand.state = State::Reverse;
 			//短針のステートをとめる
 			hourHand.state = State::Stop;
@@ -127,13 +132,13 @@ void GameScene::Update() {
 	else if (longHand.state == State::Reverse) {
 		//速度は短針と等速
 		longHand.radian -= reverseSpd;
-		
+
 		//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
 		if (longHand.radian < reverseSpd) {
 			longHand.state = State::Normal;
 			hourHand.state = State::Normal;
 			longHand.radian = 0;
-		//	hourHand.radian = 0;
+			//	hourHand.radian = 0;
 			enemys.clear();
 			LevelReset();
 		}
@@ -148,14 +153,14 @@ void GameScene::Update() {
 
 	//位置調整件描画用のラジアン宣言
 	float radL = longHand.radian - 90;
-	float radH = hourHand.radian -90;
+	float radH = hourHand.radian - 90;
 
 	//針の角度で終点座標を計算
 	longHand.end.x = (longHand.length * cosf(radL / 180 * PI)) + clock.pos.x;
 	longHand.end.y = (longHand.length * sinf(radL / 180 * PI)) + clock.pos.y;
 	//針の角度で終点座標を計算
-	hourHand.end.x = (hourHand.length * cosf(radH  / 180 * PI)) + clock.pos.x;
-	hourHand.end.y = (hourHand.length * sinf(radH  / 180 * PI)) + clock.pos.y;
+	hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
+	hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
 
 
 #pragma endregion
@@ -166,18 +171,27 @@ void GameScene::Update() {
 	// --エネミークラス更新処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		enemys[i].Update(hourHand);
-			if (CollisionCtoL(enemys[i].GetCircle(), hourHand)) {
+
+		//短針が反転モードなら判定をとる
+		if (hourHand.state == State::Reverse) {
+			//短針と敵の当たり判定
+			if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpd)) {
 				enemys[i].OnCollison();
 			}
+		}
 	}
 
+
 	// --エネミーのスポーン処理-- //
-	EnemySpawn();
+	//短針が通常状態なら行う
+	if (hourHand.state == State::Normal) {
+		EnemySpawn();
+	}
 
 	// --プレイヤーとエネミーの当たり判定-- //
 	PlayerAndEnemyCol();
 
-	
+
 
 
 	// --レベルの更新処理-- //
@@ -191,7 +205,7 @@ void GameScene::Update() {
 void GameScene::Draw() {
 	// --プレイヤーの描画処理-- //
 	player->Draw();
-	
+
 	// --エネミーの描画処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		enemys[i].Draw();
@@ -205,7 +219,7 @@ void GameScene::Draw() {
 	DrawFormatString(0, 100, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
 	DrawFormatString(0, 120, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 140, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-	
+
 
 	//目印用０時の針
 	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);
@@ -249,7 +263,7 @@ void GameScene::EnemySpawn() {
 // --自機と敵の当たり判定処理-- //
 void GameScene::PlayerAndEnemyCol() {
 	// --自機と敵の当たり判定を行う-- //
-	for (int i = 0; i < enemys.size();i++) {
+	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
 			enemys.erase(enemys.begin() + i);
 			point++;

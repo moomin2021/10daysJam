@@ -101,7 +101,7 @@ public:
 	/// </summary>
 	/// <param name="c"></param>
 	/// <param name="l"></param>
-bool CollisionCtoL(Circle c, Line l);
+bool CollisionCtoL(Circle c, Line l ,float lineSpd);
 
 private:
 	// --コンストラクタ-- //

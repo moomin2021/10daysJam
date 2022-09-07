@@ -4,7 +4,7 @@ using namespace Util;
 // --ƒRƒ“ƒXƒgƒ‰ƒNƒ^-- //
 Enemy::Enemy() {}
 
-Enemy::Enemy(Vector2 pos, float radius) : enemy{pos, radius} {
+Enemy::Enemy(Vector2 pos, float radius) : enemy{ pos, radius } {
 
 }
 
@@ -44,11 +44,19 @@ void Enemy::UpdateNormal()
 void Enemy::UpdateReverse(Line hourLine_)
 {
 	//’Zj‚ÉÀ•W‚ğ’Ç]‚³‚¹‚é
+	//’Zj‚Ìn“_‚Æ©À•W‚©‚ç’·‚³‚ğæ“¾
+	Vector2 lenVec = hourLine_.start - enemy.pos;
+	float len = lenVec.length();
+	//’·‚³‚Æ’Zj‚ÌŠp“x‚©‚ç©À•W‚ğÄŒvZ‚µ‚Ä‘ã“ü
+	enemy.pos.x = (len * cosf((hourLine_.radian - 90) / 180 * PI)) + hourLine_.start.x;
+	enemy.pos.y = (len * sinf((hourLine_.radian - 90) / 180 * PI)) + hourLine_.start.y;
 }
 
 void Enemy::OnCollison()
 {
-	color = 0x7fff7f;
+	//ƒXƒe[ƒg‚ğ”½“]‚É
+	state = State::Reverse;
+		//color = 0x7fff7f;
 }
 
 // --•`‰æˆ—-- //
