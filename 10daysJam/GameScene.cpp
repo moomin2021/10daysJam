@@ -33,6 +33,36 @@ bool GameScene::CollisionCtoC(Circle cA, Circle cB)
 	return flag;
 }
 
+bool GameScene::CollisionCtoL(Circle c, Line l)
+{
+	//必要変数宣言
+	Vector2 vecLine, vecCircle,vecCircle2, vecN, vecNtoC;
+	float len;
+	vecLine = l.end - l.start;
+	vecLine = vecLine.normalize();
+	vecCircle = c.pos - l.start;
+	vecCircle2 = c.pos - l.end;
+	len = vecLine.dot(vecCircle);
+	vecN = vecLine * len;
+	vecNtoC = vecCircle - vecN;
+
+
+
+	if (vecNtoC.length() < c.radius){
+		if (vecLine.dot(vecCircle) * vecLine.dot(vecCircle2) <= 0.0f) {
+			return true;
+		}
+	 
+		if (vecCircle.length() < c.radius || vecCircle2.length() < c.radius) {
+
+			return true;
+		}
+
+		return false;
+	}
+	else return false;
+}
+
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ {640, 480}, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000},
@@ -54,9 +84,9 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	delayMax = 1;
+	delayMax = 5;
 	spawnDelay = delayMax;
-	spawnInterval = 20;
+	spawnInterval = 5;
 	spawnTimer = spawnInterval;
 	level = 1;
 	point = 0;
@@ -134,7 +164,10 @@ void GameScene::Update() {
 
 	// --エネミークラス更新処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
-		enemys[i].Update();
+		enemys[i].Update(hourHand);
+			if (CollisionCtoL(enemys[i].GetCircle(), hourHand)) {
+				enemys[i].OnCollison();
+			}
 	}
 
 	// --エネミーのスポーン処理-- //
@@ -142,6 +175,9 @@ void GameScene::Update() {
 
 	// --プレイヤーとエネミーの当たり判定-- //
 	PlayerAndEnemyCol();
+
+	
+
 
 	// --レベルの更新処理-- //
 	LevelUpdate();
