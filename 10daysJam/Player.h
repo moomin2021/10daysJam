@@ -28,6 +28,9 @@ private:
 	// --スティックの範囲-- //
 	float range;
 
+	// --補助線-- //
+	Circle auxiliaryCircle;
+
 	//色
 	int color = 0xffffff;
 

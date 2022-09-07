@@ -16,7 +16,8 @@ Player* Player::GetInstance() {
 }
 
 // --コンストラクタ-- //
-Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f)
+Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f),
+auxiliaryCircle{ {640, 480}, 8 }
 {
 	input = Input::GetInstance();
 	pad = JoyPadInput::GetInstance();
@@ -112,9 +113,14 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 	playerSpd += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
 	if (input->IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
 #pragma endregion
+
+	auxiliaryCircle.radius = playerLength;
 }
 
 // --描画処理-- //
 void Player::Draw() {
 	DrawCircle(player, color, true);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
+	DrawCircle(auxiliaryCircle, 0xFFFFFF, false);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 125);
 }
