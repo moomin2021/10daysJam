@@ -16,7 +16,9 @@ Player* Player::GetInstance() {
 }
 
 // --コンストラクタ-- //
-Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f){
+Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f),
+auxiliaryCircle{ {640, 480}, 8 }
+{
 	input = Input::GetInstance();
 	pad = JoyPadInput::GetInstance();
 }
@@ -33,7 +35,7 @@ void Player::Initialize() {
 }
 
 // --更新処理-- //
-void Player::Update(Line hourHand, Circle clock) {
+void Player::Update(Line hourHand, Circle clock, float radius) {
 
 #pragma region 自機移動関係
 	// --左スティックが倒れている角度を求める-- //
@@ -100,7 +102,7 @@ void Player::Update(Line hourHand, Circle clock) {
 	playerLength += playerMoveAdd * playerSpd;
 	
 	// --プレイヤーが移動できるのを制限-- //
-	playerLength = Clamp(playerLength, hourHand.length, player.radius);
+	playerLength = Clamp(playerLength, hourHand.length, radius + player.radius);
 
 	//短針上での自機の位置を参照して自機座標計算
 	//自機は短針上に位置するので、角度は短針のものを使う
@@ -110,10 +112,19 @@ void Player::Update(Line hourHand, Circle clock) {
 	//アローキーで自機速度変更
 	playerSpd += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
 	if (input->IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
+	playerSpd = Clamp(playerSpd, 100.0f, 0.1f);
 #pragma endregion
+
+	auxiliaryCircle.radius = playerLength;
 }
 
 // --描画処理-- //
 void Player::Draw() {
 	DrawCircle(player, color, true);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
+	DrawCircle(auxiliaryCircle, 0xFFFFFF, false);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 125);
+	DrawFormatString(0, 20, 0xFFFFFF, "QEキー:プレイヤーの速度変更");
+	DrawFormatString(0, 40, 0xffffff, "Rキー:プレイヤーの速度リセット");
+	DrawFormatString(0, 60, 0xffffff, "プレイヤー速度:%f", playerSpd);
 }

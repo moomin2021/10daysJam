@@ -53,6 +53,12 @@ private:
 	Line hourHand;
 	float reverseSpd = 4.0f;
 
+	// --真ん中のレベルを表記する円-- //
+	Circle levelCircle;
+
+	// --レベルサークルの新しい半径-- //
+	float newCircleRadius;
+
 	/// --メンバ変数END-- ///
 	/// --------------- ///
 	/// --メンバ関数-- ///
@@ -78,8 +84,9 @@ public:
 	// --敵のスポーン処理-- //
 	void EnemySpawn();
 
-	// --レベル-- //
+	// --レベル更新-- //
 	void LevelUpdate();
+	void LevelReset();
 
 	/// <summary>
 	/// 円と円の衝突判定

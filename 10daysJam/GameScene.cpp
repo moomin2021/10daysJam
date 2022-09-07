@@ -66,7 +66,7 @@ bool GameScene::CollisionCtoL(Circle c, Line l)
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ {640, 480}, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000},
-hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }
+hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 8 }
 {
 	// --入力クラスインスタンス取得-- //
 	input = Input::GetInstance();
@@ -108,7 +108,7 @@ void GameScene::Update() {
 		hourHand.radian += hourHandSpeed;
 
 		//任意のキーで短針を動かす(デバッグ用)
-		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
+		//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ステートが反転しているなら短針を逆走させる
 	else if (hourHand.state == State::Reverse) {
 		hourHand.radian -= reverseSpd;
@@ -135,6 +135,7 @@ void GameScene::Update() {
 			longHand.radian = 0;
 		//	hourHand.radian = 0;
 			enemys.clear();
+			LevelReset();
 		}
 	}
 
@@ -160,7 +161,7 @@ void GameScene::Update() {
 #pragma endregion
 
 	// --プレイヤークラス更新処理-- //
-	player->Update(hourHand, clock);
+	player->Update(hourHand, clock, levelCircle.radius);
 
 	// --エネミークラス更新処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
@@ -181,6 +182,9 @@ void GameScene::Update() {
 
 	// --レベルの更新処理-- //
 	LevelUpdate();
+
+	levelCircle.radius += input->IsPress(KEY_INPUT_Z) - input->IsPress(KEY_INPUT_C);
+	levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
 }
 
 // --描画処理-- //
@@ -196,10 +200,12 @@ void GameScene::Draw() {
 	DrawCircle(clock, 0xffffff, false);
 	DrawLine(longHand, 4);
 	DrawLine(hourHand);
-	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
-	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
-	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-	DrawFormatString(0, 80, 0xFFFFFF, "レベル : %d", level);
+	DrawCircle(levelCircle, 0xFFFFFF, false);
+	DrawFormatString(0, 80, 0xFFFFFF, "ZCキー:レベルサークルの半径変更");
+	DrawFormatString(0, 100, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
+	DrawFormatString(0, 120, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
+	DrawFormatString(0, 140, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+	
 
 	//目印用０時の針
 	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);
@@ -217,7 +223,7 @@ void GameScene::EnemySpawn() {
 
 		//スポーンタイマーが0になった瞬間のみ位置を決める(短針の位置を参照するため
 		if (spawnDelay == delayMax) {
-			enemyLength = Random(0.0f, hourHand.length);
+			enemyLength = Random(levelCircle.radius, hourHand.length);
 			float rad = hourHand.radian - 90;
 			enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
 			enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
@@ -249,6 +255,13 @@ void GameScene::PlayerAndEnemyCol() {
 			point++;
 		}
 	}
+
+	// --レベルサークルとエネミーの当たり判定-- //
+	for (int i = 0; i < enemys.size(); i++) {
+		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
+			enemys.erase(enemys.begin() + i);
+		}
+	}
 }
 
 // --レベル-- //
@@ -256,4 +269,15 @@ void GameScene::LevelUpdate() {
 	level = (point / 5) + 1;
 
 	hourHandSpeed = (0.5f * level) + 1.0f;
+
+	//newCircleRadius = level * 8;
+
+	//if (newCircleRadius > levelCircle.radius) levelCircle.radius++;
+	//if (newCircleRadius < levelCircle.radius) levelCircle.radius--;
+}
+
+// --レベルリセット-- //
+void GameScene::LevelReset() {
+	level = 1;
+	point = 0;
 }
