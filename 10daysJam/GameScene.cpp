@@ -165,10 +165,11 @@ void GameScene::Draw() {
 	DrawLine(longHand, 4);
 	DrawLine(hourHand);
 	DrawCircle(levelCircle, 0xFFFFFF, false);
-	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
-	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
-	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-	DrawFormatString(0, 80, 0xFFFFFF, "レベル : %d", level);
+	DrawFormatString(0, 80, 0xFFFFFF, "ZCキー:レベルサークルの半径変更");
+	DrawFormatString(0, 100, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
+	DrawFormatString(0, 120, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
+	DrawFormatString(0, 140, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+	
 
 	//目印用０時の針
 	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);
