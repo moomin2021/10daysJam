@@ -45,7 +45,7 @@ public:
 	void Initialize();
 
 	// --XVˆ—-- //
-	void Update(Line hourHand, Circle clock);
+	void Update(Line hourHand, Circle clock, float radius);
 
 	// --•`‰æˆ—-- //
 	void Draw();

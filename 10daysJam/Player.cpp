@@ -16,7 +16,8 @@ Player* Player::GetInstance() {
 }
 
 // --コンストラクタ-- //
-Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f){
+Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f)
+{
 	input = Input::GetInstance();
 	pad = JoyPadInput::GetInstance();
 }
@@ -33,7 +34,7 @@ void Player::Initialize() {
 }
 
 // --更新処理-- //
-void Player::Update(Line hourHand, Circle clock) {
+void Player::Update(Line hourHand, Circle clock, float radius) {
 
 #pragma region 自機移動関係
 	// --左スティックが倒れている角度を求める-- //
@@ -100,7 +101,7 @@ void Player::Update(Line hourHand, Circle clock) {
 	playerLength += playerMoveAdd * playerSpd;
 	
 	// --プレイヤーが移動できるのを制限-- //
-	playerLength = Clamp(playerLength, hourHand.length, player.radius);
+	playerLength = Clamp(playerLength, hourHand.length, radius + player.radius);
 
 	//短針上での自機の位置を参照して自機座標計算
 	//自機は短針上に位置するので、角度は短針のものを使う

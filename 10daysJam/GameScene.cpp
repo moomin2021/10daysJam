@@ -36,7 +36,7 @@ bool GameScene::CollisionCtoC(Circle cA, Circle cB)
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ {640, 480}, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000},
-hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }
+hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 8 }
 {
 	// --入力クラスインスタンス取得-- //
 	input = Input::GetInstance();
@@ -130,7 +130,7 @@ void GameScene::Update() {
 #pragma endregion
 
 	// --プレイヤークラス更新処理-- //
-	player->Update(hourHand, clock);
+	player->Update(hourHand, clock, levelCircle.radius);
 
 	// --エネミークラス更新処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
@@ -160,6 +160,7 @@ void GameScene::Draw() {
 	DrawCircle(clock, 0xffffff, false);
 	DrawLine(longHand, 4);
 	DrawLine(hourHand);
+	DrawCircle(levelCircle, 0xFFFFFF, false);
 	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
 	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
@@ -181,7 +182,7 @@ void GameScene::EnemySpawn() {
 
 		//スポーンタイマーが0になった瞬間のみ位置を決める(短針の位置を参照するため
 		if (spawnDelay == delayMax) {
-			enemyLength = Random(0.0f, hourHand.length);
+			enemyLength = Random(levelCircle.radius, hourHand.length);
 			float rad = hourHand.radian - 90;
 			enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
 			enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
@@ -213,6 +214,13 @@ void GameScene::PlayerAndEnemyCol() {
 			point++;
 		}
 	}
+
+	// --レベルサークルとエネミーの当たり判定-- //
+	for (int i = 0; i < enemys.size(); i++) {
+		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
+			enemys.erase(enemys.begin() + i);
+		}
+	}
 }
 
 // --レベル-- //
@@ -220,4 +228,8 @@ void GameScene::LevelUpdate() {
 	level = (point / 5) + 1;
 
 	hourHandSpeed = (0.5f * level) + 1.0f;
+
+	newCircleRadius = level * 8;
+
+	if (newCircleRadius > levelCircle.radius) levelCircle.radius++;
 }
