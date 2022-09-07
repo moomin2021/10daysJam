@@ -78,7 +78,7 @@ void GameScene::Update() {
 		hourHand.radian += hourHandSpeed;
 
 		//任意のキーで短針を動かす(デバッグ用)
-		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
+		//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ステートが反転しているなら短針を逆走させる
 	else if (hourHand.state == State::Reverse) {
 		hourHand.radian -= reverseSpd;
@@ -105,6 +105,7 @@ void GameScene::Update() {
 			longHand.radian = 0;
 		//	hourHand.radian = 0;
 			enemys.clear();
+			LevelReset();
 		}
 	}
 
@@ -145,6 +146,9 @@ void GameScene::Update() {
 
 	// --レベルの更新処理-- //
 	LevelUpdate();
+
+	levelCircle.radius += pad->GetButton(PAD_INPUT_1) - pad->GetButton(PAD_INPUT_2);
+	levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
 }
 
 // --描画処理-- //
@@ -229,7 +233,14 @@ void GameScene::LevelUpdate() {
 
 	hourHandSpeed = (0.5f * level) + 1.0f;
 
-	newCircleRadius = level * 8;
+	//newCircleRadius = level * 8;
 
-	if (newCircleRadius > levelCircle.radius) levelCircle.radius++;
+	//if (newCircleRadius > levelCircle.radius) levelCircle.radius++;
+	//if (newCircleRadius < levelCircle.radius) levelCircle.radius--;
+}
+
+// --レベルリセット-- //
+void GameScene::LevelReset() {
+	level = 1;
+	point = 0;
 }

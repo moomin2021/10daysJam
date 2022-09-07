@@ -86,6 +86,7 @@ public:
 
 	// --ƒŒƒxƒ‹XV-- //
 	void LevelUpdate();
+	void LevelReset();
 
 	/// <summary>
 	/// ‰~‚Æ‰~‚ÌÕ“Ë”»’è
