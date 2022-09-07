@@ -34,6 +34,15 @@ private:
 	float enemyLength;	//敵が短針上のどこでスポーンするかの変数 
 	Vector2 enemyPos;	//確定した敵のスポーン位置を保存する用変数
 
+	// --レベル-- //
+	int level;
+
+	// --経験値-- //
+	int point;
+
+	// --短針の速度-- //
+	float hourHandSpeed;
+
 	// --時計-- //
 	Circle clock;
 
@@ -63,11 +72,14 @@ public:
 	// --描画処理-- //
 	void Draw();
 
-	// --自機と敵の当たり判定処理-- //
+	// --プレイヤーとエネミーの当たり判定処理-- //
 	void PlayerAndEnemyCol();
 
 	// --敵のスポーン処理-- //
 	void EnemySpawn();
+
+	// --レベル-- //
+	void LevelUpdate();
 
 	/// <summary>
 	/// 円と円の衝突判定
