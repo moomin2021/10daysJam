@@ -103,6 +103,8 @@ void GameScene::Update() {
 			hourHand.state = State::Normal;
 			longHand.radian = 0;
 			//hourHand.radian = 0;
+			//“G‚ð‚·‚×‚ÄŽE‚·
+			enemy->AllEnemyDeath();
 		}
 	}
 

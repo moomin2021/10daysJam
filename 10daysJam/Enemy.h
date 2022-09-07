@@ -39,6 +39,11 @@ public:
 	// --描画処理-- //
 	void Draw();
 
+	/// <summary>
+	/// すべての敵を殺す処理
+	/// </summary>
+	void AllEnemyDeath();
+
 private:
 	// --コンストラクタ-- //
 	Enemy();
