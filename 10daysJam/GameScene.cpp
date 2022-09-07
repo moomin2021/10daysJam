@@ -143,7 +143,7 @@ void GameScene::Draw() {
 	enemy->Draw();
 	DrawCircle(clock, 0xffffff, false);
 	DrawLine(longHand, 4);
-	DrawLine(hourHand);
+	DrawLine(hourHand,3);
 	DrawFormatString(0, 20, 0x00ffff, "Rキー:速度リセット");
 	DrawFormatString(0, 40, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 60, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
