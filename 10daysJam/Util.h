@@ -3,8 +3,9 @@
 #include "Vector2.h"
 
 enum class State {
-	normal,
-	reverse
+	Normal,
+	Reverse,
+	Stop
 };
 
 struct Circle
@@ -19,7 +20,7 @@ struct Line {
 	float length;
 	float radian;
 	int color;
-	State state = State::normal;
+	State state = State::Normal;
 };
 
 void DrawCircle(Circle c, int color, bool fillFlag);

@@ -68,39 +68,41 @@ void GameScene::Update() {
 #pragma region 針の座標計算
 
 	//Lボタンで短針のステートを「反転」に
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::normal) {
-		hourHand.state = State::reverse;
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal) {
+		hourHand.state = State::Reverse;
 	}
 
 	//ステートが通常なら短針は自動回転
-	if (hourHand.state == State::normal) {
+	if (hourHand.state == State::Normal) {
 		hourHand.radian += 2.0f;
 
 		//任意のキーで短針を動かす(デバッグ用)
 		hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ステートが反転しているなら短針を逆走させる
-	else if (hourHand.state == State::reverse) {
+	else if (hourHand.state == State::Reverse) {
 		hourHand.radian -= reverseSpd;
 		//短針が長針に追いついたら長針のステートを「反転」に
 		if (hourHand.radian < longHand.radian + reverseSpd && hourHand.radian > longHand.radian - reverseSpd){
-			longHand.state = State::reverse;
+			longHand.state = State::Reverse;
+			//短針のステートをとめる
+			hourHand.state = State::Stop;
 		}
 	}
 
 	//ステートが通常なら長針は自動回転
-	if (longHand.state == State::normal) {
+	if (longHand.state == State::Normal) {
 		longHand.radian += 0.5f;
 	}//ステートが「反転」なら逆走
-	else if (longHand.state == State::reverse) {
+	else if (longHand.state == State::Reverse) {
 		//速度は短針と等速
 		longHand.radian -= reverseSpd;
 		
 		//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
 		if (longHand.radian < reverseSpd) {
-			longHand.state = State::normal;
-			hourHand.state = State::normal;
+			longHand.state = State::Normal;
+			hourHand.state = State::Normal;
 			longHand.radian = 0;
-			hourHand.radian = 0;
+		//	hourHand.radian = 0;
 			enemys.clear();
 		}
 	}

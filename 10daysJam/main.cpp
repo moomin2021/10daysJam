@@ -16,6 +16,10 @@ const int WIN_HEIGHT = 960;
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
 	_In_ int nCmdShow) {
+
+	//log.txtを出さないように
+	SetOutApplicationLogValidFlag(FALSE);
+
 	// ウィンドウモードに設定
 	ChangeWindowMode(TRUE);
 
@@ -34,6 +38,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	// 画面の背景色を設定する
 	SetBackgroundColor(0x00, 0x00, 0x00);
+
+	
 
 	// DXlibの初期化
 	if (DxLib_Init() == -1) { return -1; }
