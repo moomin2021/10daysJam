@@ -19,13 +19,41 @@ void Enemy::Initialize() {
 }
 
 // --XVˆ—-- //
-void Enemy::Update() {
+void Enemy::Update(Line hourLine_) {
 
+	switch (state)
+	{
+	case State::Normal:
+		UpdateNormal();
+		break;
+	case State::Reverse:
+		UpdateReverse(hourLine_);
+		break;
+	case State::Stop:
+		break;
+	default:
+		break;
+	}
+
+}
+
+void Enemy::UpdateNormal()
+{
+}
+
+void Enemy::UpdateReverse(Line hourLine_)
+{
+	//’Zj‚ÉÀ•W‚ğ’Ç]‚³‚¹‚é
+}
+
+void Enemy::OnCollison()
+{
+	color = 0x7fff7f;
 }
 
 // --•`‰æˆ—-- //
 void Enemy::Draw() {
-	DrawCircle(enemy, 0xffff00, true);
+	DrawCircle(enemy, color, true);
 }
 
 //void Enemy::AllEnemyDeath()

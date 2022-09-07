@@ -96,6 +96,13 @@ public:
 	/// <returns></returns>
 	bool CollisionCtoC(Circle cA, Circle cB);
 
+	/// <summary>
+	/// 円と線の衝突判定
+	/// </summary>
+	/// <param name="c"></param>
+	/// <param name="l"></param>
+bool CollisionCtoL(Circle c, Line l);
+
 private:
 	// --コンストラクタ-- //
 	GameScene();
