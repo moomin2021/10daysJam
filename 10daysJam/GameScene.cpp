@@ -147,7 +147,7 @@ void GameScene::Update() {
 	// --ƒŒƒxƒ‹‚ÌXVˆ—-- //
 	LevelUpdate();
 
-	levelCircle.radius += ((input->IsPress(KEY_INPUT_Z) - input->IsPress(KEY_INPUT_C));
+	levelCircle.radius += input->IsPress(KEY_INPUT_Z) - input->IsPress(KEY_INPUT_C);
 	levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
 }
 
