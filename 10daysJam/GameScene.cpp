@@ -74,7 +74,7 @@ void GameScene::Update() {
 	}
 
 	//ステートが通常なら短針は自動回転
-	if (hourHand.state == State::normal) {
+	if (hourHand.state == State::Normal) {
 		hourHand.radian += hourHandSpeed;
 
 		//任意のキーで短針を動かす(デバッグ用)
