@@ -49,6 +49,9 @@ private:
 	// --’·j-- //
 	Line longHand;
 
+	// --’·j‚Ì‘¬“x-- //
+	float longHandSpeed;
+
 	// --’Zj-- //
 	Line hourHand;
 	float reverseSpd = 4.0f;
