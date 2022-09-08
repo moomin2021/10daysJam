@@ -67,6 +67,9 @@ private:
 	//ƒJƒƒ‰
 	Camera camera;
 
+	// --‰æ‘œ“Ç‚İ‚İ-- //
+	int whiteCircleGraph;
+
 	/// --ƒƒ“ƒo•Ï”END-- ///
 	/// --------------- ///
 	/// --ƒƒ“ƒoŠÖ”-- ///

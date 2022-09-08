@@ -83,6 +83,8 @@ longHandSpeed(0.5f)
 
 	// --コントローラークラスインスタンス取得-- //
 	pad = JoyPadInput::GetInstance();
+
+	whiteCircleGraph = LoadGraph("Resouces/whiteCircle.png");
 }
 
 // --デストラクタ-- //
@@ -231,7 +233,7 @@ void GameScene::Draw() {
 	Circle posC;
 	Line posL;
 	posC = { clock.pos + camera.GetPos(),clock.radius };
-	DrawCircle(posC, 0xffffff, false);
+	//DrawCircle(posC, 0xffffff, false);
 	posL.start = {longHand.start + camera.GetPos()};
 	posL.end = {longHand.end + camera.GetPos()};
 	posL.color = longHand.color;
@@ -242,6 +244,18 @@ void GameScene::Draw() {
 	DrawLine(posL);
 	posC = { levelCircle.pos + camera.GetPos() };
 	DrawCircle(posC, 0xFFFFFF, false);
+
+	float length = 416;
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBright(119, 28, 28);
+
+	for (int i = 0; i < 1440; i++) {
+		DrawGraphF(640 + cosf(Degree2Radian(i * 0.25f)) * length - 16, 480 + sinf(Degree2Radian(i * 0.25f)) * length - 16, whiteCircleGraph, true);
+	}
+
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	//目印用０時の針
 	posL.start = { clock.pos + camera.GetPos() };
