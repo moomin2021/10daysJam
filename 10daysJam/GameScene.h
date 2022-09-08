@@ -1,6 +1,5 @@
 #pragma once
 #include "Input.h"
-#include<list>
 #include<vector>
 #include "Util.h"
 #include "Player.h"
@@ -10,7 +9,6 @@
 #include"BreakEffect.h"
 
 class GameScene {
-
 	/// --メンバ変数-- ///
 public:
 
@@ -93,6 +91,10 @@ private:
 
 	// --経験値-- //
 	int point;
+
+	// --レベルによって必要な経験値-- //
+	int needPoint[10];
+
 #pragma endregion
 
 #pragma region エフェクト関係変数の宣言

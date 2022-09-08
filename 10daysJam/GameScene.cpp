@@ -94,6 +94,10 @@ GameScene::GameScene() {
 
 	// --経験値-- //
 	point = 0;
+
+	// --レベルによって必要な経験値-- //
+	int needPointCopy[10] = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+	for (int i = 0; i < 10; i++) { needPoint[i] = needPointCopy[i]; }
 #pragma endregion
 
 #pragma region エフェクト関係変数の初期化
@@ -469,47 +473,10 @@ void GameScene::Collision() {
 // --レベル-- //
 void GameScene::LevelUpdate() {
 #pragma region 経験値によってレベルを変える処理
-	switch (point)
-	{
-	case 0:
-		level = 1;
-		break;
-
-	case 5:
-		level = 2;
-		break;
-
-	case 10:
-		level = 3;
-		break;
-
-	case 15:
-		level = 4;
-		break;
-
-	case 20:
-		level = 5;
-		break;
-
-	case 25:
-		level = 6;
-		break;
-
-	case 30:
-		level = 7;
-		break;
-
-	case 35:
-		level = 8;
-		break;
-
-	case 40:
-		level = 9;
-		break;
-
-	case 45:
-		level = 10;
-		break;
+	// --現在のレベルの必要経験値が手に入ったらレベルを上げる-- //
+	if (needPoint[level - 1] == point) {
+		level++;
+		point = 0;
 	}
 #pragma endregion
 }
