@@ -67,16 +67,16 @@ GameScene::GameScene() {
 	longHand = { {640.0f, 480.0f}, {640.0f, 0.0f}, clock.radius, 0.0f, 0xFF0000 };
 
 	// --長針の速度-- //
-	longHandSpeed = 0.5f;
+	longHandSpeed = 0.1f;
 
 	// --短針-- //
 	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
 
 	// --短針の速度-- //
-	hourHandSpeed = 1.0f;
+	hourHandSpeed = 0.8f;
 
 	// --レベルによる短針の速度の上がり幅-- //
-	hourHandlevelSpeed = 1.0f;
+	hourHandlevelSpeed = 0.5f;
 
 	// --短針が逆回りするときの速度-- //
 	reverseSpeed = 4.0f;
@@ -393,6 +393,9 @@ void GameScene::Draw() {
 	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
 	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
 	DrawFormatString(0, 360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d", spawnDelay);
+	/*SetFontSize(80);*/
+	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
+	/*SetFontSize(16);*/
 #pragma endregion
 }
 
