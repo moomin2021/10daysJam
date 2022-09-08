@@ -49,6 +49,9 @@ private:
 	// --敵の発生タイマー-- //
 	int spawnTimer;
 
+	// --敵のスポーン率-- //
+	float enemySpawnRate;
+
 	// --敵が短針上のどこでスポーンするかの変数-- //
 	float enemyLength; 
 

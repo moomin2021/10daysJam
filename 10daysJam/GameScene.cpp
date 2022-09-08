@@ -428,7 +428,7 @@ void GameScene::EnemySpawn() {
 		}//ディレイタイマーが0になったら座標を確定
 		else if (spawnDelay == 0) {
 				enemys.push_back({ enemyPos, 8.0f });
-				if (Random(1, 20) == 1) {
+				if (Random(0, 100) <= enemySpawnRate) {
 					//5%の確率で敵としてスポーン
 					enemys.back().SetState(State::Enemy);
 				}
@@ -457,7 +457,9 @@ void GameScene::Collision() {
 			}//敵のステートがenemyならレベルを減らして消滅させる
 			else if (enemys[i].GetState() == State::Enemy) {
 				//レベルを下げて、爆発サークルを出現
-				level--;
+				if (level > 1) {
+					level--;
+				}
 				burstCircle.pos = enemys[i].GetCircle().pos;
 				burstCircle.radius = 96.0f;
 
@@ -484,6 +486,41 @@ void GameScene::LevelUpdate() {
 	if (needPoint[level - 1] == point) {
 		level++;
 		point = 0;
+	}
+
+	//レベルで敵の出現率を調整
+	switch (level)
+	{
+	case 1:
+		enemySpawnRate = 5.0f;
+		break;
+	case 2:
+		enemySpawnRate = 7.5f;
+		break;
+	case 3:
+		enemySpawnRate = 10.0f;
+		break;
+	case 4:
+		enemySpawnRate = 12.5f;
+		break;
+	case 5:
+		enemySpawnRate = 15.0f;
+		break;
+	case 6:
+		enemySpawnRate = 18.0f;
+		break;
+	case 7:
+		enemySpawnRate = 22.0f;
+		break;
+	case 8:
+		enemySpawnRate = 27.0f;
+		break;
+	case 9:
+		enemySpawnRate = 33.0f;
+		break;
+	case 10:
+		enemySpawnRate = 40.0f;
+		break;
 	}
 #pragma endregion
 }
