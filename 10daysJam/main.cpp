@@ -39,8 +39,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// 画面の背景色を設定する
 	SetBackgroundColor(0x00, 0x00, 0x00);
 
-	
-
 	// DXlibの初期化
 	if (DxLib_Init() == -1) { return -1; }
 
@@ -70,7 +68,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//キーボード更新
 		input->Update();
 		pad->Update();
-
 
 		// 画面クリア
 		ClearDrawScreen();
@@ -105,9 +102,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 	// Dxライブラリ終了処理
 	DxLib_End();
-
-	delete sceneM;
-	delete pad;
 
 	// 正常終了
 	return 0;

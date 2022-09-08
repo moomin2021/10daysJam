@@ -4,6 +4,12 @@
 #include "Util.h"
 #include"Camera.h"
 
+enum ControlMode {
+	MODE1,
+	MODE2,
+	MODE3
+};
+
 class Player {
 	/// --メンバ変数-- ///
 public:
@@ -34,6 +40,9 @@ private:
 
 	//色
 	int color = 0xffffff;
+
+	// --操作モード-- //
+	int controlMode;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
