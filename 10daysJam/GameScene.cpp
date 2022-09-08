@@ -95,13 +95,14 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	delayMax = 20; 
-	spawnInterval = 20;
+	delayMax = 5; 
+	spawnInterval = 10;
 	spawnDelay = delayMax;
 	spawnTimer = spawnInterval;
 	level = 1;
 	point = 0;
 	hourHandSpeed = 1.0f;
+	burstCircle = { {0,0},0 };
 }
 
 // --更新処理-- //
@@ -204,7 +205,16 @@ void GameScene::Update() {
 				enemys[i].OnCollison();
 			}
 		}
+
+		//爆発円との当たり判定
+		if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
+			//当たったアイテムを消す
+			enemys.erase(enemys.begin() + i);
+		}
 	}
+
+	//爆発円の座標リセット
+	burstCircle = { {0,0},0 };
 
 	//エフェクト更新処理
 	for (int i = 0; i < breakEffects.size(); i++) {
@@ -225,6 +235,8 @@ void GameScene::Update() {
 	
 	// --プレイヤーとエネミーの当たり判定-- //
 	PlayerAndEnemyCol();
+
+	
 
 	// --レベルの更新処理-- //
 	LevelUpdate();
@@ -259,8 +271,14 @@ void GameScene::Draw() {
 	posL.end = { hourHand.end + camera.GetPos() };
 	posL.color = hourHand.color;
 	DrawLine(posL);
-	posC = { levelCircle.pos + camera.GetPos() };
+	posC = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
 	DrawCircle(posC, 0xFFFFFF, false);
+
+	posC = { burstCircle.pos + camera.GetPos(),burstCircle.radius };
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	DrawCircle(posC, 0xff0000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 
 	for (int i = 0; i < breakEffects.size(); i++) {
 		breakEffects[i].Draw(camera);
@@ -344,17 +362,35 @@ void GameScene::PlayerAndEnemyCol() {
 	// --自機と敵の当たり判定を行う-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
+			//敵のステートがItemなら消滅
+			if (enemys[i].GetState() == State::Item) {
 			enemys.erase(enemys.begin() + i);
 			point++;
 			Score::AddScore(100);
+			}//敵のステートがenemyならレベルを減らして消滅させる
+			else if (enemys[i].GetState() == State::Enemy) {
+				//レベルを下げて、爆発サークルを出現
+				level--;
+				burstCircle.pos = enemys[i].GetCircle().pos;
+				burstCircle.radius = 96.0f;
+
+				enemys.erase(enemys.begin() + i);
+				
+				
+				
+
+
+			}
 		}
 	}
 
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
-			//敵のステートがnormalなら消滅
-			enemys.erase(enemys.begin() + i);
+	
+				enemys.erase(enemys.begin() + i);
+			
+			
 		}
 	}
 }

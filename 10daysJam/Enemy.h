@@ -50,6 +50,8 @@ public:
 
 	void SetState(State state_);
 
+	State GetState()const { return state; }
+
 	//void AllEnemyDeath();
 
 private:
