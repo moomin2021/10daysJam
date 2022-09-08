@@ -346,7 +346,7 @@ void GameScene::Draw() {
 	SetDrawBright(39, 32, 225);
 
 	// --’Zj‚Ì•`‰æ-- //
-	for (int i = 0; i < hourHand.length / 1.5f; i++) {
+	for (int i = 0; i < longHand.length / 1.5f; i++) {
 		DrawExtendGraph(
 			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
 			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
