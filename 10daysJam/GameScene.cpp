@@ -209,17 +209,28 @@ void GameScene::Update() {
 // --描画処理-- //
 void GameScene::Draw() {
 	// --プレイヤーの描画処理-- //
-	player->Draw();
+	player->Draw(camera);
 
 	// --エネミーの描画処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
-		enemys[i].Draw();
+		enemys[i].Draw(camera);
 	}
-
-	DrawCircle(clock, 0xffffff, false);
-	DrawLine(longHand, 4);
-	DrawLine(hourHand);
-	DrawCircle(levelCircle, 0xFFFFFF, false);
+	
+	//描画用座標宣言
+	Circle posC;
+	Line posL;
+	posC = { clock.pos + camera.GetPos(),clock.radius };
+	DrawCircle(posC, 0xffffff, false);
+	posL.start = {longHand.start + camera.GetPos()};
+	posL.end = {longHand.end + camera.GetPos()};
+	posL.color = longHand.color;
+	DrawLine(posL, 4);
+	posL.start = { hourHand.start + camera.GetPos() };
+	posL.end = { hourHand.end + camera.GetPos() };
+	posL.color = hourHand.color;
+	DrawLine(posL);
+	posC = { levelCircle.pos + camera.GetPos() };
+	DrawCircle(posC, 0xFFFFFF, false);
 
 	//目印用０時の針
 	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);

@@ -137,10 +137,21 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 }
 
 // --描画処理-- //
-void Player::Draw() {
-	DrawCircle(player, color, true);
+void Player::Draw(Camera camera_) {
+	
+	Circle pos = {
+		player.pos + camera_.GetPos(),
+		player.radius
+	};
+
+	Circle pos2 = {
+		auxiliaryCircle.pos + camera_.GetPos(),
+		auxiliaryCircle.radius
+	};
+
+	DrawCircle(pos, color, true);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
-	DrawCircle(auxiliaryCircle, 0xFFFFFF, false);
+	DrawCircle(pos2, 0xFFFFFF, false);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 125);
 
 	// --デバック用処理
