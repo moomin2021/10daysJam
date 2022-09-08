@@ -55,6 +55,13 @@ private:
 	// --敵が短針上のどこでスポーンするかの変数-- //
 	float enemyLength; 
 
+	// --敵を挟んだ数をカウントする変数-- //
+	int enemySandwichCount;
+
+	// --アイテムを挟んだ数をカウントする変数-- //
+	int itemSandwichCount;
+
+
 	// --確定した敵のスポーン位置を保存する用変数-- //
 	Vector2 enemyPos;
 #pragma endregion

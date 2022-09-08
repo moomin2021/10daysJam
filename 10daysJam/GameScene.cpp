@@ -220,7 +220,17 @@ void GameScene::Update() {
 		if (hourHand.state == State::Reverse) {
 			//短針と敵の当たり判定
 			if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpeed)) {
-				enemys[i].OnCollison();
+				//オブジェクトのステートがまだ「反転」でないなら当たり判定のコールバック関数を呼び出し、挟んだ数をカウントする
+				if (enemys[i].GetState() != State::Reverse) {
+					if (enemys[i].GetState() == State::Item) {
+						itemSandwichCount++;
+					}
+					else if (enemys[i].GetState() == State::Enemy) {
+						enemySandwichCount++;
+					}
+					
+					enemys[i].OnCollison();
+				}
 			}
 		}
 
@@ -379,6 +389,12 @@ void GameScene::Draw() {
 	DrawLine(line, 6);
 #pragma endregion
 
+#pragma region 敵の爆発円描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	DrawCircle(burstCircle, 0xff0000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+#pragma endregion
+
 #pragma region エフェクト描画
 	for (int i = 0; i < breakEffects.size(); i++) {
 		breakEffects[i].Draw(camera);
@@ -397,6 +413,8 @@ void GameScene::Draw() {
 	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
 	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
 	DrawFormatString(0, 360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d", spawnDelay);
+	DrawFormatString(0, 380, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+	DrawFormatString(0, 400, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
 	/*SetFontSize(80);*/
 	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 	/*SetFontSize(16);*/
@@ -460,7 +478,7 @@ void GameScene::Collision() {
 				if (level > 1) {
 					level--;
 				}
-				burstCircle.pos = enemys[i].GetCircle().pos;
+				burstCircle.pos = enemys[i].GetCircle().pos + camera.GetPos();
 				burstCircle.radius = 96.0f;
 
 				enemys.erase(enemys.begin() + i);
@@ -471,10 +489,7 @@ void GameScene::Collision() {
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
-	
 				enemys.erase(enemys.begin() + i);
-			
-			
 		}
 	}
 }
