@@ -77,6 +77,9 @@ public:
 	// --インスタンス取得-- //
 	static GameScene* GetInstance();
 
+	// --インスタンス解放-- //
+	void Relese();
+
 	// --デストラクタ-- //
 	~GameScene();
 

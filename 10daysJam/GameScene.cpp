@@ -15,6 +15,16 @@ GameScene* GameScene::GetInstance() {
 	return myInstance;
 }
 
+// --インスタンス解放-- //
+void GameScene::Relese() {
+	// --インスタンスが無かったら何もせずに終了する-- //
+	if (myInstance == nullptr) return;
+
+	// --インスタンス解放-- //
+	delete myInstance;
+	myInstance = nullptr;
+}
+
 bool GameScene::CollisionCtoC(Circle cA, Circle cB)
 {
 	bool flag;
