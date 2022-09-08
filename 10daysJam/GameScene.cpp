@@ -94,9 +94,9 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	delayMax = 5;
+	delayMax = 20; 
+	spawnInterval = 20;
 	spawnDelay = delayMax;
-	spawnInterval = 5;
 	spawnTimer = spawnInterval;
 	level = 1;
 	point = 0;
@@ -151,6 +151,10 @@ void GameScene::Update() {
 
 			//シェイク
 			camera.SetShakeCount(10);
+
+			//敵のスポーンタイマーもリセット
+			spawnDelay = delayMax;
+			spawnTimer = spawnInterval;
 		}
 	}
 
@@ -272,6 +276,9 @@ void GameScene::Draw() {
 	DrawFormatString(0, 180, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
 	DrawFormatString(0, 280, 0xFFFFFF, "IPキーで長針の速度を変更");
 	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
+	DrawFormatString(0,320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
+	DrawFormatString(0,340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d",spawnTimer);
+	DrawFormatString(0,360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d",spawnDelay);
 }
 
 // --敵のスポーン処理-- //
