@@ -41,7 +41,7 @@ Player::Player()
 	player = { {0, 0}, 16 };
 
 	// --プレイヤーの速度-- //
-	playerSpeed = 2.0f;
+	playerSpeed = 5.7f;
 
 	// --中心からのプレイヤーの距離-- //
 	playerLength = player.radius;
