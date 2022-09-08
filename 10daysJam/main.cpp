@@ -107,7 +107,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	DxLib_End();
 
 	delete sceneM;
-	delete input;
 	delete pad;
 
 	// ê≥èÌèIóπ
