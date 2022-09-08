@@ -259,7 +259,7 @@ void GameScene::Draw() {
 	posL.end = { hourHand.end + camera.GetPos() };
 	posL.color = hourHand.color;
 	DrawLine(posL);
-	posC = { levelCircle.pos + camera.GetPos() };
+	posC = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
 	DrawCircle(posC, 0xFFFFFF, false);
 
 	for (int i = 0; i < breakEffects.size(); i++) {
