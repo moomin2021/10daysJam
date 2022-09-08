@@ -156,6 +156,9 @@ void GameScene::Update() {
 			//敵のスポーンタイマーもリセット
 			spawnDelay = delayMax;
 			spawnTimer = spawnInterval;
+
+			//衝撃エフェクトを作成
+			CreateBreakEffect(clock.pos, 128);
 		}
 	}
 

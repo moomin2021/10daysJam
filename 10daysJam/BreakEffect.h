@@ -8,6 +8,8 @@ class BreakEffect
 private:
 	Circle obj = {};	//オブジェクト
 
+	
+
 	int color = 0;	//色
 
 	bool isAlive = false;	//生存フラグ
