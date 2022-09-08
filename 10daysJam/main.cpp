@@ -59,7 +59,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	sceneM->Initialize();
 
 	// --入力クラス-- //
-	Input* key = Input::GetInstance();
+	Input* input = Input::GetInstance();
 
 	// --コントローラークラスインスタンス取得-- //
 	JoyPadInput* pad = JoyPadInput::GetInstance();
@@ -68,7 +68,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	while (true) {
 
 		//キーボード更新
-		key->Update();
+		input->Update();
 		pad->Update();
 
 
@@ -105,6 +105,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	}
 	// Dxライブラリ終了処理
 	DxLib_End();
+
+	delete sceneM;
+	delete pad;
 
 	// 正常終了
 	return 0;

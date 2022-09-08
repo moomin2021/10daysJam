@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "SceneManager.h"
+#include "Score.h"
 using namespace Util;
 
 // --インスタンスにNULLを代入-- //
@@ -79,6 +80,7 @@ hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640
 	// --プレイヤークラスインスタンス取得-- //
 	player = Player::GetInstance();
 
+	// --コントローラークラスインスタンス取得-- //
 	pad = JoyPadInput::GetInstance();
 }
 
@@ -141,6 +143,8 @@ void GameScene::Update() {
 			//	hourHand.radian = 0;
 			enemys.clear();
 			LevelReset();
+			// --スコア加算-- //
+			Score::AddScore(1000);
 		}
 	}
 
@@ -191,12 +195,10 @@ void GameScene::Update() {
 	// --プレイヤーとエネミーの当たり判定-- //
 	PlayerAndEnemyCol();
 
-
-
-
 	// --レベルの更新処理-- //
 	LevelUpdate();
 
+	// --デバック用処理-- //
 	levelCircle.radius += input->IsPress(KEY_INPUT_A) - input->IsPress(KEY_INPUT_D);
 	levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
 	hourHandSpeed += (input->IsPress(KEY_INPUT_Z) - input->IsPress(KEY_INPUT_C)) * 0.1f;
@@ -217,16 +219,17 @@ void GameScene::Draw() {
 	DrawLine(longHand, 4);
 	DrawLine(hourHand);
 	DrawCircle(levelCircle, 0xFFFFFF, false);
+
+	//目印用０時の針
+	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);
+
+	// --デバック用処理-- //
 	DrawFormatString(0, 80, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
 	DrawFormatString(0, 100, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
 	DrawFormatString(0, 120, 0xFFFFFF, "ZCキー:短針の速度変更");
 	DrawFormatString(0, 140, 0xFFFFFF, "短針の速度:%f", hourHandSpeed);
 	DrawFormatString(0, 160, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 180, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-	
-
-	//目印用０時の針
-	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);
 }
 
 // --敵のスポーン処理-- //
@@ -271,6 +274,7 @@ void GameScene::PlayerAndEnemyCol() {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
 			enemys.erase(enemys.begin() + i);
 			point++;
+			Score::AddScore(100);
 		}
 	}
 
