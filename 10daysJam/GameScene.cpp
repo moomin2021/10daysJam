@@ -72,7 +72,7 @@ bool GameScene::CollisionCtoL(Circle c, Line l, float lineSpd)
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ {640, 480}, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000 },
-hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 8 },
+hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 78 },
 longHandSpeed(0.5f)
 {
 	// --入力クラスインスタンス取得-- //

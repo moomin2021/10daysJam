@@ -19,6 +19,7 @@ private:
 	// --入力クラス-- //
 	Input* input;
 
+	// --コントローラークラス-- //
 	JoyPadInput* pad;
 
 	// --プレイヤークラス-- //

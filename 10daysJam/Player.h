@@ -3,13 +3,14 @@
 #include "JoyPadInput.h"
 #include "Util.h"
 
-enum ControlMode {
-	MODE1,
-	MODE2,
-	MODE3
-};
-
 class Player {
+	// --コントローラーモードの列挙型-- //
+	enum ControlMode {
+		MODE1,
+		MODE2,
+		MODE3
+	};
+
 	/// --メンバ変数-- ///
 public:
 	// --プレイヤー-- //
@@ -19,20 +20,26 @@ private:
 	// --インスタンス-- //
 	static Player* myInstance;
 
+	/// --クラス宣言-- ///
+#pragma region
 	// --入力クラス-- //
 	Input* input;
 
 	// --コントローラークラス-- //
 	JoyPadInput* pad;
+#pragma endregion
+
+	/// --プレイヤー関係変数の宣言-- ///
+#pragma region
 
 	// --中心からのプレイヤーの距離-- //
 	float playerLength;
 
 	// --プレイヤーの速度-- //
-	float playerSpd;
+	float playerSpeed;
 
 	// --スティックの範囲-- //
-	float range;
+	float stickRange;
 
 	// --補助線-- //
 	Circle auxiliaryCircle;

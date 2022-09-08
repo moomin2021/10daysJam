@@ -16,11 +16,43 @@ Player* Player::GetInstance() {
 }
 
 // --コンストラクタ-- //
-Player::Player() : player{ { 0, 0 }, 16 }, playerSpd(2.0f), playerLength(player.radius), range(90.0f),
-auxiliaryCircle{ {640, 480}, 8 }, controlMode(MODE1)
+Player::Player()
 {
+	/// --インスタンス読み込み-- ///
+#pragma region
+	// --キーボードクラス-- //
 	input = Input::GetInstance();
+
+	// --コントローラークラス-- //
 	pad = JoyPadInput::GetInstance();
+#pragma endregion
+	/// --END-- ///
+
+	/// --プレイヤー関係変数の初期化-- ///
+#pragma region
+	// --プレイヤー-- //
+	player = { {0, 0}, 16 };
+
+	// --プレイヤーの速度-- //
+	playerSpeed = 2.0f;
+
+	// --中心からのプレイヤーの距離-- //
+	playerLength = player.radius;
+#pragma endregion
+	/// --END-- ///
+
+	/// --その他の初期化-- ///
+#pragma region
+	// --スティックの範囲-- //
+	stickRange = 90.0f;
+
+	// --操作モード-- //
+	controlMode = MODE2;
+
+	// --補助線-- //
+	auxiliaryCircle = { {640, 480}, 8 };
+#pragma endregion
+	/// --END-- ///
 }
 
 
@@ -74,30 +106,30 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 
 		// --判定-- //
 		{
-			if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
+			if (((hourHandAngle + stickRange) > stickAngle) && ((hourHandAngle - stickRange) < stickAngle)) {
 				playerMoveAdd = 1;
 			}
 
-			if (hourHandAngle + range > 360.0f) {
-				if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = 1;
+			if (hourHandAngle + stickRange > 360.0f) {
+				if ((hourHandAngle + stickRange) - 360.0f > stickAngle) playerMoveAdd = 1;
 			}
 
-			if (hourHandAngle - range < 0) {
-				if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = 1;
+			if (hourHandAngle - stickRange < 0) {
+				if (360 - (hourHandAngle - stickRange) < stickAngle) playerMoveAdd = 1;
 			}
 
 			hourHandAngle = fmodf(hourHandAngle + 180.0f, 360.0f);
 
-			if (((hourHandAngle + range) > stickAngle) && ((hourHandAngle - range) < stickAngle)) {
+			if (((hourHandAngle + stickRange) > stickAngle) && ((hourHandAngle - stickRange) < stickAngle)) {
 				playerMoveAdd = -1;
 			}
 
-			if (hourHandAngle + range > 360.0f) {
-				if ((hourHandAngle + range) - 360.0f > stickAngle) playerMoveAdd = -1;
+			if (hourHandAngle + stickRange > 360.0f) {
+				if ((hourHandAngle + stickRange) - 360.0f > stickAngle) playerMoveAdd = -1;
 			}
 
-			if (hourHandAngle - range < 0) {
-				if (360 - (hourHandAngle - range) < stickAngle) playerMoveAdd = -1;
+			if (hourHandAngle - stickRange < 0) {
+				if (360 - (hourHandAngle - stickRange) < stickAngle) playerMoveAdd = -1;
 			}
 		}
 	}
@@ -114,7 +146,7 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 	}
 
 	// --中心からのプレイヤーの距離-- //
-	playerLength += playerMoveAdd * playerSpd;
+	playerLength += playerMoveAdd * playerSpeed;
 	
 	// --プレイヤーが移動できるのを制限-- //
 	playerLength = Clamp(playerLength, hourHand.length, radius + player.radius);
@@ -128,9 +160,9 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 #pragma endregion
 
 	// --デバック用処理-- //
-	playerSpd += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
-	if (input->IsPress(KEY_INPUT_R)) playerSpd = 2.0f;
-	playerSpd = Clamp(playerSpd, 100.0f, 0.1f);
+	playerSpeed += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
+	if (input->IsPress(KEY_INPUT_R)) playerSpeed = 2.0f;
+	playerSpeed = Clamp(playerSpeed, 100.0f, 0.1f);
 	if (input->IsTrigger(KEY_INPUT_1)) controlMode = MODE1;
 	if (input->IsTrigger(KEY_INPUT_2)) controlMode = MODE2;
 	if (input->IsTrigger(KEY_INPUT_3)) controlMode = MODE3;
@@ -146,7 +178,7 @@ void Player::Draw() {
 	// --デバック用処理
 	DrawFormatString(0, 20, 0xFFFFFF, "QEキー:プレイヤーの速度変更");
 	DrawFormatString(0, 40, 0xffffff, "Rキー:プレイヤーの速度リセット");
-	DrawFormatString(0, 60, 0xffffff, "プレイヤー速度:%f", playerSpd);
+	DrawFormatString(0, 60, 0xffffff, "プレイヤー速度:%f", playerSpeed);
 	DrawFormatString(0, 240, 0xFFFFFF, "123キーで操作のモードを変える");
 	DrawFormatString(0, 260, 0xFFFFFF, "操作モード:モード%d", controlMode + 1);
 }
