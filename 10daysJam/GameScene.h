@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "JoyPadInput.h"
 #include"Camera.h"
+#include"BreakEffect.h"
 
 class GameScene {
 
@@ -64,6 +65,9 @@ private:
 	// --レベルサークルの新しい半径-- //
 	float newCircleRadius;
 
+	//エフェクトの配列
+	std::vector<BreakEffect> breakEffects;
+
 	//カメラ
 	Camera camera;
 
@@ -116,6 +120,11 @@ public:
 	/// <param name="c"></param>
 	/// <param name="l"></param>
 bool CollisionCtoL(Circle c, Line l ,float lineSpd);
+
+/// <summary>
+/// 長針の衝撃エフェクト作成関数
+/// </summary>
+void CreateBreakEffect(Vector2 pos ,int effectParam);
 
 private:
 	// --コンストラクタ-- //

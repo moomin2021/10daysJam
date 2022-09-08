@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "Score.h"
 using namespace Util;
+using namespace std;
 
 // --インスタンスにNULLを代入-- //
 GameScene* GameScene::myInstance = nullptr;
@@ -212,6 +213,15 @@ void GameScene::Update() {
 		}
 	}
 
+	//エフェクト更新処理
+	for (int i = 0; i < breakEffects.size(); i++) {
+		breakEffects[i].Update();
+		//生存フラグがfalseなら該当要素を消す
+		if (!breakEffects[i].GetAllive()) {
+			breakEffects.erase(breakEffects.begin() + i);
+		}
+	}
+
 	//カメラ更新
 	//スペースキーでシェイク
 	if (input->IsTrigger(KEY_INPUT_SPACE)) {
@@ -258,6 +268,10 @@ void GameScene::Draw() {
 	DrawLine(posL);
 	posC = { levelCircle.pos + camera.GetPos() };
 	DrawCircle(posC, 0xFFFFFF, false);
+
+	for (int i = 0; i < breakEffects.size(); i++) {
+		breakEffects[i].Draw(camera);
+	}
 
 	float length = 416;
 
@@ -361,4 +375,14 @@ void GameScene::LevelUpdate() {
 void GameScene::LevelReset() {
 	level = 1;
 	point = 0;
+}
+
+void GameScene::CreateBreakEffect(Vector2 pos,int effectParam) {
+	
+	//作成するエフェクトの数だけ動的配列に入れる
+	for (int i = 0; i < effectParam; i++) {
+		BreakEffect newEffect{};
+		newEffect.Initialize(pos);
+		breakEffects.push_back(newEffect);
+	}
 }
