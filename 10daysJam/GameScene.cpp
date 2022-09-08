@@ -228,7 +228,6 @@ void GameScene::Update() {
 			enemys.erase(enemys.begin() + i);
 		}
 	}
-	}
 #pragma endregion
 
 	//爆発円の座標リセット
