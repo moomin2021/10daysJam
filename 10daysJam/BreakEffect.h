@@ -8,11 +8,13 @@ class BreakEffect
 private:
 	Circle obj = {};	//オブジェクト
 
+	
+
 	int color = 0;	//色
 
 	bool isAlive = false;	//生存フラグ
 
-	const int lifeTime = 50;	//寿命
+	int lifeTime = 50;	//寿命
 
 	int deathTimer =0;	//ですタイマー
 
