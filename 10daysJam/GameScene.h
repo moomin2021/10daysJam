@@ -31,7 +31,6 @@ private:
 	// --エネミー-- //
 	std::vector<Enemy> enemys;
 
-	Circle burstCircle;	//敵の爆発したときの円の大きさ用
 	// --エフェクトの配列-- //
 	std::vector<BreakEffect> breakEffects;
 
@@ -94,6 +93,11 @@ private:
 
 	// --経験値-- //
 	int point;
+#pragma endregion
+
+#pragma region エフェクト関係変数の宣言
+	// --敵の爆発したときの円の大きさ用-- //
+	Circle burstCircle;
 #pragma endregion
 
 #pragma region 画像用ハンドル変数の宣言

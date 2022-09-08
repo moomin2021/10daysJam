@@ -96,6 +96,11 @@ GameScene::GameScene() {
 	point = 0;
 #pragma endregion
 
+#pragma region エフェクト関係変数の初期化
+	// --敵の爆発したときの円の大きさ用-- //
+	burstCircle = { {0.0f, 0.0f}, 0.0f };
+#pragma endregion
+
 #pragma region 画像読み込み
 	// --時計や針の描画用画像-- //
 	whiteCircleGraph = LoadGraph("Resouces/whiteCircle.png");
@@ -111,13 +116,7 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	delayMax = 5; 
-	spawnInterval = 10;
-	spawnDelay = delayMax;
-	spawnTimer = spawnInterval;
-	level = 1;
-	point = 0;
-	burstCircle = { {0,0},0 };
+
 }
 
 // --更新処理-- //
@@ -229,10 +228,10 @@ void GameScene::Update() {
 	}
 #pragma endregion
 
-	//爆発円の座標リセット
-	burstCircle = { {0,0},0 };
-
 #pragma region エフェクト処理
+	//　--爆発円の座標リセット-- //
+	burstCircle = { {0.0f,0.0f}, 0.0f };
+
 	//エフェクト更新処理
 	for (int i = 0; i < breakEffects.size(); i++) {
 		breakEffects[i].Update();
@@ -455,11 +454,6 @@ void GameScene::Collision() {
 				burstCircle.radius = 96.0f;
 
 				enemys.erase(enemys.begin() + i);
-				
-				
-				
-
-
 			}
 		}
 	}
