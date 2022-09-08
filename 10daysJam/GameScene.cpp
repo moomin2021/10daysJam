@@ -322,13 +322,19 @@ void GameScene::EnemySpawn() {
 			spawnDelay--;
 		}//ディレイタイマーが0になったら座標を確定
 		else if (spawnDelay == 0) {
-			for (int i = 0; i < 10; i++) {
 				enemys.push_back({ enemyPos, 8.0f });
+				if (Random(1, 20) == 1) {
+					//5%の確率で敵としてスポーン
+					enemys.back().SetState(State::Enemy);
+				}
+				else {//それ以外の95%でアイテムとしてスポーン
+					enemys.back().SetState(State::Item);
+				}
 				//タイマーをリセット
 				spawnTimer = spawnInterval;
 				spawnDelay = delayMax;
-				break;
-			}
+				
+			
 		}
 	}
 }
@@ -347,6 +353,7 @@ void GameScene::PlayerAndEnemyCol() {
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
+			//敵のステートがnormalなら消滅
 			enemys.erase(enemys.begin() + i);
 		}
 	}
