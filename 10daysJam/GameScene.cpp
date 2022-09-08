@@ -26,97 +26,96 @@ void GameScene::Relese() {
 	myInstance = nullptr;
 }
 
-bool GameScene::CollisionCtoC(Circle cA, Circle cB)
-{
-	bool flag;
-	Vector2 vecAtoB;
-	float radius;
-	vecAtoB.x = cB.pos.x - cA.pos.x;
-	vecAtoB.y = cB.pos.y - cA.pos.y;
-	radius = cA.radius + cB.radius;
-
-	if (vecAtoB.length() <= radius) {
-		flag = true;
-	}
-	else {
-		flag = false;
-	}
-
-	return flag;
-}
-
-bool GameScene::CollisionCtoL(Circle c, Line l, float lineSpd)
-{
-	//必要変数宣言
-	Vector2 vecLine, vecCircle, vecCircle2, vecN, vecNtoC;
-	float len;
-	float rad = l.radian - 90;
-
-	for (int i = 0; i < (int)lineSpd; i++) {
-		//線の終点座標を変更
-
-		l.end.x = (l.length * cosf((rad) / 180 * PI)) + l.start.x;
-		l.end.y = (l.length * sinf((rad) / 180 * PI)) + l.start.y;
-
-		vecLine = l.end - l.start;
-		vecLine = vecLine.normalize();
-		vecCircle = c.pos - l.start;
-		vecCircle2 = c.pos - l.end;
-		len = vecLine.dot(vecCircle);
-		vecN = vecLine * len;
-		vecNtoC = vecCircle - vecN;
-
-		if (vecNtoC.length() < c.radius) {
-			if (vecLine.dot(vecCircle) * vecLine.dot(vecCircle2) <= 0.0f) {
-				return true;
-			}
-			else if (vecCircle.length() < c.radius || vecCircle2.length() < c.radius) {
-
-				return true;
-			}
-		}
-		else rad--;
-	}
-	return false;
-}
-
 // --コンストラクタ-- //
-GameScene::GameScene() : clock{ {640, 480}, 416 },
-longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000 },
-hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 78 },
-longHandSpeed(0.5f)
-{
-	// --入力クラスインスタンス取得-- //
+GameScene::GameScene() {
+#pragma region インスタンス読み込み
+	// --キーボードクラス-- //
 	input = Input::GetInstance();
 
-	// --プレイヤークラスインスタンス取得-- //
-	player = Player::GetInstance();
-
-	// --コントローラークラスインスタンス取得-- //
+	// -コントローラークラス-- //
 	pad = JoyPadInput::GetInstance();
 
+	// --プレイヤークラス-- //
+	player = Player::GetInstance();
+#pragma endregion
+
+#pragma region エネミーのスポーン関係変数の初期化
+	// --敵のスポーン位置を確定してからスポーンさせるまでの時間-- //
+	delayMax = 20;
+
+	// --次に敵が発生するまでの間隔-- //
+	spawnInterval = 20;
+
+	// --敵のスポーン遅延の残り時間-- //
+	spawnDelay = delayMax;
+
+	// --敵の発生タイマー-- //
+	spawnTimer = spawnInterval;
+
+	// --敵が短針上のどこでスポーンするかの変数-- //
+	enemyLength = 0.0f;
+
+	// --確定した敵のスポーン位置を保存する用変数-- //
+	enemyPos = { 0.0f, 0.0f };
+#pragma endregion
+
+#pragma region 時計関係変数の初期化
+	// --時計-- //
+	clock = { {640.0f, 480.0f}, 416.0f };
+
+	// --長針-- //
+	longHand = { {640.0f, 480.0f}, {640.0f, 0.0f}, clock.radius, 0.0f, 0xFF0000 };
+
+	// --長針の速度-- //
+	longHandSpeed = 0.5f;
+
+	// --短針-- //
+	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
+
+	// --短針の速度-- //
+	hourHandSpeed = 1.0f;
+
+	// --レベルによる短針の速度の上がり幅-- //
+	hourHandlevelSpeed = 1.0f;
+
+	// --短針が逆回りするときの速度-- //
+	reverseSpeed = 4.0f;
+#pragma endregion
+
+#pragma region レベル関係変数の初期化
+	// --真ん中のレベルを表記する円-- //
+	levelCircle = { {640.0f, 480.0f}, 78.0f };
+
+	// --レベルサークルの新しい半径-- //
+	newCircleRadius = 0.0f;
+
+	// --レベル-- //
+	level = 1;
+
+	// --経験値-- //
+	point = 0;
+#pragma endregion
+
+#pragma region 画像読み込み
+	// --時計や針の描画用画像-- //
 	whiteCircleGraph = LoadGraph("Resouces/whiteCircle.png");
+#pragma endregion
 }
 
 // --デストラクタ-- //
 GameScene::~GameScene() {
-	delete player;
+#pragma region クラスのインスタンス解放
+	player->Relese();
+#pragma endregion
 }
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	delayMax = 20; 
-	spawnInterval = 20;
-	spawnDelay = delayMax;
-	spawnTimer = spawnInterval;
-	level = 1;
-	point = 0;
-	hourHandSpeed = 1.0f;
+
 }
 
 // --更新処理-- //
 void GameScene::Update() {
-
 #pragma region 針の座標計算
 
 	//Lボタンで短針のステートを「反転」に
@@ -126,15 +125,15 @@ void GameScene::Update() {
 
 	//ステートが通常なら短針は自動回転
 	if (hourHand.state == State::Normal) {
-		hourHand.radian += hourHandSpeed;
+		hourHand.radian += hourHandSpeed + hourHandlevelSpeed * (level - 1);
 
 		//任意のキーで短針を動かす(デバッグ用)
 		//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 	}//ステートが反転しているなら短針を逆走させる
 	else if (hourHand.state == State::Reverse) {
-		hourHand.radian -= reverseSpd;
+		hourHand.radian -= reverseSpeed;
 		//短針が長針に追いついたら長針のステートを「反転」に
-		if (hourHand.radian < longHand.radian + reverseSpd && hourHand.radian > longHand.radian - reverseSpd) {
+		if (hourHand.radian < longHand.radian + reverseSpeed && hourHand.radian > longHand.radian - reverseSpeed) {
 			longHand.state = State::Reverse;
 			//短針のステートをとめる
 			hourHand.state = State::Stop;
@@ -147,10 +146,10 @@ void GameScene::Update() {
 	}//ステートが「反転」なら逆走
 	else if (longHand.state == State::Reverse) {
 		//速度は短針と等速
-		longHand.radian -= reverseSpd;
+		longHand.radian -= reverseSpeed;
 
 		//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
-		if (longHand.radian < reverseSpd) {
+		if (longHand.radian < reverseSpeed) {
 			longHand.state = State::Normal;
 			hourHand.state = State::Normal;
 			longHand.radian = 0;
@@ -193,15 +192,16 @@ void GameScene::Update() {
 
 #pragma endregion
 
-	// --プレイヤークラス更新処理-- //
+#pragma region プレイヤー更新処理
 	player->Update(hourHand, clock, levelCircle.radius);
+#pragma endregion
 
+#pragma region エネミー関係の処理
 	// --エネミーのスポーン処理-- //
 	//短針が通常状態なら行う
 	if (hourHand.state == State::Normal) {
 		EnemySpawn();
 	}
-
 
 	// --エネミークラス更新処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
@@ -210,12 +210,14 @@ void GameScene::Update() {
 		//短針が反転モードなら判定をとる
 		if (hourHand.state == State::Reverse) {
 			//短針と敵の当たり判定
-			if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpd)) {
+			if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpeed)) {
 				enemys[i].OnCollison();
 			}
 		}
 	}
+#pragma endregion
 
+#pragma region エフェクト処理
 	//エフェクト更新処理
 	for (int i = 0; i < breakEffects.size(); i++) {
 		breakEffects[i].Update();
@@ -224,77 +226,118 @@ void GameScene::Update() {
 			breakEffects.erase(breakEffects.begin() + i);
 		}
 	}
+#pragma endregion
 
-	//カメラ更新
-	//スペースキーでシェイク
-	if (input->IsTrigger(KEY_INPUT_SPACE)) {
-		camera.SetShakeCount(5);
-	}
-
+#pragma region カメラシェイク処理
 	camera.CameraShake();
-	
-	// --プレイヤーとエネミーの当たり判定-- //
-	PlayerAndEnemyCol();
+#pragma endregion
 
-	// --レベルの更新処理-- //
+#pragma region ゲームシーンの当たり判定処理
+	Collision();
+#pragma endregion
+
+#pragma region レベルの更新処理
 	LevelUpdate();
+#pragma endregion
 
-	// --デバック用処理-- //
+#pragma region デバッグ用処理
+	// --レベルサークルの半径変更-- //
 	levelCircle.radius += input->IsPress(KEY_INPUT_A) - input->IsPress(KEY_INPUT_D);
+
+	// --レベルサークルの半径制限-- //
 	levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
+
+	// --短針の速度変更-- //
 	hourHandSpeed += (input->IsTrigger(KEY_INPUT_Z) - input->IsTrigger(KEY_INPUT_C)) * 0.1f;
+
+	// --長針の速度変更-- //
 	longHandSpeed += (input->IsTrigger(KEY_INPUT_I) - input->IsTrigger(KEY_INPUT_P)) * 0.1f;
+
+	// --SPACEキーを押すと画面がシェイクする-- //
+	if (input->IsTrigger(KEY_INPUT_SPACE)) { camera.SetShakeCount(5); }
+#pragma endregion
 }
 
 // --描画処理-- //
 void GameScene::Draw() {
-	// --プレイヤーの描画処理-- //
+#pragma region プレイヤー描画
 	player->Draw(camera);
+#pragma endregion
 
-	// --エネミーの描画処理-- //
+#pragma region エネミー描画
 	for (int i = 0; i < enemys.size(); i++) {
 		enemys[i].Draw(camera);
 	}
-	
-	//描画用座標宣言
-	Circle posC;
-	Line posL;
-	posC = { clock.pos + camera.GetPos(),clock.radius };
-	//DrawCircle(posC, 0xffffff, false);
-	posL.start = {longHand.start + camera.GetPos()};
-	posL.end = {longHand.end + camera.GetPos()};
-	posL.color = longHand.color;
-	DrawLine(posL, 4);
-	posL.start = { hourHand.start + camera.GetPos() };
-	posL.end = { hourHand.end + camera.GetPos() };
-	posL.color = hourHand.color;
-	DrawLine(posL);
-	posC = { levelCircle.pos + camera.GetPos() };
-	DrawCircle(posC, 0xFFFFFF, false);
+#pragma endregion
 
-	for (int i = 0; i < breakEffects.size(); i++) {
-		breakEffects[i].Draw(camera);
-	}
-
-	float length = 416;
+#pragma region 時計の外枠の描画
+	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
+	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	SetDrawBright(119, 28, 28);
 
+	// --時計の外枠の描画-- //
 	for (int i = 0; i < 1440; i++) {
-		DrawGraphF(640 + cosf(Degree2Radian(i * 0.25f)) * length - 16, 480 + sinf(Degree2Radian(i * 0.25f)) * length - 16, whiteCircleGraph, true);
+		DrawGraphF(
+			clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+			clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+			whiteCircleGraph, true);
 	}
 
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+#pragma endregion
 
-	//目印用０時の針
-	posL.start = { clock.pos + camera.GetPos() };
-	posL.end = { clock.pos.x + camera.GetPos().x,clock.pos.y - clock.radius + 16 + camera.GetPos().y };
-	posL.color = 0x60ffbf;
-	DrawLine(posL, 6);
+#pragma region 長針の描画
+	// --長針の座標とカメラシェイクの座標足したLine変数-- //
+	Line longHandLine;
+	longHandLine.start = { longHand.start + camera.GetPos() };
+	longHandLine.end = { longHand.end + camera.GetPos() };
+	longHandLine.color = longHand.color;
 
-	// --デバック用処理-- //
+	// --長針の描画-- //
+	DrawLine(longHandLine, 4);
+#pragma endregion
+
+#pragma region 短針の描画
+	// --短針の座標とカメラシェイクの座標足したLine変数-- //
+	Line hourHandLine;
+	hourHandLine.start = { hourHand.start + camera.GetPos() };
+	hourHandLine.end = { hourHand.end + camera.GetPos() };
+	hourHandLine.color = hourHand.color;
+
+	// --短針の描画-- //
+	DrawLine(hourHandLine);
+#pragma endregion
+
+#pragma region レベルサークルの描画
+	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
+	Circle circle;
+	circle = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
+
+	// --レベルサークルの描画-- //
+	DrawCircle(circle, 0xFFFFFF, false);
+#pragma endregion
+
+#pragma region 目印用0時の針の描画
+	// --0時の針の座標とカメラシェイクの座標足したCircle変数-- //
+	Line line;
+	line.start = { clock.pos + camera.GetPos() };
+	line.end = { clock.pos.x + camera.GetPos().x, clock.pos.y - clock.radius + 16 + camera.GetPos().y };
+	line.color = 0x60FFBF;
+
+	// --0時の針描画-- //
+	DrawLine(line, 6);
+#pragma endregion
+
+#pragma region エフェクト描画
+	for (int i = 0; i < breakEffects.size(); i++) {
+		breakEffects[i].Draw(camera);
+	}
+#pragma endregion
+
+#pragma region デバッグ描画
 	DrawFormatString(0, 80, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
 	DrawFormatString(0, 100, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
 	DrawFormatString(0, 120, 0xFFFFFF, "ZCキー:短針の速度変更");
@@ -303,9 +346,10 @@ void GameScene::Draw() {
 	DrawFormatString(0, 180, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
 	DrawFormatString(0, 280, 0xFFFFFF, "IPキーで長針の速度を変更");
 	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
-	DrawFormatString(0,320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
-	DrawFormatString(0,340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d",spawnTimer);
-	DrawFormatString(0,360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d",spawnDelay);
+	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
+	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
+	DrawFormatString(0, 360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d", spawnDelay);
+#pragma endregion
 }
 
 // --敵のスポーン処理-- //
@@ -332,19 +376,16 @@ void GameScene::EnemySpawn() {
 			spawnDelay--;
 		}//ディレイタイマーが0になったら座標を確定
 		else if (spawnDelay == 0) {
-			for (int i = 0; i < 10; i++) {
-				enemys.push_back({ enemyPos, 8.0f });
-				//タイマーをリセット
-				spawnTimer = spawnInterval;
-				spawnDelay = delayMax;
-				break;
-			}
+			enemys.push_back({ enemyPos, 8.0f });
+			//タイマーをリセット
+			spawnTimer = spawnInterval;
+			spawnDelay = delayMax;
 		}
 	}
 }
 
 // --自機と敵の当たり判定処理-- //
-void GameScene::PlayerAndEnemyCol() {
+void GameScene::Collision() {
 	// --自機と敵の当たり判定を行う-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
@@ -364,14 +405,50 @@ void GameScene::PlayerAndEnemyCol() {
 
 // --レベル-- //
 void GameScene::LevelUpdate() {
-	level = (point / 5) + 1;
+#pragma region 経験値によってレベルを変える処理
+	switch (point)
+	{
+	case 0:
+		level = 1;
+		break;
 
-	//hourHandSpeed = (0.5f * level) + 1.0f;
+	case 5:
+		level = 2;
+		break;
 
-	//newCircleRadius = level * 8;
+	case 10:
+		level = 3;
+		break;
 
-	//if (newCircleRadius > levelCircle.radius) levelCircle.radius++;
-	//if (newCircleRadius < levelCircle.radius) levelCircle.radius--;
+	case 15:
+		level = 4;
+		break;
+
+	case 20:
+		level = 5;
+		break;
+
+	case 25:
+		level = 6;
+		break;
+
+	case 30:
+		level = 7;
+		break;
+
+	case 35:
+		level = 8;
+		break;
+
+	case 40:
+		level = 9;
+		break;
+
+	case 45:
+		level = 10;
+		break;
+	}
+#pragma endregion
 }
 
 // --レベルリセット-- //
@@ -380,8 +457,8 @@ void GameScene::LevelReset() {
 	point = 0;
 }
 
-void GameScene::CreateBreakEffect(Vector2 pos,int effectParam) {
-	
+void GameScene::CreateBreakEffect(Vector2 pos, int effectParam) {
+
 	//作成するエフェクトの数だけ動的配列に入れる
 	for (int i = 0; i < effectParam; i++) {
 		BreakEffect newEffect{};

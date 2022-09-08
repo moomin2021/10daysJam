@@ -168,9 +168,16 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 #pragma endregion
 
 #pragma region デバッグ用処理
+	// --プレイヤー速度の変更-- //
 	playerSpeed += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
+
+	// --プレイヤー速度のリセット-- //
 	if (input->IsPress(KEY_INPUT_R)) playerSpeed = 2.0f;
+
+	// --プレイヤー速度制限-- //
 	playerSpeed = Clamp(playerSpeed, 100.0f, 0.1f);
+
+	// --操作のモードチェンジ-- //
 	if (input->IsTrigger(KEY_INPUT_1)) controlMode = MODE1;
 	if (input->IsTrigger(KEY_INPUT_2)) controlMode = MODE2;
 	if (input->IsTrigger(KEY_INPUT_3)) controlMode = MODE3;

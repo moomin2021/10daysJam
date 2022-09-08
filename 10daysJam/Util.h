@@ -83,4 +83,19 @@ namespace Util {
 	/// <returns></returns>
 	float Random(float min, float max);
 
+	/// <summary>
+	/// ‰~‚Æ‰~‚ÌÕ“Ë”»’è
+	/// </summary>
+	/// <param name="cA"></param>
+	/// <param name="cB"></param>
+	/// <returns></returns>
+	bool CollisionCtoC(Circle cA, Circle cB);
+
+	/// <summary>
+	/// ‰~‚Æü‚ÌÕ“Ë”»’è
+	/// </summary>
+	/// <param name="c"></param>
+	/// <param name="l"></param>
+	bool CollisionCtoL(Circle c, Line l, float lineSpd);
+
 } // namespace MathUtility

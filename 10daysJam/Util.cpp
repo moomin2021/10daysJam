@@ -72,3 +72,57 @@ float Util::Random(float min, float max)
 
 	return rand(engine);
 }
+
+bool Util::CollisionCtoC(Circle cA, Circle cB)
+{
+	bool flag;
+	Vector2 vecAtoB;
+	float radius;
+	vecAtoB.x = cB.pos.x - cA.pos.x;
+	vecAtoB.y = cB.pos.y - cA.pos.y;
+	radius = cA.radius + cB.radius;
+
+	if (vecAtoB.length() <= radius) {
+		flag = true;
+	}
+	else {
+		flag = false;
+	}
+
+	return flag;
+}
+
+bool Util::CollisionCtoL(Circle c, Line l, float lineSpd)
+{
+	//必要変数宣言
+	Vector2 vecLine, vecCircle, vecCircle2, vecN, vecNtoC;
+	float len;
+	float rad = l.radian - 90;
+
+	for (int i = 0; i < (int)lineSpd; i++) {
+		//線の終点座標を変更
+
+		l.end.x = (l.length * cosf((rad) / 180 * PI)) + l.start.x;
+		l.end.y = (l.length * sinf((rad) / 180 * PI)) + l.start.y;
+
+		vecLine = l.end - l.start;
+		vecLine = vecLine.normalize();
+		vecCircle = c.pos - l.start;
+		vecCircle2 = c.pos - l.end;
+		len = vecLine.dot(vecCircle);
+		vecN = vecLine * len;
+		vecNtoC = vecCircle - vecN;
+
+		if (vecNtoC.length() < c.radius) {
+			if (vecLine.dot(vecCircle) * vecLine.dot(vecCircle2) <= 0.0f) {
+				return true;
+			}
+			else if (vecCircle.length() < c.radius || vecCircle2.length() < c.radius) {
+
+				return true;
+			}
+		}
+		else rad--;
+	}
+	return false;
+}
