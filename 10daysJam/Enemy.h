@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Util.h"
+#include "Camera.h"
 
 class Enemy {
 	/// --ƒƒ“ƒo•Ï”-- ///
@@ -43,7 +44,7 @@ public:
 	void OnCollison();
 
 	// --•`‰æˆ—-- //
-	void Draw();
+	void Draw(Camera camera_);
 
 	Circle GetCircle() const { return enemy; }
 
