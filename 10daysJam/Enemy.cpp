@@ -81,7 +81,14 @@ void Enemy::Draw(Camera camera_) {
 void Enemy::SetState(State state_)
 {
 	state = state_;
+
 }
+
+void Enemy::StateChange()
+{
+	isChange = true;
+}
+
 
 //void Enemy::AllEnemyDeath()
 //{

@@ -228,11 +228,31 @@ void GameScene::Update() {
 					else if (enemys[i].GetState() == State::Enemy) {
 						enemySandwichCount++;
 					}
-					
+
 					enemys[i].OnCollison();
 				}
 			}
 		}
+
+		//長針がノーマルモードなら判定をとる
+	//	if (longHand.state == State::Normal) {
+			//長針と敵の当たり判定
+		if (CollisionCtoL(enemys[i].GetCircle(), longHand, longHandSpeed)) {
+			//一度もステート変更が行われていないなら
+			if (!enemys[i].GetIsChange()) {
+				//敵の状態がアイテムなら敵に
+				if (enemys[i].GetState() == State::Item) {
+					enemys[i].SetState(State::Enemy);
+				}//敵ならアイテムに
+				else if (enemys[i].GetState() == State::Enemy) {
+					enemys[i].SetState(State::Item);
+				}
+				enemys[i].StateChange();
+			}
+
+		}
+
+		//}
 
 		//爆発円との当たり判定
 		if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
@@ -358,10 +378,10 @@ void GameScene::Draw() {
 	// --短針の描画-- //
 	for (int i = 0; i < longHand.length / 1.5f; i++) {
 		DrawExtendGraph(
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)+8,
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)+8,
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) - 8,
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) - 8,
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) + 8,
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) + 8,
 			whiteCircleGraph, true);
 	}
 
@@ -413,8 +433,9 @@ void GameScene::Draw() {
 	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
 	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
 	DrawFormatString(0, 360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d", spawnDelay);
-	DrawFormatString(0, 380, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
 	DrawFormatString(0, 400, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
+	DrawFormatString(0, 400, 0xFFFFFF, "アイテム:%d", itemSandwichCount);
 	/*SetFontSize(80);*/
 	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 	/*SetFontSize(16);*/
@@ -445,19 +466,19 @@ void GameScene::EnemySpawn() {
 			spawnDelay--;
 		}//ディレイタイマーが0になったら座標を確定
 		else if (spawnDelay == 0) {
-				enemys.push_back({ enemyPos, 8.0f });
-				if (Random(0, 100) <= enemySpawnRate) {
-					//5%の確率で敵としてスポーン
-					enemys.back().SetState(State::Enemy);
-				}
-				else {//それ以外の95%でアイテムとしてスポーン
-					enemys.back().SetState(State::Item);
-				}
-				//タイマーをリセット
-				spawnTimer = spawnInterval;
-				spawnDelay = delayMax;
-				
-			
+			enemys.push_back({ enemyPos, 8.0f });
+			if (Random(0, 100) <= enemySpawnRate) {
+				//5%の確率で敵としてスポーン
+				enemys.back().SetState(State::Enemy);
+			}
+			else {//それ以外の95%でアイテムとしてスポーン
+				enemys.back().SetState(State::Item);
+			}
+			//タイマーをリセット
+			spawnTimer = spawnInterval;
+			spawnDelay = delayMax;
+
+
 		}
 	}
 }
@@ -469,9 +490,9 @@ void GameScene::Collision() {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
 			//敵のステートがItemなら消滅
 			if (enemys[i].GetState() == State::Item) {
-			enemys.erase(enemys.begin() + i);
-			point++;
-			Score::AddScore(100);
+				enemys.erase(enemys.begin() + i);
+				point++;
+				Score::AddScore(100);
 			}//敵のステートがenemyならレベルを減らして消滅させる
 			else if (enemys[i].GetState() == State::Enemy) {
 				//レベルを下げて、爆発サークルを出現
@@ -489,7 +510,7 @@ void GameScene::Collision() {
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
-				enemys.erase(enemys.begin() + i);
+			enemys.erase(enemys.begin() + i);
 		}
 	}
 }

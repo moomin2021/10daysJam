@@ -99,13 +99,17 @@ bool Util::CollisionCtoL(Circle c, Line l, float lineSpd)
 	float len;
 	float rad = l.radian - 90;
 
+	if (lineSpd <= 1)lineSpd = 1;
+
 	for (int i = 0; i < (int)lineSpd; i++) {
 		//線の終点座標を変更
 
 		l.end.x = (l.length * cosf((rad) / 180 * PI)) + l.start.x;
 		l.end.y = (l.length * sinf((rad) / 180 * PI)) + l.start.y;
 
+		//線のベクトルを取得
 		vecLine = l.end - l.start;
+		//正規化
 		vecLine = vecLine.normalize();
 		vecCircle = c.pos - l.start;
 		vecCircle2 = c.pos - l.end;
@@ -113,11 +117,11 @@ bool Util::CollisionCtoL(Circle c, Line l, float lineSpd)
 		vecN = vecLine * len;
 		vecNtoC = vecCircle - vecN;
 
-		if (vecNtoC.length() < c.radius) {
+		if (fabs(vecNtoC.length()) < c.radius) {
 			if (vecLine.dot(vecCircle) * vecLine.dot(vecCircle2) <= 0.0f) {
 				return true;
 			}
-			else if (vecCircle.length() < c.radius || vecCircle2.length() < c.radius) {
+			else if (fabs(vecCircle.length()) < c.radius || fabs(vecCircle2.length()) < c.radius) {
 
 				return true;
 			}

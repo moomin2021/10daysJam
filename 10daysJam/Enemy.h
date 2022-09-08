@@ -17,6 +17,8 @@ private:
 
 	int color;
 
+	bool isChange = false;	//ステートの変更が行われたか
+
 	/// --メンバ変数END-- ///
 	/// --------------- ///
 	/// --メンバ関数-- ///
@@ -51,6 +53,10 @@ public:
 	void SetState(State state_);
 
 	State GetState()const { return state; }
+
+	bool GetIsChange()const { return isChange;}
+
+	void StateChange();
 
 	//void AllEnemyDeath();
 
