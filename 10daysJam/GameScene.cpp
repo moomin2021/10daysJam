@@ -286,28 +286,6 @@ void GameScene::Draw() {
 	for (int i = 0; i < enemys.size(); i++) {
 		enemys[i].Draw(camera);
 	}
-	
-	//•`‰æ—pÀ•WéŒ¾
-	Circle posC;
-	Line posL;
-	posC = { clock.pos + camera.GetPos(),clock.radius };
-	//DrawCircle(posC, 0xffffff, false);
-	posL.start = {longHand.start + camera.GetPos()};
-	posL.end = {longHand.end + camera.GetPos()};
-	posL.color = longHand.color;
-	DrawLine(posL, 4);
-	posL.start = { hourHand.start + camera.GetPos() };
-	posL.end = { hourHand.end + camera.GetPos() };
-	posL.color = hourHand.color;
-	DrawLine(posL);
-	posC = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
-	DrawCircle(posC, 0xFFFFFF, false);
-
-	posC = { burstCircle.pos + camera.GetPos(),burstCircle.radius };
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	DrawCircle(posC, 0xff0000, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 
 	for (int i = 0; i < breakEffects.size(); i++) {
 		breakEffects[i].Draw(camera);
@@ -319,7 +297,7 @@ void GameScene::Draw() {
 	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	SetDrawBright(119, 28, 28);
+	SetDrawBright(255, 255, 255);
 
 	// --ŽžŒv‚ÌŠO˜g‚Ì•`‰æ-- //
 	for (int i = 0; i < 1440; i++) {
@@ -340,8 +318,21 @@ void GameScene::Draw() {
 	longHandLine.end = { longHand.end + camera.GetPos() };
 	longHandLine.color = longHand.color;
 
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBright(119, 28, 28);
+
 	// --’·j‚Ì•`‰æ-- //
-	DrawLine(longHandLine, 4);
+	for (int i = 0; i < longHand.length / 1.5f; i++) {
+		DrawExtendGraph(
+			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) - 8,
+			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) - 8,
+			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) + 8,
+			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) + 8,
+			whiteCircleGraph, true);
+	}
+
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
 #pragma region ’Zj‚Ì•`‰æ
@@ -351,8 +342,21 @@ void GameScene::Draw() {
 	hourHandLine.end = { hourHand.end + camera.GetPos() };
 	hourHandLine.color = hourHand.color;
 
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBright(39, 32, 225);
+
 	// --’Zj‚Ì•`‰æ-- //
-	DrawLine(hourHandLine);
+	for (int i = 0; i < hourHand.length / 1.5f; i++) {
+		DrawExtendGraph(
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)+8,
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)+8,
+			whiteCircleGraph, true);
+	}
+
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
 #pragma region ƒŒƒxƒ‹ƒT[ƒNƒ‹‚Ì•`‰æ
