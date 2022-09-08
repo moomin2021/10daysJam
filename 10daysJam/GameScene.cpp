@@ -72,7 +72,8 @@ bool GameScene::CollisionCtoL(Circle c, Line l, float lineSpd)
 // --コンストラクタ-- //
 GameScene::GameScene() : clock{ {640, 480}, 416 },
 longHand{ {640, 480}, {640, 0}, clock.radius, 0, 0xFF0000 },
-hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 8 }
+hourHand{ {640, 480}, {640, 32}, clock.radius - 32, 0, 0xFF }, levelCircle{ {640, 480}, 8 },
+longHandSpeed(0.5f)
 {
 	// --入力クラスインスタンス取得-- //
 	input = Input::GetInstance();
@@ -129,7 +130,7 @@ void GameScene::Update() {
 
 	//ステートが通常なら長針は自動回転
 	if (longHand.state == State::Normal) {
-		longHand.radian += 0.5f;
+		longHand.radian += longHandSpeed;
 	}//ステートが「反転」なら逆走
 	else if (longHand.state == State::Reverse) {
 		//速度は短針と等速
@@ -201,8 +202,8 @@ void GameScene::Update() {
 	// --デバック用処理-- //
 	levelCircle.radius += input->IsPress(KEY_INPUT_A) - input->IsPress(KEY_INPUT_D);
 	levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
-	hourHandSpeed += (input->IsPress(KEY_INPUT_Z) - input->IsPress(KEY_INPUT_C)) * 0.1f;
-	hourHandSpeed = Clamp(hourHandSpeed, 100.0f, 0.0f);
+	hourHandSpeed += (input->IsTrigger(KEY_INPUT_Z) - input->IsTrigger(KEY_INPUT_C)) * 0.1f;
+	longHandSpeed += (input->IsTrigger(KEY_INPUT_I) - input->IsTrigger(KEY_INPUT_P)) * 0.1f;
 }
 
 // --描画処理-- //
@@ -230,6 +231,8 @@ void GameScene::Draw() {
 	DrawFormatString(0, 140, 0xFFFFFF, "短針の速度:%f", hourHandSpeed);
 	DrawFormatString(0, 160, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
 	DrawFormatString(0, 180, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+	DrawFormatString(0, 280, 0xFFFFFF, "IPキーで長針の速度を変更");
+	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
 }
 
 // --敵のスポーン処理-- //
