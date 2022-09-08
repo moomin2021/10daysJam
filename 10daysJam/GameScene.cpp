@@ -387,8 +387,8 @@ void GameScene::Draw() {
 	DrawFormatString(0, 280, 0xFFFFFF, "IPキーで長針の速度を変更");
 	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
 	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
-	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
-	DrawFormatString(0, 360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d", spawnDelay);
+	DrawFormatString(0, 340, 0xFFFFFF, "針のレベル:%d", level);
+	DrawFormatString(0, 360, 0xFFFFFF, "敵のスポーン率:%2.1f", enemySpawnRate);
 #pragma endregion
 }
 
@@ -417,7 +417,7 @@ void GameScene::EnemySpawn() {
 		}//ディレイタイマーが0になったら座標を確定
 		else if (spawnDelay == 0) {
 				enemys.push_back({ enemyPos, 8.0f });
-				if (Random(1, 20) == 1) {
+				if (Random(0, 100) <= enemySpawnRate) {
 					//5%の確率で敵としてスポーン
 					enemys.back().SetState(State::Enemy);
 				}
@@ -446,7 +446,9 @@ void GameScene::Collision() {
 			}//敵のステートがenemyならレベルを減らして消滅させる
 			else if (enemys[i].GetState() == State::Enemy) {
 				//レベルを下げて、爆発サークルを出現
-				level--;
+				if (level > 1) {
+					level--;
+				}
 				burstCircle.pos = enemys[i].GetCircle().pos;
 				burstCircle.radius = 96.0f;
 
@@ -468,47 +470,57 @@ void GameScene::Collision() {
 
 // --レベル-- //
 void GameScene::LevelUpdate() {
-#pragma region 経験値によってレベルを変える処理
+#pragma region 経験値によってレベルと敵の発生率を変える処理
 	switch (point)
 	{
 	case 0:
 		level = 1;
+		enemySpawnRate = 5.0f;
 		break;
 
 	case 5:
 		level = 2;
+		enemySpawnRate = 7.5f;
 		break;
 
 	case 10:
 		level = 3;
+		enemySpawnRate = 10.0f;
 		break;
 
 	case 15:
 		level = 4;
+		enemySpawnRate = 12.5f;
 		break;
 
 	case 20:
 		level = 5;
+		enemySpawnRate = 15.0f;
 		break;
 
 	case 25:
 		level = 6;
+		enemySpawnRate = 18.0f;
 		break;
 
 	case 30:
 		level = 7;
+		enemySpawnRate = 22.0f;
 		break;
 
 	case 35:
 		level = 8;
+		enemySpawnRate = 27.0f;
 		break;
 
 	case 40:
 		level = 9;
+		enemySpawnRate = 33.0f;
 		break;
 
 	case 45:
 		level = 10;
+		enemySpawnRate = 40.0f;
 		break;
 	}
 #pragma endregion

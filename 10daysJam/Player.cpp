@@ -159,8 +159,10 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 
 	//’Zjã‚Å‚Ì©‹@‚ÌˆÊ’u‚ğQÆ‚µ‚Ä©‹@À•WŒvZ
 	//©‹@‚Í’Zjã‚ÉˆÊ’u‚·‚é‚Ì‚ÅAŠp“x‚Í’Zj‚Ì‚à‚Ì‚ğg‚¤
-	player.pos.x = (playerLength * cosf((hourHand.radian - 90) / 180 * PI)) + clock.pos.x;
-	player.pos.y = (playerLength * sinf((hourHand.radian - 90) / 180 * PI)) + clock.pos.y;
+	float rad = hourHand.radian- 90;
+
+	player.pos.x = (playerLength * cosf((rad) / 180 * PI)) +(player.radius * cosf((rad + 90)/180*PI)) + clock.pos.x;
+	player.pos.y = (playerLength * sinf((rad) / 180 * PI)) + (player.radius * sinf((rad + 90) / 180 * PI)) + clock.pos.y;
 #pragma endregion
 
 	// --•â•üÄŒvZ-- //

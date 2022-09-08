@@ -54,10 +54,12 @@ void Enemy::UpdateReverse(Line hourLine_)
 	//’Zj‚ÉÀ•W‚ğ’Ç]‚³‚¹‚é
 	//’Zj‚Ìn“_‚Æ©À•W‚©‚ç’·‚³‚ğæ“¾
 	Vector2 lenVec = hourLine_.start - enemy.pos;
+	float rad = hourLine_.radian - 90;
+
 	float len = lenVec.length();
 	//’·‚³‚Æ’Zj‚ÌŠp“x‚©‚ç©À•W‚ğÄŒvZ‚µ‚Ä‘ã“ü
-	enemy.pos.x = (len * cosf((hourLine_.radian - 90) / 180 * PI)) + hourLine_.start.x;
-	enemy.pos.y = (len * sinf((hourLine_.radian - 90) / 180 * PI)) + hourLine_.start.y;
+	enemy.pos.x = (len * cosf((rad) / 180 * PI)) + (enemy.radius * cosf((rad-90) / 180 * PI))+ hourLine_.start.x;
+	enemy.pos.y = (len * sinf((rad) / 180 * PI)) + (enemy.radius * sinf((rad-90) / 180 * PI))+ hourLine_.start.y;
 }
 
 void Enemy::OnCollison()
