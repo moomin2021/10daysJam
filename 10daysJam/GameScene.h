@@ -31,6 +31,13 @@ private:
 	// --エネミー-- //
 	std::vector<Enemy> enemys;
 
+	int spawnDelay;		//敵のスポーン遅延の残り時間
+	int delayMax;		//敵のスポーン位置を確定してからスポーンさせるまでの時間
+	int spawnInterval;	//次に敵が発生するまでの間隔
+	int spawnTimer;		//敵の発生タイマー
+	float enemyLength;	//敵が短針上のどこでスポーンするかの変数 
+	Vector2 enemyPos;	//確定した敵のスポーン位置を保存する用変数
+	Circle burstCircle;	//敵の爆発したときの円の大きさ用
 	// --エフェクトの配列-- //
 	std::vector<BreakEffect> breakEffects;
 

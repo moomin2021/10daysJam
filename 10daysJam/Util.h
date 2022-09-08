@@ -5,7 +5,9 @@
 enum class State {
 	Normal,
 	Reverse,
-	Stop
+	Stop,
+	Item,
+	Enemy,
 };
 
 struct Circle
