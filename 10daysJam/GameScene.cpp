@@ -146,6 +146,9 @@ void GameScene::Update() {
 			LevelReset();
 			// --スコア加算-- //
 			Score::AddScore(1000);
+
+			//シェイク
+			camera.SetShakeCount(10);
 		}
 	}
 
@@ -173,6 +176,13 @@ void GameScene::Update() {
 	// --プレイヤークラス更新処理-- //
 	player->Update(hourHand, clock, levelCircle.radius);
 
+	// --エネミーのスポーン処理-- //
+	//短針が通常状態なら行う
+	if (hourHand.state == State::Normal) {
+		EnemySpawn();
+	}
+
+
 	// --エネミークラス更新処理-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		enemys[i].Update(hourHand);
@@ -186,13 +196,14 @@ void GameScene::Update() {
 		}
 	}
 
-
-	// --エネミーのスポーン処理-- //
-	//短針が通常状態なら行う
-	if (hourHand.state == State::Normal) {
-		EnemySpawn();
+	//カメラ更新
+	//スペースキーでシェイク
+	if (input->IsTrigger(KEY_INPUT_SPACE)) {
+		camera.SetShakeCount(5);
 	}
 
+	camera.CameraShake();
+	
 	// --プレイヤーとエネミーの当たり判定-- //
 	PlayerAndEnemyCol();
 
@@ -233,7 +244,10 @@ void GameScene::Draw() {
 	DrawCircle(posC, 0xFFFFFF, false);
 
 	//目印用０時の針
-	DrawLine(clock.pos.x, clock.pos.y, clock.pos.x, clock.pos.y - clock.radius + 16, 0x60ffbf, 6);
+	posL.start = { clock.pos + camera.GetPos() };
+	posL.end = { clock.pos.x + camera.GetPos().x,clock.pos.y - clock.radius + 16 + camera.GetPos().y };
+	posL.color = 0x60ffbf;
+	DrawLine(posL, 6);
 
 	// --デバック用処理-- //
 	DrawFormatString(0, 80, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
