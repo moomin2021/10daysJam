@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "JoyPadInput.h"
+#include"Camera.h"
 
 class GameScene {
 
@@ -62,6 +63,9 @@ private:
 
 	// --レベルサークルの新しい半径-- //
 	float newCircleRadius;
+
+	//カメラ
+	Camera camera;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///

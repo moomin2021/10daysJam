@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "JoyPadInput.h"
 #include "Util.h"
+#include"Camera.h"
 
 class Player {
 	// --コントローラーモードの列挙型-- //
@@ -67,7 +68,7 @@ public:
 	void Update(Line hourHand, Circle clock, float radius);
 
 	// --描画処理-- //
-	void Draw();
+	void Draw(Camera camera_);
 
 	/// <summary>
 	/// プレイヤーのゲッター

@@ -60,8 +60,12 @@ void Enemy::OnCollison()
 }
 
 // --•`‰æˆ—-- //
-void Enemy::Draw() {
-	DrawCircle(enemy, color, true);
+void Enemy::Draw(Camera camera_) {
+	Circle pos ={
+		enemy.pos + camera_.GetPos(),
+		enemy.radius
+	};
+	DrawCircle(pos, color, true);
 }
 
 //void Enemy::AllEnemyDeath()
