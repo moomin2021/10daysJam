@@ -15,7 +15,7 @@ private:
 	//ステート
 	State state = State::Normal;
 
-	int color = 0xffff00;
+	int color;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -47,6 +47,10 @@ public:
 	void Draw(Camera camera_);
 
 	Circle GetCircle() const { return enemy; }
+
+	void SetState(State state_);
+
+	State GetState()const { return state; }
 
 	//void AllEnemyDeath();
 

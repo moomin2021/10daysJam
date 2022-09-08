@@ -31,6 +31,14 @@ void Enemy::Update(Line hourLine_) {
 		break;
 	case State::Stop:
 		break;
+	case State::Item :
+		//色を黄色に変更
+		color = 0xffff00;
+		break;
+	case State::Enemy:
+		//色を赤に変更
+		color = 0xff0000;
+		break;
 	default:
 		break;
 	}
@@ -66,6 +74,11 @@ void Enemy::Draw(Camera camera_) {
 		enemy.radius
 	};
 	DrawCircle(pos, color, true);
+}
+
+void Enemy::SetState(State state_)
+{
+	state = state_;
 }
 
 //void Enemy::AllEnemyDeath()

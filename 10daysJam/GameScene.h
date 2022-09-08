@@ -36,6 +36,7 @@ private:
 	int spawnTimer;		//敵の発生タイマー
 	float enemyLength;	//敵が短針上のどこでスポーンするかの変数 
 	Vector2 enemyPos;	//確定した敵のスポーン位置を保存する用変数
+	Circle burstCircle;	//敵の爆発したときの円の大きさ用
 
 	// --レベル-- //
 	int level;
