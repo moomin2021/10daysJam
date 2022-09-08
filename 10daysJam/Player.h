@@ -13,16 +13,11 @@ class Player {
 	};
 
 	/// --メンバ変数-- ///
-public:
-	// --プレイヤー-- //
-	Circle player;
-
 private:
 	// --インスタンス-- //
 	static Player* myInstance;
 
-	/// --クラス宣言-- ///
-#pragma region
+#pragma region クラスの宣言
 	// --入力クラス-- //
 	Input* input;
 
@@ -30,26 +25,32 @@ private:
 	JoyPadInput* pad;
 #pragma endregion
 
-	/// --プレイヤー関係変数の宣言-- ///
-#pragma region
+#pragma region プレイヤー関係変数の宣言
+public:
+	// --プレイヤー-- //
+	Circle player;
 
+private:
 	// --中心からのプレイヤーの距離-- //
 	float playerLength;
 
 	// --プレイヤーの速度-- //
 	float playerSpeed;
+#pragma endregion
 
+#pragma region その他変数宣言
 	// --スティックの範囲-- //
 	float stickRange;
 
 	// --補助線-- //
 	Circle auxiliaryCircle;
 
-	//色
+	// --色-- //
 	int color = 0xffffff;
 
 	// --操作モード-- //
 	int controlMode;
+#pragma endregion
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -57,6 +58,9 @@ private:
 public:
 	// --インスタンス取得-- //
 	static Player* GetInstance();
+
+	// --インスタンス解放-- //
+	void Relese();
 
 	// --デストラクタ-- //
 	~Player();

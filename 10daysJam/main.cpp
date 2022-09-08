@@ -13,6 +13,31 @@ const int WIN_WIDTH = 1280;
 // ウィンドウ縦幅
 const int WIN_HEIGHT = 960;
 
+int counter = 0, FpsTime[2] = { 0, }, FpsTime_i = 0;
+int color_white;
+double Fps = 0.0;
+char Key[256];
+
+void SetColor() {
+	color_white = GetColor(255, 255, 255);            //白色ハンドルを取得
+	return;
+}
+
+void FpsTimeFanction() {
+	if (FpsTime_i == 0)
+		FpsTime[0] = GetNowCount();               //1周目の時間取得
+	if (FpsTime_i == 49) {
+		FpsTime[1] = GetNowCount();               //50周目の時間取得
+		Fps = 1000.0f / ((FpsTime[1] - FpsTime[0]) / 50.0f);//測定した値からfpsを計算
+		FpsTime_i = 0;//カウントを初期化
+	}
+	else
+		FpsTime_i++;//現在何周目かカウント
+	if (Fps != 0)
+		DrawFormatString(0, 380, 0xFFFFFF, "FPS %.1f", Fps); //fpsを表示
+	return;
+}
+
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine,
 	_In_ int nCmdShow) {
 
@@ -81,6 +106,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// --シーン管理クラス描画処理-- //
 		sceneM->Draw();
+
+		FpsTimeFanction();
 
 		//---------  ここまでにプログラムを記述  ---------//
 		// (ダブルバッファ)裏面
