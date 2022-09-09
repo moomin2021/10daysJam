@@ -141,7 +141,7 @@ void GameScene::Update() {
 #pragma region j‚ÌÀ•WŒvZ
 
 	//Lƒ{ƒ^ƒ“‚Å’Zj‚ÌƒXƒe[ƒg‚ğu”½“]v‚É
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal) {
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
 		hourHand.state = State::Reverse;
 	}
 
