@@ -170,6 +170,8 @@ void GameScene::Update() {
 			itemSandwichCount = 0;
 			enemySandwichCount = 0;
 
+			LevelReset();
+
 			//‚Í‚³‚ñ‚¾uŠÔ‚É‚Í‚³‚Ü‚ê‚Ä‚¢‚é“G‚ğÁ–Å‚³‚¹‚é
 			for (int i = enemys.size()-1; i >=0; i--) {
 				if (enemys[i].GetState() == State::Reverse) {
