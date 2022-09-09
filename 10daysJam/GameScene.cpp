@@ -601,22 +601,27 @@ void GameScene::LevelUpdate() {
 	{
 	case 0:
 		enemySpawnRate = 0.0f;
-		spawnInterval = 100;
+		spawnInterval = 180;
+		break;
 	case 1:
 		enemySpawnRate = 15.0f;
-		spawnInterval = 100;
+		spawnInterval = 80;
 		break;
 	case 2:
 		enemySpawnRate = 19.0f;
+		spawnInterval = 54;
 		break;
 	case 3:
 		enemySpawnRate = 23.0f;
+		spawnInterval = 38;
 		break;
 	case 4:
 		enemySpawnRate = 26.0f;
+		spawnInterval = 30;
 		break;
 	case 5:
 		enemySpawnRate = 28.0f;
+		spawnInterval = 25;
 		break;
 	case 6:
 		enemySpawnRate = 29.0f;
