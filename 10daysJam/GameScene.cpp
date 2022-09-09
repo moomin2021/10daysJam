@@ -435,10 +435,10 @@ void GameScene::Draw() {
 	SetDrawBright(39, 32, 225);
 
 	// --’Zj‚Ì•`‰æ-- //
-	for (int i = levelCircle.radius; i < longHand.length; i++) {
+	for (int i = 0; i < longHand.length; i++) {
 		DrawRotaGraph(
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i),
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i),
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
 			0.5f, 0.0f, whiteCircleGraph, true);
 	}
 

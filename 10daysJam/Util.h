@@ -28,8 +28,7 @@ struct Line {
 };
 
 struct Box {
-	Vector2 pos1;
-	Vector2 pos2;
+	
 };
 
 typedef struct Color

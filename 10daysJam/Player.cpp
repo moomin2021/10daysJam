@@ -44,7 +44,7 @@ Player::Player()
 	playerSpeed = 5.7f;
 
 	// --中心からのプレイヤーの距離-- //
-	playerLength = player.radius;
+	playerLength = 32;
 
 	// --プレイヤーの画像読み込み-- //
 	LoadDivGraph("Resources/Player.png", 2, 2, 1, 48, 48, playerGraph);
@@ -79,6 +79,19 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 	// --プレイヤーが外側内側どちらに進むか（1 = 外側, -1 = 内側）-- //
 	int playerMoveAdd = 0;
 
+	// --短針の角度を求める-- //
+	{
+		// --短針のベクトル-- //
+		Vector2 hourHandVec = { hourHand.end.x - hourHand.start.x, hourHand.end.y - hourHand.start.y };
+
+		// --2つのベクトルのなす角を求める-- //
+		hourHandAngle = hourHandVec.dot(Vector2(0, -1)) / (hourHandVec.length() * Vector2(0, -1).length());
+		hourHandAngle = acos(hourHandAngle);
+		hourHandAngle = Util::Radian2Degree(hourHandAngle);
+
+		if (hourHandVec.x < 0) hourHandAngle = 180 + (180 - hourHandAngle);
+	}
+
 #pragma region 操作モード1の処理
 	if (controlMode == MODE1) {
 		// --左スティックが倒れている角度を求める-- //
@@ -96,7 +109,6 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 		}
 
 		// --短針の角度を求める-- //
-		float hourHandAngle;
 		{
 			// --短針のベクトル-- //
 			Vector2 hourHandVec = { hourHand.end.x - hourHand.start.x, hourHand.end.y - hourHand.start.y };
@@ -200,17 +212,17 @@ void Player::Draw(Camera camera_) {
 
 	// --描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	Color color = GetColor16("1a7971");
+	Color color = GetColor16("2720e1");
 	SetDrawBright(color.red, color.green, color.blue);
 
-	for (int i = 0; i < 5; i++) {
-		DrawGraph(pos.pos.x - 24, pos.pos.y - 24, playerGraph[0], true);
+	for (int i = 0; i < 15; i++) {
+		DrawRotaGraph(pos.pos.x, pos.pos.y, 1.0f, Degree2Radian(hourHandAngle - 90), playerGraph[0], true);
 	}
 
-	//SetDrawBright(255, 255, 255);
+	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-	DrawGraph(pos.pos.x - 24, pos.pos.y - 24, playerGraph[1], true);
+	DrawRotaGraph(pos.pos.x, pos.pos.y, 1.0f, Degree2Radian(hourHandAngle - 90), playerGraph[1], true);
 	//DrawCircle(pos, 0xffffff, true);
 
 #pragma endregion

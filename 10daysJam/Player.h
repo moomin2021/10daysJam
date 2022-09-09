@@ -41,6 +41,9 @@ private:
 	int playerGraph[2];
 #pragma endregion
 
+	// --短針の角度-- //
+	float hourHandAngle;
+
 #pragma region その他変数宣言
 	// --スティックの範囲-- //
 	float stickRange;
