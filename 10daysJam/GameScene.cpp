@@ -161,7 +161,7 @@ void GameScene::Update() {
 			hourHand.state = State::Stop;
 
 			//はさんだオブジェクトの数で戻す力を増やす
-			reverseTime += level;
+			reverseTime += level * 2;
 			reverseTime += itemSandwichCount / 2 * level;
 			reverseTime += enemySandwichCount * 2 * level;
 			//スコアを加算、はさんだ数をリセット
@@ -196,7 +196,12 @@ void GameScene::Update() {
 				hourHand.state = State::Normal;
 				longHand.radian = 0;
 				//	hourHand.radian = 0;
-				enemys.clear();
+				//ステートがデスでない敵は削除、デスはそのまま
+				for (int i = enemys.size(); i <= 0; i--) {
+					if (enemys[i].GetState() != State::Death) {
+						enemys.erase(enemys.begin() + i);
+					}
+				}
 				LevelReset();
 				// --スコア加算-- //
 				Score::AddScore(1000);
@@ -276,6 +281,10 @@ void GameScene::Update() {
 	// --エネミークラス更新処理-- //
 	for (int i = enemys.size() - 1; i >= 0; i--) {
 		enemys[i].Update(hourHand);
+		if (enemys[i].GetState() == State::Delete) {
+			enemys.erase(enemys.begin() + i);
+		}
+
 
 		//短針が反転モードなら判定をとる
 		if (hourHand.state == State::Reverse) {
@@ -500,9 +509,12 @@ void GameScene::Draw() {
 	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
 	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
 	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
-	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+	DrawFormatString(0, 360, 0xFFFFFF, "敵の総数:%d", enemys.size());
+	DrawFormatString(0, 380, 0xFFFFFF, "FPS");
 	DrawFormatString(0, 400, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
-	DrawFormatString(0, 400, 0xFFFFFF, "アイテム:%d", itemSandwichCount);
+	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+
+
 	/*SetFontSize(80);*/
 	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 	/*SetFontSize(16);*/

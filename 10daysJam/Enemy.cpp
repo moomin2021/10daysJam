@@ -100,6 +100,9 @@ void Enemy::UpdateDeath(Vector2 afterPos, float randParam) {
 		obj.pos = bezire.pos[effectTime];
 		effectTime++;
 	}
+	else if (effectTime >= bezire.divisionNum) {
+		state = State::Delete;
+	}
 
 	//”¼Œa‚ğ¬‚³‚­‚µ‚ÄF‚ğ…F‚É
 	obj.radius = 6.0f;
