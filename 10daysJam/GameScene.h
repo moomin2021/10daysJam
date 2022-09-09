@@ -7,6 +7,7 @@
 #include "JoyPadInput.h"
 #include"Camera.h"
 #include"BreakEffect.h"
+#include"Particle.h"
 
 class GameScene {
 	/// --メンバ変数-- ///
@@ -93,6 +94,9 @@ private:
 
 	// --回転するパーティクル-- //
 	Line star;
+	int maxStarparticle;
+	std::vector<Particle> starParticles;
+
 
 #pragma endregion
 
