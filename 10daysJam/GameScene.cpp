@@ -161,8 +161,9 @@ void GameScene::Update() {
 			hourHand.state = State::Stop;
 
 			//はさんだオブジェクトの数で戻す力を増やす
-			reverseTime += itemSandwichCount * 2;
-			reverseTime += enemySandwichCount * 5;
+			reverseTime += level;
+			reverseTime += itemSandwichCount / 2 * level;
+			reverseTime += enemySandwichCount * 2 * level;
 			//スコアを加算、はさんだ数をリセット
 			Score::AddScore(300 * itemSandwichCount);
 			Score::AddScore(500 * enemySandwichCount);
@@ -584,6 +585,7 @@ void GameScene::LevelUpdate() {
 	{
 	case 1:
 		enemySpawnRate = 15.0f;
+		spawnInterval = 100;
 		break;
 	case 2:
 		enemySpawnRate = 19.0f;
