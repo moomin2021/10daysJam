@@ -112,6 +112,6 @@ namespace Util {
 	/// <summary>
 	/// 16i”‚ğRGB‚É•ÏX
 	/// </summary>
-	Color GetColor16(char str[]);
+	Color GetColor16(const char str[]);
 
 } // namespace MathUtility
