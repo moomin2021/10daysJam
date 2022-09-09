@@ -152,6 +152,13 @@ void GameScene::Update() {
 			Score::AddScore(500 * enemySandwichCount);
 			itemSandwichCount = 0;
 			enemySandwichCount = 0;
+
+			//‚Í‚³‚ñ‚¾uŠÔ‚É‚Í‚³‚Ü‚ê‚Ä‚¢‚é“G‚ğÁ–Å‚³‚¹‚é
+			for (int i = 0; i < enemys.size(); i++) {
+				if (enemys[i].GetState() == State::Reverse) {
+					enemys.erase(enemys.begin() + i);
+				}
+			}
 		}
 	}
 
