@@ -39,6 +39,8 @@ void Enemy::Update(Line hourLine_) {
 		//F‚ğÔ‚É•ÏX
 		color = 0xff0000;
 		break;
+	case State::Death:
+
 	default:
 		break;
 	}

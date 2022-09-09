@@ -38,14 +38,9 @@ private:
 #pragma endregion
 
 #pragma region エネミーのスポーン関係変数の宣言
-	// --敵のスポーン位置を確定してからスポーンさせるまでの時間-- //
-	int delayMax;
 	
 	// --次に敵が発生するまでの間隔-- //
 	int spawnInterval;
-
-	// --敵のスポーン遅延の残り時間-- //
-	int spawnDelay;
 
 	// --敵の発生タイマー-- //
 	int spawnTimer;
