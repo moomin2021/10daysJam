@@ -85,7 +85,7 @@ GameScene::GameScene() {
 	newCircleRadius = 0.0f;
 
 	// --レベル-- //
-	level = 1;
+	level = 0;
 
 	// --経験値-- //
 	point = 0;
@@ -575,7 +575,7 @@ void GameScene::Collision() {
 void GameScene::LevelUpdate() {
 #pragma region 経験値によってレベルを変える処理
 	// --現在のレベルの必要経験値が手に入ったらレベルを上げる-- //
-	if (needPoint[level - 1] == point) {
+	if (needPoint[level] == point && level < 10) {
 		level++;
 		point = 0;
 	}
@@ -620,7 +620,7 @@ void GameScene::LevelUpdate() {
 
 // --レベルリセット-- //
 void GameScene::LevelReset() {
-	level = 1;
+	level = 0;
 	point = 0;
 }
 
