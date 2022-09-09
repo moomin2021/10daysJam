@@ -9,6 +9,7 @@ enum class State {
 	Stop,
 	Item,
 	Enemy,
+	Death,
 };
 
 struct Circle
