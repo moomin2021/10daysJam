@@ -40,14 +40,9 @@ GameScene::GameScene() {
 #pragma endregion
 
 #pragma region エネミーのスポーン関係変数の初期化
-	// --敵のスポーン位置を確定してからスポーンさせるまでの時間-- //
-	delayMax = 20;
 
 	// --次に敵が発生するまでの間隔-- //
 	spawnInterval = 20;
-
-	// --敵のスポーン遅延の残り時間-- //
-	spawnDelay = delayMax;
 
 	// --敵の発生タイマー-- //
 	spawnTimer = spawnInterval;
@@ -204,7 +199,6 @@ void GameScene::Update() {
 				//シェイク
 				camera.SetShakeCount(10);
 				//敵のスポーンタイマーもリセット
-				spawnDelay = delayMax;
 				spawnTimer = spawnInterval;
 				//衝撃エフェクトを作成
 				CreateBreakEffect(clock.pos, 128);
@@ -218,7 +212,6 @@ void GameScene::Update() {
 			longHand.state = State::Normal;
 			hourHand.state = State::Normal;
 			//敵のスポーンタイマーをリセット
-			spawnDelay = delayMax;
 			spawnTimer = spawnInterval;
 		}
 	}
@@ -507,7 +500,6 @@ void GameScene::Draw() {
 	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
 	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
 	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
-	DrawFormatString(0, 360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d", spawnDelay);
 	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
 	DrawFormatString(0, 400, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
 	DrawFormatString(0, 400, 0xFFFFFF, "アイテム:%d", itemSandwichCount);
@@ -525,37 +517,26 @@ void GameScene::EnemySpawn() {
 		//タイマーが0になったらスポーン位置を決める
 	}
 	else if (spawnTimer == 0) {
-
-
-		//スポーンタイマーが0になった瞬間のみ位置を決める(短針の位置を参照するため
-		if (spawnDelay == delayMax) {
-			enemyLength = Random(levelCircle.radius, hourHand.length);
-			float rad = hourHand.radian - 90;
-			enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
-			enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
-			//ディレイタイマーを減らす
-			spawnDelay--;
-		}//ディレイタイマーが0出ないなら
-		else if (spawnDelay > 0) {
-			//ディレイタイマーを減らす
-			spawnDelay--;
-		}//ディレイタイマーが0になったら座標を確定
-		else if (spawnDelay == 0) {
-			enemys.push_back({ enemyPos, 8.0f });
-			if (Random(0, 100) <= enemySpawnRate) {
-				//5%の確率で敵としてスポーン
-				enemys.back().SetState(State::Enemy);
-			}
-			else {//それ以外の95%でアイテムとしてスポーン
-				enemys.back().SetState(State::Item);
-			}
-			//タイマーをリセット
-			spawnTimer = spawnInterval;
-			spawnDelay = delayMax;
-
-
+		enemyLength = Random(levelCircle.radius, hourHand.length);
+		float rad = hourHand.radian - 90;
+		enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
+		enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
+		enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
+		enemyPos.y -= (10.0f * sinf((rad + 90) / 180 * PI));
+		enemys.push_back({ enemyPos, 8.0f });
+		if (Random(0, 100) <= enemySpawnRate) {
+			//5%の確率で敵としてスポーン
+			enemys.back().SetState(State::Enemy);
 		}
+		else {//それ以外の95%でアイテムとしてスポーン
+			enemys.back().SetState(State::Item);
+		}
+		//タイマーをリセット
+		spawnTimer = spawnInterval;
 	}
+
+		
+	
 }
 
 // --自機と敵の当たり判定処理-- //
