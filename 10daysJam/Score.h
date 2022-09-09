@@ -42,6 +42,9 @@ public:
 	// --指定した分だけスコア加算-- //
 	static void AddScore(int value);
 
+	// --スコアを参照-- //
+	static int GetScore();
+
 private:
 	// --コンストラクタ-- //
 	Score();

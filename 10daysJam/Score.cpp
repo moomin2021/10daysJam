@@ -87,3 +87,6 @@ void Score::Draw() {
 void Score::AddScore(int value) {
 	realScore += value;
 }
+
+// --スコアを参照-- //
+int Score::GetScore() { return realScore; }
