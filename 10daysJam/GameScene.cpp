@@ -583,6 +583,9 @@ void GameScene::LevelUpdate() {
 	//ƒŒƒxƒ‹‚Å“G‚ÌoŒ»—¦‚ğ’²®
 	switch (level)
 	{
+	case 0:
+		enemySpawnRate = 0.0f;
+		spawnInterval = 100;
 	case 1:
 		enemySpawnRate = 15.0f;
 		spawnInterval = 100;
