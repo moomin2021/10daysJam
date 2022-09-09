@@ -18,20 +18,35 @@ SceneManager* SceneManager::GetInstance() {
 // --コンストラクタ-- //
 SceneManager::SceneManager() {
 	// --インスタンス読み込み-- //
+#pragma region インスタンス読み込み
+	// --ゲームシーン-- //
 	gameScene = GameScene::GetInstance();
+
+	// --リザルトシーン-- //
+	resultScene = ResultScene::GetInstance();
+
+	// --スコア-- //
 	score = Score::GetInstance();
+#pragma endregion
 }
 
 // --デストラクタ-- //
 SceneManager::~SceneManager() {
-	delete gameScene;
+	gameScene->Relese();
+	resultScene->Relese();
 	delete score;
 }
 
 // --初期化処理-- //
 void SceneManager::Initialize() {
 	// --ゲームシーン初期化処理-- //
+#pragma region クラス初期化
+	// --ゲームシーン-- //
 	gameScene->Initialize();
+
+	// --リザルトシーン-- //
+	resultScene->Initialize();
+#pragma endregion
 }
 
 // --更新処理-- //
@@ -50,14 +65,10 @@ void SceneManager::Update() {
 		score->Update();
 	}
 
-	// --ゲームクリアシーン更新処理-- //
-	else if (scene == GAMECLEARSCENE) {
-
-	}
-
-	// --ゲームオーバーシーン更新処理-- //
-	else if (scene == GAMEOVERSCENE) {
-
+	// --リザルトシーン更新処理-- //
+	else if (scene == RESULTSCENE) {
+		// --リザルトシーン更新処理-- //
+		resultScene->Update();
 	}
 }
 
@@ -77,14 +88,10 @@ void SceneManager::Draw() {
 		score->Draw();
 	}
 
-	// --ゲームクリアシーン描画処理-- //
-	else if (scene == GAMECLEARSCENE) {
-
-	}
-
-	// --ゲームオーバーシーン描画処理-- //
-	else if (scene == GAMEOVERSCENE) {
-
+	// --リザルトシーン描画処理-- //
+	else if (scene == RESULTSCENE) {
+		// --リザルトシーン描画処理-- //
+		resultScene->Draw();
 	}
 }
 

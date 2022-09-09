@@ -1,6 +1,14 @@
 #pragma once
+// --DXライブラリ-- //
 #include "DxLib.h"
+
+// --ゲームシーンクラス-- //
 #include "GameScene.h"
+
+// --リザルトシーンクラス-- //
+#include "ResultScene.h"
+
+// --スコアクラス-- //
 #include "Score.h"
 
 class SceneManager {
@@ -9,8 +17,7 @@ class SceneManager {
 	enum SceneNum {
 		TITLESCENE,
 		GAMESCENE,
-		GAMECLEARSCENE,
-		GAMEOVERSCENE
+		RESULTSCENE
 	};
 
 	/// --メンバ変数-- ///
@@ -20,11 +27,16 @@ private:
 	// --インスタンス-- //
 	static SceneManager* myInstance;
 
+#pragma region クラス宣言
 	// --ゲームシーン-- //
 	GameScene* gameScene;
 
+	// --リザルトシーン-- //
+	ResultScene* resultScene;
+
 	// --スコア-- //
 	Score* score;
+#pragma endregion
 
 	// --シーンの番号-- //
 	static int scene;

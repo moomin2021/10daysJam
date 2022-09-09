@@ -1,22 +1,35 @@
 #pragma once
+// --コントローラークラス-- //
+#include "JoyPadInput.h"
 
-class GameOverScene {
+class ResultScene {
 	/// --メンバ変数-- ///
 public:
 
 private:
 	// --インスタンス-- //
-	static GameOverScene* myInstance;
+	static ResultScene* myInstance;
+
+#pragma region クラス宣言
+	// --コントローラークラス-- //
+	JoyPadInput* pad;
+#pragma endregion
+
+	// --背景画像ハンドル-- //
+	int backGroundGraph;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
 	/// --メンバ関数-- ///
 public:
 	// --インスタンス取得-- //
-	static GameOverScene* GetInstance();
+	static ResultScene* GetInstance();
+
+	// --インスタンス解放-- //
+	void Relese();
 
 	// --デストラクタ-- //
-	~GameOverScene();
+	~ResultScene();
 
 	// --初期化処理-- //
 	void Initialize();
@@ -29,7 +42,7 @@ public:
 
 private:
 	// --コンストラクタ-- //
-	GameOverScene();
+	ResultScene();
 
 	/// --メンバ関数END-- ///
 };
