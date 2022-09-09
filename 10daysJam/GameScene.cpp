@@ -161,7 +161,7 @@ void GameScene::Update() {
 			hourHand.state = State::Stop;
 
 			//はさんだオブジェクトの数で戻す力を増やす
-			reverseTime += level;
+			reverseTime += level * 2;
 			reverseTime += itemSandwichCount / 2 * level;
 			reverseTime += enemySandwichCount * 2 * level;
 			//スコアを加算、はさんだ数をリセット
@@ -169,6 +169,8 @@ void GameScene::Update() {
 			Score::AddScore(500 * enemySandwichCount);
 			itemSandwichCount = 0;
 			enemySandwichCount = 0;
+
+			LevelReset();
 
 			//はさんだ瞬間にはさまれている敵を消滅させる
 			for (int i = enemys.size()-1; i >=0; i--) {
