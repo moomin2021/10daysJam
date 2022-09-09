@@ -2,6 +2,9 @@
 // --DXライブラリ-- //
 #include "DxLib.h"
 
+// --タイトルシーンクラス-- //
+#include "TitleScene.h"
+
 // --ゲームシーンクラス-- //
 #include "GameScene.h"
 
@@ -28,6 +31,9 @@ private:
 	static SceneManager* myInstance;
 
 #pragma region クラス宣言
+	// --タイトルシーン-- //
+	TitleScene* titleScene;
+
 	// --ゲームシーン-- //
 	GameScene* gameScene;
 

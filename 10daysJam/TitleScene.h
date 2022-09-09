@@ -8,12 +8,18 @@ private:
 	// --インスタンス-- //
 	static TitleScene* myInstance;
 
+	// --タイトルロゴ画像ハンドル-- //
+	int titlelogoGraph[4];
+
 	/// --メンバ変数END-- ///
 	/// --------------- ///
 	/// --メンバ関数-- ///
 public:
 	// --インスタンス取得-- //
 	static TitleScene* GetInstance();
+
+	// --インスタンス解放-- //
+	void Relese();
 
 	// --デストラクタ-- //
 	~TitleScene();
