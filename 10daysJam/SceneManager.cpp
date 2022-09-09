@@ -4,7 +4,7 @@
 SceneManager* SceneManager::myInstance = nullptr;
 
 // --シーンの初期化-- //
-int SceneManager::scene = TITLESCENE;
+int SceneManager::scene = GAMESCENE;
 
 // --インスタンス読み込み-- //
 SceneManager* SceneManager::GetInstance() {

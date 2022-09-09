@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BezireCurve.cpp" />
     <ClCompile Include="BreakEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BezireCurve.h" />
     <ClInclude Include="BreakEffect.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Enemy.h" />

@@ -196,7 +196,8 @@ void Player::Draw(Camera camera_) {
 	};
 
 	// --•`‰æ-- //
-	DrawCircle(pos, color, true);
+	DrawCircle(pos, 0xffffff, true);
+
 #pragma endregion
 
 #pragma region •â•ü•`‰æˆ—

@@ -1,6 +1,7 @@
 #pragma once
 #include <Math.h>
 #include "Vector2.h"
+#include<stdint.h>
 
 enum class State {
 	Normal,
@@ -111,17 +112,6 @@ namespace Util {
 	/// <summary>
 	/// 16i”‚ğRGB‚É•ÏX
 	/// </summary>
-	Color GetColor16(char str[])
-	{
-		uint32_t rgb = (uint32_t)strtol((const char*)&str[0], NULL, 16);
-
-		Color color;
-
-		color.red = (rgb >> 16);
-		color.green = (rgb >> 8);
-		color.blue = (rgb >> 0);
-
-		return color;
-	}
+	Color GetColor16(char str[]);
 
 } // namespace MathUtility
