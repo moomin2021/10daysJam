@@ -175,7 +175,8 @@ void GameScene::Update() {
 			//はさんだ瞬間にはさまれている敵を消滅させる
 			for (int i = enemys.size()-1; i >=0; i--) {
 				if (enemys[i].GetState() == State::Reverse) {
-					enemys.erase(enemys.begin() + i);
+					enemys[i].SetState(State::Death);
+					//enemys.erase(enemys.begin() + i);
 				}
 			}
 		}
@@ -542,10 +543,11 @@ void GameScene::EnemySpawn() {
 void GameScene::Collision() {
 	// --自機と敵の当たり判定を行う-- //
 	for (int i = enemys.size() - 1; i >= 0; i--) {
-		if (CollisionCtoC(player->player, enemys[i].enemy)) {
+		if (CollisionCtoC(player->player, enemys[i].obj)) {
 			//敵のステートがItemなら消滅
 			if (enemys[i].GetState() == State::Item) {
-				enemys.erase(enemys.begin() + i);
+				enemys[i].SetState(State::Death);
+				//enemys.erase(enemys.begin() + i);
 				point++;
 				Score::AddScore(100);
 				AddReversePower(1);
@@ -567,7 +569,7 @@ void GameScene::Collision() {
 
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
-		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
+		if (CollisionCtoC(levelCircle, enemys[i].obj)) {
 			enemys.erase(enemys.begin() + i);
 		}
 	}
@@ -585,6 +587,9 @@ void GameScene::LevelUpdate() {
 	//レベルで敵の出現率を調整
 	switch (level)
 	{
+	case 0:
+		enemySpawnRate = 0.0f;
+		spawnInterval = 100;
 	case 1:
 		enemySpawnRate = 15.0f;
 		spawnInterval = 100;
