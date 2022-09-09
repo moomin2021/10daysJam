@@ -120,7 +120,10 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-
+	star.start = clock.pos;
+	star.radian = 0;
+	star.length = hourHand.length + 96;
+	star.end = { star.start.x + star.length,star.start.y + star.length };
 }
 
 // --更新処理-- //
@@ -225,6 +228,21 @@ void GameScene::Update() {
 
 
 #pragma endregion
+
+
+	if (star.state == State::Normal) {
+		star.radian += 3.0f;
+	}
+
+	//角度が上限、下限を超えたら戻す
+	star.radian = fmodf(star.radian, 360.f);
+	if (star.radian <= 0)star.radian += 360.0f;
+	//位置用のラジアン
+	float radStar = star.radian - 90;
+	//座標計算
+	star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
+	star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
+
 
 #pragma region プレイヤー更新処理
 	player->Update(hourHand, clock, levelCircle.radius);
@@ -413,6 +431,11 @@ void GameScene::Draw() {
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
+
+	//パーティクルスターの描画
+	Circle starC;
+	starC = { star.end + camera.GetPos(),12 };
+	DrawCircle(starC, 0xffffff, true);
 
 #pragma region レベルサークルの描画
 	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //

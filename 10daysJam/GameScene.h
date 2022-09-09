@@ -91,6 +91,9 @@ private:
 	// --逆回りの力-- //
 	float reverseTime;
 
+	// --回転するパーティクル-- //
+	Line star;
+
 #pragma endregion
 
 #pragma region レベル関係変数の宣言
