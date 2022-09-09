@@ -27,7 +27,7 @@ Score::Score() : displayScore(0), scoreTime(10) {
 	scoreTime = 10;
 
 	// --画像読み込み-- //
-	LoadDivGraph("Resources/numbers.png", 10, 10, 1, 16, 32, scoreGraph);
+	LoadDivGraph("Resources/numbers.png", 10, 10, 1, 32, 58, scoreGraph);
 }
 
 // --デストラクタ-- //
@@ -74,7 +74,7 @@ void Score::Draw() {
 
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 10; j++) {
-			DrawRotaGraph(1088 + i * 32, 32, 2.0f, 0.0f, scoreGraph[num / (int)pow(10, 5 - i)], true);
+			DrawGraph(1088 + i * 29, 0, scoreGraph[num / (int)pow(10, 5 - i)], true);
 		}
 		num = num % (int)pow(10, 5 - i);
 	}
