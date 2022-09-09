@@ -27,7 +27,7 @@ Score::Score() : displayScore(0), scoreTime(10) {
 	scoreTime = 10;
 
 	// --画像読み込み-- //
-	LoadDivGraph("Resouces/numbers.png", 10, 10, 1, 16, 32, scoreGraph);
+	LoadDivGraph("Resources/numbers.png", 10, 10, 1, 16, 32, scoreGraph);
 }
 
 // --デストラクタ-- //
