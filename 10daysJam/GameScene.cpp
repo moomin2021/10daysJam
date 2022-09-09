@@ -213,7 +213,7 @@ void GameScene::Update() {
 	}
 
 	// --エネミークラス更新処理-- //
-	for (int i = 0; i < enemys.size(); i++) {
+	for (int i = enemys.size() - 1; i >= 0; i--) {
 		enemys[i].Update(hourHand);
 
 		//短針が反転モードなら判定をとる
@@ -438,8 +438,6 @@ void GameScene::EnemySpawn() {
 				//タイマーをリセット
 				spawnTimer = spawnInterval;
 				spawnDelay = delayMax;
-				
-			
 		}
 	}
 }
@@ -447,7 +445,7 @@ void GameScene::EnemySpawn() {
 // --自機と敵の当たり判定処理-- //
 void GameScene::Collision() {
 	// --自機と敵の当たり判定を行う-- //
-	for (int i = 0; i < enemys.size(); i++) {
+	for (int i = enemys.size() - 1; i >= 0; i--) {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
 			//敵のステートがItemなら消滅
 			if (enemys[i].GetState() == State::Item) {
