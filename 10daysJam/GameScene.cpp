@@ -146,6 +146,12 @@ void GameScene::Update() {
 			longHand.state = State::Reverse;
 			//短針のステートをとめる
 			hourHand.state = State::Stop;
+
+			//オブジェクトのはさんだ数でスコアを加算、はさんだ数をリセット
+			Score::AddScore(300 * itemSandwichCount);
+			Score::AddScore(500 * enemySandwichCount);
+			itemSandwichCount = 0;
+			enemySandwichCount = 0;
 		}
 	}
 
