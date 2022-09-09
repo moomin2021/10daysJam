@@ -606,10 +606,10 @@ void GameScene::LevelUpdate() {
 	switch (level)
 	{
 	case 1:
-		enemySpawnRate = 5.0f;
+		enemySpawnRate = 0.0f;
 		break;
 	case 2:
-		enemySpawnRate = 7.5f;
+		enemySpawnRate = 5.0f;
 		break;
 	case 3:
 		enemySpawnRate = 10.0f;
@@ -621,19 +621,19 @@ void GameScene::LevelUpdate() {
 		enemySpawnRate = 15.0f;
 		break;
 	case 6:
-		enemySpawnRate = 18.0f;
+		enemySpawnRate = 17.5f;
 		break;
 	case 7:
-		enemySpawnRate = 22.0f;
+		enemySpawnRate = 20.0f;
 		break;
 	case 8:
-		enemySpawnRate = 27.0f;
+		enemySpawnRate = 22.5f;
 		break;
 	case 9:
-		enemySpawnRate = 33.0f;
+		enemySpawnRate = 25.0f;
 		break;
 	case 10:
-		enemySpawnRate = 40.0f;
+		enemySpawnRate = 27.5f;
 		break;
 	}
 #pragma endregion
