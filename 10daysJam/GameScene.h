@@ -55,6 +55,13 @@ private:
 	// --敵が短針上のどこでスポーンするかの変数-- //
 	float enemyLength; 
 
+	// --敵を挟んだ数をカウントする変数-- //
+	int enemySandwichCount;
+
+	// --アイテムを挟んだ数をカウントする変数-- //
+	int itemSandwichCount;
+
+
 	// --確定した敵のスポーン位置を保存する用変数-- //
 	Vector2 enemyPos;
 #pragma endregion
@@ -80,6 +87,10 @@ private:
 
 	// --短針が逆回りするときの速度-- //
 	float reverseSpeed;
+
+	// --逆回りの力-- //
+	float reverseTime;
+
 #pragma endregion
 
 #pragma region レベル関係変数の宣言
@@ -143,6 +154,9 @@ public:
 
 	// --レベルをリセットする-- //
 	void LevelReset();
+
+	// --針の反転力を増加させる関数-- //
+	void AddReversePower(int power);
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数

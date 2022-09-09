@@ -146,37 +146,62 @@ void GameScene::Update() {
 			longHand.state = State::Reverse;
 			//短針のステートをとめる
 			hourHand.state = State::Stop;
+
+			//はさんだオブジェクトの数で戻す力を増やす
+			reverseTime += itemSandwichCount * 2;
+			reverseTime += enemySandwichCount * 5;
+			//スコアを加算、はさんだ数をリセット
+			Score::AddScore(300 * itemSandwichCount);
+			Score::AddScore(500 * enemySandwichCount);
+			itemSandwichCount = 0;
+			enemySandwichCount = 0;
+
+			//はさんだ瞬間にはさまれている敵を消滅させる
+			for (int i = enemys.size()-1; i >=0; i--) {
+				if (enemys[i].GetState() == State::Reverse) {
+					enemys.erase(enemys.begin() + i);
+				}
+			}
 		}
 	}
 
 	//ステートが通常なら長針は自動回転
 	if (longHand.state == State::Normal) {
 		longHand.radian += longHandSpeed;
-	}//ステートが「反転」なら逆走
+	}//ステートが「反転」かつ、反転する力がまだ残っているなら逆走
 	else if (longHand.state == State::Reverse) {
-		//速度は短針と等速
-		longHand.radian -= reverseSpeed;
-
-		//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
-		if (longHand.radian < reverseSpeed) {
+		if (reverseTime > 0) {
+			//速度は短針と等速
+			longHand.radian -= reverseSpeed;
+			//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
+			if (longHand.radian < reverseSpeed) {
+				longHand.state = State::Normal;
+				hourHand.state = State::Normal;
+				longHand.radian = 0;
+				//	hourHand.radian = 0;
+				enemys.clear();
+				LevelReset();
+				// --スコア加算-- //
+				Score::AddScore(1000);
+				//シェイク
+				camera.SetShakeCount(10);
+				//敵のスポーンタイマーもリセット
+				spawnDelay = delayMax;
+				spawnTimer = spawnInterval;
+				//衝撃エフェクトを作成
+				CreateBreakEffect(clock.pos, 128);
+				//戻す力をリセット
+				reverseTime = 0;
+			}
+			//反転速度の減算
+			reverseTime--;
+		}//戻す力がなくなったらステートをノーマルに戻す
+		else if (reverseTime <= 0) {
 			longHand.state = State::Normal;
 			hourHand.state = State::Normal;
-			longHand.radian = 0;
-			//	hourHand.radian = 0;
-			enemys.clear();
-			LevelReset();
-			// --スコア加算-- //
-			Score::AddScore(1000);
-
-			//シェイク
-			camera.SetShakeCount(10);
-
-			//敵のスポーンタイマーもリセット
+			//敵のスポーンタイマーをリセット
 			spawnDelay = delayMax;
 			spawnTimer = spawnInterval;
-
-			//衝撃エフェクトを作成
-			CreateBreakEffect(clock.pos, 128);
 		}
 	}
 
@@ -220,9 +245,39 @@ void GameScene::Update() {
 		if (hourHand.state == State::Reverse) {
 			//短針と敵の当たり判定
 			if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpeed)) {
-				enemys[i].OnCollison();
+				//オブジェクトのステートがまだ「反転」でないなら当たり判定のコールバック関数を呼び出し、挟んだ数をカウントする
+				if (enemys[i].GetState() != State::Reverse) {
+					if (enemys[i].GetState() == State::Item) {
+						itemSandwichCount++;
+					}
+					else if (enemys[i].GetState() == State::Enemy) {
+						enemySandwichCount++;
+					}
+
+					enemys[i].OnCollison();
+				}
 			}
 		}
+
+		//長針がノーマルモードなら判定をとる
+	//	if (longHand.state == State::Normal) {
+			//長針と敵の当たり判定
+		if (CollisionCtoL(enemys[i].GetCircle(), longHand, longHandSpeed)) {
+			//一度もステート変更が行われていないなら
+			if (!enemys[i].GetIsChange()) {
+				//敵の状態がアイテムなら敵に
+				if (enemys[i].GetState() == State::Item) {
+					enemys[i].SetState(State::Enemy);
+				}//敵ならアイテムに
+				else if (enemys[i].GetState() == State::Enemy) {
+					enemys[i].SetState(State::Item);
+				}
+				enemys[i].StateChange();
+			}
+
+		}
+
+		//}
 
 		//爆発円との当たり判定
 		if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
@@ -348,10 +403,10 @@ void GameScene::Draw() {
 	// --短針の描画-- //
 	for (int i = 0; i < longHand.length / 1.5f; i++) {
 		DrawExtendGraph(
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)-8,
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)+8,
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f)+8,
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) - 8,
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) - 8,
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) + 8,
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) + 8,
 			whiteCircleGraph, true);
 	}
 
@@ -379,6 +434,12 @@ void GameScene::Draw() {
 	DrawLine(line, 6);
 #pragma endregion
 
+#pragma region 敵の爆発円描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	DrawCircle(burstCircle, 0xff0000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+#pragma endregion
+
 #pragma region エフェクト描画
 	for (int i = 0; i < breakEffects.size(); i++) {
 		breakEffects[i].Draw(camera);
@@ -397,6 +458,9 @@ void GameScene::Draw() {
 	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
 	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
 	DrawFormatString(0, 360, 0xFFFFFF, "エネミーのスポーン遅延時間:%d", spawnDelay);
+	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+	DrawFormatString(0, 400, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
+	DrawFormatString(0, 400, 0xFFFFFF, "アイテム:%d", itemSandwichCount);
 	/*SetFontSize(80);*/
 	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 	/*SetFontSize(16);*/
@@ -427,17 +491,19 @@ void GameScene::EnemySpawn() {
 			spawnDelay--;
 		}//ディレイタイマーが0になったら座標を確定
 		else if (spawnDelay == 0) {
-				enemys.push_back({ enemyPos, 8.0f });
-				if (Random(0, 100) <= enemySpawnRate) {
-					//5%の確率で敵としてスポーン
-					enemys.back().SetState(State::Enemy);
-				}
-				else {//それ以外の95%でアイテムとしてスポーン
-					enemys.back().SetState(State::Item);
-				}
-				//タイマーをリセット
-				spawnTimer = spawnInterval;
-				spawnDelay = delayMax;
+			enemys.push_back({ enemyPos, 8.0f });
+			if (Random(0, 100) <= enemySpawnRate) {
+				//5%の確率で敵としてスポーン
+				enemys.back().SetState(State::Enemy);
+			}
+			else {//それ以外の95%でアイテムとしてスポーン
+				enemys.back().SetState(State::Item);
+			}
+			//タイマーをリセット
+			spawnTimer = spawnInterval;
+			spawnDelay = delayMax;
+
+
 		}
 	}
 }
@@ -449,19 +515,22 @@ void GameScene::Collision() {
 		if (CollisionCtoC(player->player, enemys[i].enemy)) {
 			//敵のステートがItemなら消滅
 			if (enemys[i].GetState() == State::Item) {
-			enemys.erase(enemys.begin() + i);
-			point++;
-			Score::AddScore(100);
+				enemys.erase(enemys.begin() + i);
+				point++;
+				Score::AddScore(100);
+				AddReversePower(1);
 			}//敵のステートがenemyならレベルを減らして消滅させる
 			else if (enemys[i].GetState() == State::Enemy) {
 				//レベルを下げて、爆発サークルを出現
 				if (level > 1) {
 					level--;
 				}
-				burstCircle.pos = enemys[i].GetCircle().pos;
+				burstCircle.pos = enemys[i].GetCircle().pos + camera.GetPos();
 				burstCircle.radius = 96.0f;
-
+				//敵を消滅
 				enemys.erase(enemys.begin() + i);
+				//逆走する力をリセット
+				reverseTime = 0;
 			}
 		}
 	}
@@ -469,10 +538,7 @@ void GameScene::Collision() {
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(levelCircle, enemys[i].enemy)) {
-	
-				enemys.erase(enemys.begin() + i);
-			
-			
+			enemys.erase(enemys.begin() + i);
 		}
 	}
 }
@@ -537,4 +603,9 @@ void GameScene::CreateBreakEffect(Vector2 pos, int effectParam) {
 		newEffect.Initialize(pos);
 		breakEffects.push_back(newEffect);
 	}
+}
+
+void GameScene::AddReversePower(int power) {
+	//加算
+	reverseTime += power;
 }

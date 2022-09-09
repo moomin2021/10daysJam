@@ -60,6 +60,9 @@ void Enemy::UpdateReverse(Line hourLine_)
 	//’·‚³‚Æ’Zj‚ÌŠp“x‚©‚ç©À•W‚ğÄŒvZ‚µ‚Ä‘ã“ü
 	enemy.pos.x = (len * cosf((rad) / 180 * PI)) + (enemy.radius * cosf((rad-90) / 180 * PI))+ hourLine_.start.x;
 	enemy.pos.y = (len * sinf((rad) / 180 * PI)) + (enemy.radius * sinf((rad-90) / 180 * PI))+ hourLine_.start.y;
+
+	//F‚ğ–¾‚é‚ß‚ÌƒIƒŒƒ“ƒW‚É
+	color = 0xff7c17;
 }
 
 void Enemy::OnCollison()
@@ -81,7 +84,14 @@ void Enemy::Draw(Camera camera_) {
 void Enemy::SetState(State state_)
 {
 	state = state_;
+
 }
+
+void Enemy::StateChange()
+{
+	isChange = true;
+}
+
 
 //void Enemy::AllEnemyDeath()
 //{
