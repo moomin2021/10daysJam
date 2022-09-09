@@ -60,6 +60,9 @@ void Enemy::UpdateReverse(Line hourLine_)
 	//長さと短針の角度から自座標を再計算して代入
 	enemy.pos.x = (len * cosf((rad) / 180 * PI)) + (enemy.radius * cosf((rad-90) / 180 * PI))+ hourLine_.start.x;
 	enemy.pos.y = (len * sinf((rad) / 180 * PI)) + (enemy.radius * sinf((rad-90) / 180 * PI))+ hourLine_.start.y;
+
+	//色を明るめのオレンジに
+	color = 0xff7c17;
 }
 
 void Enemy::OnCollison()

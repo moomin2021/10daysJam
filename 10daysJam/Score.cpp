@@ -20,7 +20,14 @@ Score* Score::GetInstance() {
 
 // --コンストラクタ-- //
 Score::Score() : displayScore(0), scoreTime(10) {
+	// --表示するスコア-- //
+	displayScore = 0;
 
+	// --スコア加算する時間-- //
+	scoreTime = 10;
+
+	// --画像読み込み-- //
+	LoadDivGraph("Resouces/numbers.png", 10, 10, 1, 16, 32, scoreGraph);
 }
 
 // --デストラクタ-- //
@@ -59,9 +66,21 @@ void Score::Update() {
 
 // --描画処理-- //
 void Score::Draw() {
-	DrawFormatString(800, 0, 0xFFFFFF, "%06d", displayScore);
 	DrawFormatString(0, 200, 0xFFFFFF, "実際のスコア = %d", realScore);
 	DrawFormatString(0, 220, 0xFFFFFF, "表示するスコア = %d", displayScore);
+	int num = displayScore;
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBright(119, 28, 28);
+
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 10; j++) {
+			DrawRotaGraph(1088 + i * 32, 32, 2.0f, 0.0f, scoreGraph[num / (int)pow(10, 5 - i)], true);
+		}
+		num = num % (int)pow(10, 5 - i);
+	}
+
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
 // --指定した分だけスコア加算-- //

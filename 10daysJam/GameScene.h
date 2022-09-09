@@ -87,6 +87,10 @@ private:
 
 	// --短針が逆回りするときの速度-- //
 	float reverseSpeed;
+
+	// --逆回りの力-- //
+	float reverseTime;
+
 #pragma endregion
 
 #pragma region レベル関係変数の宣言
@@ -150,6 +154,9 @@ public:
 
 	// --レベルをリセットする-- //
 	void LevelReset();
+
+	// --針の反転力を増加させる関数-- //
+	void AddReversePower(int power);
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数
