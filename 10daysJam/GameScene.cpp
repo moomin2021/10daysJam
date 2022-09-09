@@ -124,6 +124,21 @@ void GameScene::Initialize() {
 	star.radian = 0;
 	star.length = hourHand.length + 96;
 	star.end = { star.start.x + star.length,star.start.y + star.length };
+
+	//位置用のラジアン
+	float radStar = star.radian - 90;
+	//座標計算
+	star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
+	star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
+
+	//パーティクルの数とか
+	maxStarparticle = 32;
+	for (int i = 0; i< maxStarparticle; i++) {
+		Particle newParticle;
+		newParticle.SetParent(star.end);
+		newParticle.Initialize();
+		starParticles.push_back(newParticle);
+	}
 }
 
 // --更新処理-- //
@@ -231,7 +246,7 @@ void GameScene::Update() {
 
 
 	if (star.state == State::Normal) {
-		star.radian += 3.0f;
+		star.radian += 0.4f;
 	}
 
 	//角度が上限、下限を超えたら戻す
@@ -242,6 +257,12 @@ void GameScene::Update() {
 	//座標計算
 	star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
 	star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
+
+	//パーティクルの更新
+	for (int i = 0; i < starParticles.size(); i++) {
+		starParticles[i].SetParent(star.end);
+		starParticles[i].Update();
+	}
 
 
 #pragma region プレイヤー更新処理
@@ -432,10 +453,16 @@ void GameScene::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
+	for (int i = 0; i < starParticles.size(); i++) {
+		starParticles[i].Draw(camera);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	//パーティクルスターの描画
 	Circle starC;
-	starC = { star.end + camera.GetPos(),12 };
+	starC = { star.end + camera.GetPos(),10 };
 	DrawCircle(starC, 0xffffff, true);
+	
 
 #pragma region レベルサークルの描画
 	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
