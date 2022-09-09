@@ -416,13 +416,11 @@ void GameScene::Draw() {
 	SetDrawBright(119, 28, 28);
 
 	// --’·j‚Ì•`‰æ-- //
-	for (int i = 0; i < longHand.length / 1.5f; i++) {
-		DrawExtendGraph(
-			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) - 8,
-			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) - 8,
-			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) + 8,
-			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (i * 1.5f) + 8,
-			whiteCircleGraph, true);
+	for (int i = levelCircle.radius; i < longHand.length; i++) {
+		DrawRotaGraph(
+			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (i),
+			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (i),
+			0.5f, 0.0f, whiteCircleGraph, true);
 	}
 
 	SetDrawBright(255, 255, 255);
@@ -440,13 +438,11 @@ void GameScene::Draw() {
 	SetDrawBright(39, 32, 225);
 
 	// --’Zj‚Ì•`‰æ-- //
-	for (int i = 0; i < longHand.length / 1.5f; i++) {
-		DrawExtendGraph(
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) - 8,
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) - 8,
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) + 8,
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i * 1.5f) + 8,
-			whiteCircleGraph, true);
+	for (int i = levelCircle.radius; i < longHand.length; i++) {
+		DrawRotaGraph(
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (i),
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (i),
+			0.5f, 0.0f, whiteCircleGraph, true);
 	}
 
 	SetDrawBright(255, 255, 255);
