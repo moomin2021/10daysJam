@@ -51,24 +51,43 @@ float Util::Degree2Radian(float degree)
 
 int Util::Random(int min, int max)
 {
+	int min_, max_;
+	if (min < max) {
+		max_ = max;
+		min_ = min;
+	}
+	else {
+		max_ = min;
+		min_ = max;
+	}
+
 	//—”
 	random_device seed_gem;
 	//‚ß‚é‚¹‚ñ‚Ê‚Â‚¢‚·‚½
 	mt19937_64 engine(seed_gem());
 	//—””ÍˆÍ
-	uniform_real_distribution<float> rand(min, max);
-
+	uniform_real_distribution<float> rand(min_, max_);
 	return rand(engine);
 }
 
 float Util::Random(float min, float max)
 {
+	float min_, max_;
+	if (min < max) {
+		max_ = max;
+		min_ = min;
+	}
+	else {
+		max_ = min;
+		min_ = max;
+	}
+
 	//—”
 	random_device seed_gem;
 	//‚ß‚é‚¹‚ñ‚Ê‚Â‚¢‚·‚½
 	mt19937_64 engine(seed_gem());
 	//—””ÍˆÍ
-	uniform_real_distribution<float> rand(min, max);
+	uniform_real_distribution<float> rand(min_, max_);
 
 	return rand(engine);
 }

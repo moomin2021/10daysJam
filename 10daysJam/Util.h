@@ -27,6 +27,11 @@ struct Line {
 	State state = State::Normal;
 };
 
+struct Box {
+	Vector2 pos1;
+	Vector2 pos2;
+};
+
 typedef struct Color
 {
 	uint8_t red;
