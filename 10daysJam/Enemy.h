@@ -2,12 +2,13 @@
 #include <vector>
 #include "Util.h"
 #include "Camera.h"
+#include"BezireCurve.h"
 
 class Enemy {
 	/// --メンバ変数-- ///
 public:
 	// --エネミー-- //
-	Circle enemy;
+	Circle obj;
 
 
 private:
@@ -18,6 +19,9 @@ private:
 	int color;
 
 	bool isChange = false;	//ステートの変更が行われたか
+
+	BezireCurve bezire;
+	int effectTime = 0;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -41,6 +45,9 @@ public:
 
 	//反転状態の更新処理
 	void UpdateReverse(Line hourLine_);
+	
+	//死亡状態の更新処理
+	void UpdateDeath(Vector2 afterPos,float randParam);
 
 	//衝突検知管数
 	void OnCollison();
@@ -48,7 +55,7 @@ public:
 	// --描画処理-- //
 	void Draw(Camera camera_);
 
-	Circle GetCircle() const { return enemy; }
+	Circle GetCircle() const { return obj; }
 
 	void SetState(State state_);
 
