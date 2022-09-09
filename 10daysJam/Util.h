@@ -25,6 +25,13 @@ struct Line {
 	State state = State::Normal;
 };
 
+typedef struct Color
+{
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
+}Color;
+
 void DrawCircle(Circle c, int color, bool fillFlag);
 
 void DrawLine(Line l, int thickness = 1);
@@ -99,5 +106,22 @@ namespace Util {
 	/// <param name="c"></param>
 	/// <param name="l"></param>
 	bool CollisionCtoL(Circle c, Line l, float lineSpd);
+
+
+	/// <summary>
+	/// 16i”‚ğRGB‚É•ÏX
+	/// </summary>
+	Color GetColor16(char str[])
+	{
+		uint32_t rgb = (uint32_t)strtol((const char*)&str[0], NULL, 16);
+
+		Color color;
+
+		color.red = (rgb >> 16);
+		color.green = (rgb >> 8);
+		color.blue = (rgb >> 0);
+
+		return color;
+	}
 
 } // namespace MathUtility

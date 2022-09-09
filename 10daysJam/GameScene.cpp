@@ -107,7 +107,7 @@ GameScene::GameScene() {
 
 #pragma region ‰æ‘œ“Ç‚İ‚İ
 	// --Œv‚âj‚Ì•`‰æ—p‰æ‘œ-- //
-	whiteCircleGraph = LoadGraph("Resouces/whiteCircle.png");
+	whiteCircleGraph = LoadGraph("Resources/whiteCircle.png");
 #pragma endregion
 }
 

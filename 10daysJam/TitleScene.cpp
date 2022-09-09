@@ -1,5 +1,8 @@
 #include "TitleScene.h"
 
+// --DXライブラリ-- //
+#include "DxLib.h"
+
 // --インスタンスにNULLを代入-- //
 TitleScene* TitleScene::myInstance = nullptr;
 
@@ -12,9 +15,22 @@ TitleScene* TitleScene::GetInstance() {
 	return myInstance;
 }
 
+// --インスタンス解放-- //
+void TitleScene::Relese() {
+	// --インスタンスが無かったら何もせずに終了する-- //
+	if (myInstance == nullptr) return;
+
+	// --インスタンス解放-- //
+	delete myInstance;
+	myInstance = nullptr;
+}
+
 // --コンストラクタ-- //
 TitleScene::TitleScene() {
-
+#pragma region 画像読み込み
+	// --タイトルロゴ-- //
+	LoadDivGraph("Resources/titleRogo.png", 4, 4, 1, 572, 572, titlelogoGraph);
+#pragma endregion
 }
 
 // --デストラクタ-- //
@@ -34,5 +50,35 @@ void TitleScene::Update() {
 
 // --描画処理-- //
 void TitleScene::Draw() {
+#pragma region タイトルロゴ描画処理
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	
+	// --0番-- //
+	SetDrawBright(39, 32, 225);
+	for (int i = 0; i < 14; i++) {
+		DrawGraph(354, 194, titlelogoGraph[0], true);
+	}
 
+	// --1番-- //
+	SetDrawBright(39, 32, 225);
+	for (int i = 0; i < 14; i++) {
+		DrawGraph(354, 194, titlelogoGraph[1], true);
+	}
+
+	// --2番-- //
+	SetDrawBright(39, 32, 225);
+	for (int i = 0; i < 14; i++) {
+		DrawGraph(354, 194, titlelogoGraph[2], true);
+	}
+
+	// --3番-- //
+	SetDrawBright(39, 32, 225);
+	for (int i = 0; i < 14; i++) {
+		DrawGraph(354, 194, titlelogoGraph[3], true);
+	}
+
+	SetDrawBright(255, 255, 255);
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+#pragma endregion
 }
