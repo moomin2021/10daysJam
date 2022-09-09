@@ -85,7 +85,7 @@ GameScene::GameScene() {
 	newCircleRadius = 0.0f;
 
 	// --レベル-- //
-	level = 1;
+	level = 0;
 
 	// --経験値-- //
 	point = 0;
@@ -141,7 +141,7 @@ void GameScene::Update() {
 #pragma region 針の座標計算
 
 	//Lボタンで短針のステートを「反転」に
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal) {
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
 		hourHand.state = State::Reverse;
 	}
 
@@ -161,8 +161,9 @@ void GameScene::Update() {
 			hourHand.state = State::Stop;
 
 			//はさんだオブジェクトの数で戻す力を増やす
-			reverseTime += itemSandwichCount * 2;
-			reverseTime += enemySandwichCount * 5;
+			reverseTime += level;
+			reverseTime += itemSandwichCount / 2 * level;
+			reverseTime += enemySandwichCount * 2 * level;
 			//スコアを加算、はさんだ数をリセット
 			Score::AddScore(300 * itemSandwichCount);
 			Score::AddScore(500 * enemySandwichCount);
@@ -576,7 +577,7 @@ void GameScene::Collision() {
 void GameScene::LevelUpdate() {
 #pragma region 経験値によってレベルを変える処理
 	// --現在のレベルの必要経験値が手に入ったらレベルを上げる-- //
-	if (needPoint[level - 1] == point) {
+	if (needPoint[level] == point && level < 10) {
 		level++;
 		point = 0;
 	}
@@ -584,35 +585,39 @@ void GameScene::LevelUpdate() {
 	//レベルで敵の出現率を調整
 	switch (level)
 	{
+	case 0:
+		enemySpawnRate = 0.0f;
+		spawnInterval = 100;
 	case 1:
-		enemySpawnRate = 5.0f;
+		enemySpawnRate = 15.0f;
+		spawnInterval = 100;
 		break;
 	case 2:
-		enemySpawnRate = 7.5f;
+		enemySpawnRate = 19.0f;
 		break;
 	case 3:
-		enemySpawnRate = 10.0f;
+		enemySpawnRate = 23.0f;
 		break;
 	case 4:
-		enemySpawnRate = 12.5f;
+		enemySpawnRate = 26.0f;
 		break;
 	case 5:
-		enemySpawnRate = 15.0f;
+		enemySpawnRate = 28.0f;
 		break;
 	case 6:
-		enemySpawnRate = 18.0f;
+		enemySpawnRate = 29.0f;
 		break;
 	case 7:
-		enemySpawnRate = 22.0f;
+		enemySpawnRate = 30.0f;
 		break;
 	case 8:
-		enemySpawnRate = 27.0f;
+		enemySpawnRate = 31.0f;
 		break;
 	case 9:
-		enemySpawnRate = 33.0f;
+		enemySpawnRate = 32.0f;
 		break;
 	case 10:
-		enemySpawnRate = 40.0f;
+		enemySpawnRate = 33.5f;
 		break;
 	}
 #pragma endregion
@@ -620,7 +625,7 @@ void GameScene::LevelUpdate() {
 
 // --レベルリセット-- //
 void GameScene::LevelReset() {
-	level = 1;
+	level = 0;
 	point = 0;
 }
 

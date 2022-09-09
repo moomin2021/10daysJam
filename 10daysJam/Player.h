@@ -36,6 +36,9 @@ private:
 
 	// --プレイヤーの速度-- //
 	float playerSpeed;
+
+	// --プレイヤーの画像ハンドル-- //
+	int playerGraph[2];
 #pragma endregion
 
 #pragma region その他変数宣言

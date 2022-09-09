@@ -45,6 +45,9 @@ Player::Player()
 
 	// --中心からのプレイヤーの距離-- //
 	playerLength = player.radius;
+
+	// --プレイヤーの画像読み込み-- //
+	LoadDivGraph("Resources/Player.png", 2, 2, 1, 48, 48, playerGraph);
 #pragma endregion
 
 #pragma region その他の初期化
@@ -196,7 +199,19 @@ void Player::Draw(Camera camera_) {
 	};
 
 	// --描画-- //
-	DrawCircle(pos, 0xffffff, true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	Color color = GetColor16("1a7971");
+	SetDrawBright(color.red, color.green, color.blue);
+
+	for (int i = 0; i < 5; i++) {
+		DrawGraph(pos.pos.x - 24, pos.pos.y - 24, playerGraph[0], true);
+	}
+
+	//SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	DrawGraph(pos.pos.x - 24, pos.pos.y - 24, playerGraph[1], true);
+	//DrawCircle(pos, 0xffffff, true);
 
 #pragma endregion
 

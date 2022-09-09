@@ -150,7 +150,7 @@ bool Util::CollisionCtoL(Circle c, Line l, float lineSpd)
 	return false;
 }
 
-Color Util::GetColor16(char str[])
+Color Util::GetColor16(const char str[])
 {
 	uint32_t rgb = (uint32_t)strtol((const char*)&str[0], NULL, 16);
 
