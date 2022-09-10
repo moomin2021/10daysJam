@@ -10,6 +10,29 @@ private:
 	// --インスタンス-- //
 	static ResultScene* myInstance;
 
+#pragma region 画像ハンドル
+	// --タイトルへ戻るテキスト-- //
+	int gotitleGraph;
+
+	// --リトライテキスト-- //
+	int retryGraph;
+
+	// --ASBCランクのテキスト-- //
+	int sabcGraph[4];
+
+	// --スコア表示に使う番号のテキスト-- //
+	int numberGraph[10];
+
+	// --ランクテキスト-- //
+	int rankGraph;
+
+	// --スコアテキスト-- //
+	int scoreGraph;
+
+	// --リザルトテキスト-- //
+	int resultGraph;
+#pragma endregion
+
 #pragma region クラス宣言
 	// --コントローラークラス-- //
 	JoyPadInput* pad;
