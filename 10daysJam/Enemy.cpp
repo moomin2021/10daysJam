@@ -15,7 +15,10 @@ Enemy::~Enemy() {
 
 // --初期化処理-- //
 void Enemy::Initialize() {
-
+	
+	//スポーンエフェクトのパーティクル量
+	int particleNum = Random(28, 36);
+	//スポーンエフェクトを出す
 }
 
 // --更新処理-- //
@@ -130,6 +133,15 @@ void Enemy::Draw(Camera camera_) {
 void Enemy::SetState(State state_)
 {
 	state = state_;
+
+}
+
+void Enemy::SpawnEffect(int effectNum_)
+{
+	//引数の数だけパーティクルを配列に格納
+	for (int i = 0; i < effectNum_; i++) {
+		//Circle newParticle;
+	}
 
 }
 

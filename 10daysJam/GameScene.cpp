@@ -131,6 +131,7 @@ void GameScene::Initialize() {
 	for (int i = 0; i< maxStarparticle; i++) {
 		Particle newParticle;
 		newParticle.SetParent(star.end);
+		newParticle.SetState(ParticleState::Endress);
 		newParticle.Initialize();
 		starParticles.push_back(newParticle);
 	}
@@ -197,7 +198,7 @@ void GameScene::Update() {
 				longHand.radian = 0;
 				//	hourHand.radian = 0;
 				//ステートがデスでない敵は削除、デスはそのまま
-				for (int i = enemys.size(); i <= 0; i--) {
+				for (int i = enemys.size()-1; i>= 0; i--) {
 					if (enemys[i].GetState() != State::Death) {
 						enemys.erase(enemys.begin() + i);
 					}
@@ -263,6 +264,7 @@ void GameScene::Update() {
 	//パーティクルの更新
 	for (int i = 0; i < starParticles.size(); i++) {
 		starParticles[i].SetParent(star.end);
+	
 		starParticles[i].Update();
 	}
 
@@ -546,9 +548,6 @@ void GameScene::EnemySpawn() {
 		//タイマーをリセット
 		spawnTimer = spawnInterval;
 	}
-
-		
-	
 }
 
 // --自機と敵の当たり判定処理-- //
