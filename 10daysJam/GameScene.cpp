@@ -591,7 +591,7 @@ void GameScene::Collision() {
 void GameScene::LevelUpdate() {
 #pragma region 経験値によってレベルを変える処理
 	// --現在のレベルの必要経験値が手に入ったらレベルを上げる-- //
-	if (needPoint[level] == point && level < 10) {
+	if (needPoint[level] == point && level < 5) {
 		level++;
 		point = 0;
 	}
