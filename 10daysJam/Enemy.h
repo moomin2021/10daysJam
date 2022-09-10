@@ -3,6 +3,9 @@
 #include "Util.h"
 #include "Camera.h"
 #include"BezireCurve.h"
+#include"Particle.h"
+
+
 
 class Enemy {
 	/// --メンバ変数-- ///
@@ -22,6 +25,9 @@ private:
 
 	BezireCurve bezire;
 	int effectTime = 0;
+
+	std::vector<Particle> spawnEffect;
+	float spawnAddRadius;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -55,15 +61,26 @@ public:
 	// --描画処理-- //
 	void Draw(Camera camera_);
 
+	//自機の円のセッター
 	Circle GetCircle() const { return obj; }
 
+	//ステートのセッター
 	void SetState(State state_);
 
+	//ステートのゲッター
 	State GetState()const { return state; }
 
+	//敵のステート変更フラグのゲッター
 	bool GetIsChange()const { return isChange;}
 
+	//ステートチェンジが行われたときに行うコールバック関数
 	void StateChange();
+
+	//スポーンした時のエフェクト
+	void SpawnEffect(int EffetctNum_ = 1);
+
+	//オブジェクトの情報のセッター
+	void SetObj(Circle obj_);
 
 	//void AllEnemyDeath();
 

@@ -131,6 +131,7 @@ void GameScene::Initialize() {
 	for (int i = 0; i< maxStarparticle; i++) {
 		Particle newParticle;
 		newParticle.SetParent(star.end);
+		newParticle.SetState(ParticleState::Endress);
 		newParticle.Initialize();
 		starParticles.push_back(newParticle);
 	}
@@ -197,7 +198,7 @@ void GameScene::Update() {
 				longHand.radian = 0;
 				//	hourHand.radian = 0;
 				//ステートがデスでない敵は削除、デスはそのまま
-				for (int i = enemys.size(); i <= 0; i--) {
+				for (int i = enemys.size()-1; i>= 0; i--) {
 					if (enemys[i].GetState() != State::Death) {
 						enemys.erase(enemys.begin() + i);
 					}
@@ -263,6 +264,7 @@ void GameScene::Update() {
 	//パーティクルの更新
 	for (int i = 0; i < starParticles.size(); i++) {
 		starParticles[i].SetParent(star.end);
+	
 		starParticles[i].Update();
 	}
 
@@ -515,6 +517,7 @@ void GameScene::Draw() {
 	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
 
 
+
 	/*SetFontSize(80);*/
 	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 	/*SetFontSize(16);*/
@@ -535,7 +538,11 @@ void GameScene::EnemySpawn() {
 		enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
 		enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
 		enemyPos.y -= (10.0f * sinf((rad + 90) / 180 * PI));
-		enemys.push_back({ enemyPos, 8.0f });
+		Enemy newEnemy;
+		//Circle newPos = {enemyPos,8.0f}
+		newEnemy.SetObj({ {enemyPos} , 8.0f });
+		newEnemy.Initialize();
+		enemys.push_back(newEnemy);
 		if (Random(0, 100) <= enemySpawnRate) {
 			//5%の確率で敵としてスポーン
 			enemys.back().SetState(State::Enemy);
@@ -546,9 +553,6 @@ void GameScene::EnemySpawn() {
 		//タイマーをリセット
 		spawnTimer = spawnInterval;
 	}
-
-		
-	
 }
 
 // --自機と敵の当たり判定処理-- //
