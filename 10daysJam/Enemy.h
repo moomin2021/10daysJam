@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "Camera.h"
 #include"BezireCurve.h"
+#include"Particle.h"
 
 
 
@@ -25,8 +26,8 @@ private:
 	BezireCurve bezire;
 	int effectTime = 0;
 
-	//std::vector<Circle> spawnEffect;
-	//std::vector<> spawnEffect;
+	std::vector<Particle> spawnEffect;
+	float spawnAddRadius;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -77,6 +78,9 @@ public:
 
 	//スポーンした時のエフェクト
 	void SpawnEffect(int EffetctNum_ = 1);
+
+	//オブジェクトの情報のセッター
+	void SetObj(Circle obj_);
 
 	//void AllEnemyDeath();
 

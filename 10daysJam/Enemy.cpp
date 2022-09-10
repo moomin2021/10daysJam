@@ -1,8 +1,12 @@
 #include "Enemy.h"
+#include"DxLib.h"
 using namespace Util;
 
 // --コンストラクタ-- //
-Enemy::Enemy() {}
+
+Enemy::Enemy() {
+	
+}
 
 Enemy::Enemy(Vector2 pos, float radius) : obj{ pos, radius } {
 
@@ -19,10 +23,28 @@ void Enemy::Initialize() {
 	//スポーンエフェクトのパーティクル量
 	int particleNum = Random(28, 36);
 	//スポーンエフェクトを出す
+	SpawnEffect(particleNum);
+	spawnAddRadius = 8.0f;
+	obj.radius += spawnAddRadius;
 }
 
 // --更新処理-- //
 void Enemy::Update(Line hourLine_) {
+
+	//スポーンエフェクトの更新
+	for (int i = spawnEffect.size()-1; i >=0 ; i--) {
+	//	spawnEffect[i].SetSpeed(0.5f);
+		spawnEffect[i].Update();
+		//if(spawnEffect[i].GetActive())DrawFormatString(0 + 40 * i, 440, 0xffffff, "active");
+		//スポーンエフェクトの活動フラグが立っていなければ消す
+		if (!spawnEffect[i].GetActive()) {
+			spawnEffect.erase(spawnEffect.begin() + i);
+		}
+	}
+
+	if (obj.radius > 8.0f) {
+		obj.radius -= (spawnAddRadius / 5);
+	}
 
 	switch (state)
 	{
@@ -123,11 +145,22 @@ void Enemy::OnCollison()
 
 // --描画処理-- //
 void Enemy::Draw(Camera camera_) {
+
+	//スポーンエフェクト描画
+	//SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
+	for (int i = 0; i < spawnEffect.size(); i++) {
+
+		spawnEffect[i].Draw(camera_,spawnEffect[i].GetColor());
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+
 	Circle pos ={
 		obj.pos + camera_.GetPos(),
 		obj.radius
 	};
 	DrawCircle(pos, color, true);
+
+	
 }
 
 void Enemy::SetState(State state_)
@@ -140,9 +173,24 @@ void Enemy::SpawnEffect(int effectNum_)
 {
 	//引数の数だけパーティクルを配列に格納
 	for (int i = 0; i < effectNum_; i++) {
-		//Circle newParticle;
+		Particle newParticle;
+		newParticle.SetParent(obj.pos);
+		Color c;
+		int color;
+		c.red = Random(128, 200);
+		c.green = Random(128, 200);
+		c.blue = Random(224, 255);
+		color = c.red * pow(16, 4) + c.green * pow(16, 2) + c.blue;
+		newParticle.SetColor(color);
+		newParticle.Initialize(true);
+		spawnEffect.push_back(newParticle);
 	}
 
+}
+
+void Enemy::SetObj(Circle obj_)
+{
+	obj = obj_;
 }
 
 void Enemy::StateChange()

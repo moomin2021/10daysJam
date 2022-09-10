@@ -16,6 +16,7 @@ private: //メンバ変数
 	float Spd;
 	ParticleState state;
 	bool isAcive = false;
+	int color;
 
 	Vector2 parent;	//初期化に使う親座標
 
@@ -25,7 +26,7 @@ public:	//メンバ関数
 	void Update();
 
 	//描画
-	void Draw(Camera camera_);
+	void Draw(Camera camera_,int color_ = Util::Random(0, 0xffffff));
 
 	//初期化
 	void Initialize(bool stateReset = false);
@@ -34,6 +35,14 @@ public:	//メンバ関数
 	void SetParent(Vector2 pos);
 
 	void SetState(ParticleState state_);
+
+	bool GetActive()const { return isAcive; }
+
+	void SetSpeed(float s);
+
+	void SetColor(int color_);
+
+	int GetColor()const { return color; }
 
 	ParticleState GetState()const { return state; }
 
