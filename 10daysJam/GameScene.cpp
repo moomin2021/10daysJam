@@ -568,9 +568,8 @@ void GameScene::Draw() {
 	DrawGraphF(589.0f, 412.5f, countNumGraph[graphNum], true);
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
-	DrawFormatString(0, 370, 0xFFFFFF, "graphNum:%d", graphNum);
-	DrawFormatString(0, 390, 0xFFFFFF, "nowTime:%d", nowTime);
-	DrawFormatString(0, 410, 0xFFFFFF, "countDownBright:%d", countDownBright);
+
+	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 
 #pragma region デバッグ描画
 	if (SceneManager::GetDebugMode() == true) {
@@ -589,7 +588,6 @@ void GameScene::Draw() {
 		DrawFormatString(0, 340, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
 		DrawFormatString(0, 360, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
 		/*SetFontSize(80);*/
-		DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 		/*SetFontSize(16);*/
 	}
 #pragma endregion
