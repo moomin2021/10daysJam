@@ -48,9 +48,6 @@ private:
 	JoyPadInput* pad;
 #pragma endregion
 
-	// --背景画像ハンドル-- //
-	int backGroundGraph;
-
 	// --選択中のシーン-- //
 	int selectScene;
 
