@@ -29,7 +29,9 @@ struct Line {
 };
 
 struct Box {
-	
+	Vector2 pos;
+	float radiusX;
+	float radiusY;
 };
 
 typedef struct Color

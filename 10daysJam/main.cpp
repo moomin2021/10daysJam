@@ -108,6 +108,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		// --シーン管理クラス描画処理-- //
 		sceneM->Draw();
 
+		DrawFormatString(0, 140, 0xFFFFFF, "%d", pad->Get());
+
 		FpsTimeFanction();
 
 		//---------  ここまでにプログラムを記述  ---------//

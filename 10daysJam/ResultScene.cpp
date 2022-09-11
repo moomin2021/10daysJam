@@ -48,8 +48,11 @@ ResultScene::ResultScene() {
 	// --リトライテキスト-- //
 	retryGraph = LoadGraph("Resources/retry.png");
 
-	// --ASBCランクのテキスト-- //
-	LoadDivGraph("Resources/sabc_small.png", 4, 4, 1, 64, 64, sabcGraph);
+	// --ASBCランクのテキスト（小）-- //
+	LoadDivGraph("Resources/sabc_small.png", 4, 4, 1, 64, 64, sabcSmallGraph);
+
+	// --ASBCランクのテキスト（大）-- //
+	LoadDivGraph("Resources/sabc_Big.png", 4, 4, 1, 111, 111, sabcBigGraph);
 
 	// --スコア表示に使う番号のテキスト-- //
 	LoadDivGraph("Resources/numbers_big.png", 10, 10, 1, 64, 120, numberGraph);
@@ -63,6 +66,12 @@ ResultScene::ResultScene() {
 	// --リザルトテキスト-- //
 	resultGraph = LoadGraph("Resources/result.png");
 #pragma endregion
+
+	// --選択表示の中心座標-- //
+	selectBox = {{640.0f, -300.0f}, 112.5f, 45.5f};
+
+	// --選択中のシーン-- //
+	selectScene = 10;
 }
 
 // --デストラクタ-- //
@@ -77,8 +86,24 @@ void ResultScene::Initialize() {
 
 // --更新処理-- //
 void ResultScene::Update() {
-	if (pad->GetButton(PAD_INPUT_1)) SceneManager::SetScene(GAMESCENE);
-	DrawFormatString(0, 20, 0xFFFFFF, "%d", pad->GetButton(PAD_INPUT_1));
+	// --パッド上下入力されたら-- //
+	if (pad->GetButtonTrigger(PAD_INPUT_UP) || pad->GetButtonTrigger(PAD_INPUT_DOWN)) {
+		if (selectScene != GAMESCENE) {
+			selectScene = GAMESCENE;
+			selectBox.pos.y = 750.0f;
+		}
+
+		else if (selectScene != TITLESCENE) {
+			selectScene = TITLESCENE;
+			selectBox.pos.y = 850.0f;
+		}
+	}
+
+	if (selectScene <= GAMESCENE) {
+		if (pad->GetButtonTrigger(PAD_INPUT_1)) {
+			SceneManager::SetScene(selectScene);
+		}
+	}
 }
 
 // --描画処理-- //
@@ -96,13 +121,13 @@ void ResultScene::Draw() {
 	DrawLine(150, 250, 150, 350, 0xFFFFFF, 5);
 	DrawLine(1130, 250, 1130, 350, 0xFFFFFF, 5);
 
-	// --ランクテキスト描画-- //
+	// --SABCランクテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	for (int i = 0; i < 3; i++) {
-		DrawGraph(550, 350, sabcGraph[3], true);
-		DrawGraph(700, 350, sabcGraph[2], true);
-		DrawGraph(850, 350, sabcGraph[1], true);
-		DrawGraph(1000, 350, sabcGraph[0], true);
+		DrawGraph(550, 350, sabcSmallGraph[3], true);
+		DrawGraph(700, 350, sabcSmallGraph[2], true);
+		DrawGraph(850, 350, sabcSmallGraph[1], true);
+		DrawGraph(1000, 350, sabcSmallGraph[0], true);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
@@ -126,6 +151,20 @@ void ResultScene::Draw() {
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
+	// --ランクテキスト-- //
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	for (int i = 0; i < 3; i++) {
+		DrawGraph(900, 450, rankGraph, true);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	// --SABCランクテキスト-- //
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	for (int i = 0; i < 3; i++) {
+		DrawGraph(1000, 500, sabcBigGraph[0], true);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 	// --リトライテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	for (int i = 0; i < 3; i++) {
@@ -139,4 +178,10 @@ void ResultScene::Draw() {
 		DrawGraph(549, 800.0f, gotitleGraph, true);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	// --選択表示描画-- //
+	DrawBoxAA(
+		selectBox.pos.x - selectBox.radiusX, selectBox.pos.y - selectBox.radiusY,
+		selectBox.pos.x + selectBox.radiusX, selectBox.pos.y + selectBox.radiusY,
+		0xFFFFFF, false, 3);
 }

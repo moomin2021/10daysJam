@@ -46,8 +46,6 @@ void JoyPadInput::Update() {
 		vibrationTimer = 0;
 		StopJoypadVibration(DX_INPUT_PAD1);
 	}
-
-
 }
 
 // --Žw’è‚³‚ê‚½ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç-- //
@@ -93,4 +91,8 @@ int JoyPadInput::GetRightStickVertical() {
 	if (rightStickY > 300) return 1;
 	if (rightStickY < -300) return -1;
 	return 0;
+}
+
+int JoyPadInput::Get() {
+	return button;
 }
