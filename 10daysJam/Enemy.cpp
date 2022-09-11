@@ -22,8 +22,17 @@ void Enemy::Initialize() {
 	
 	//スポーンエフェクトのパーティクル量
 	int particleNum = Random(28, 36);
+	//色
+	Color c;
+
 	//スポーンエフェクトを出す
-	SpawnEffect(particleNum);
+	for (int i = 0; i < particleNum; i++) {
+		c.red = Random(128, 200);
+		c.green = Random(128, 200);
+		c.blue = Random(224, 255);
+	//	color = c.red * pow(16, 4) + c.green * pow(16, 2) + c.blue;
+		EffectInitialize(ColorHexadecimal(c));
+	}
 	spawnAddRadius = 8.0f;
 	obj.radius += spawnAddRadius;
 }
@@ -169,22 +178,13 @@ void Enemy::SetState(State state_)
 
 }
 
-void Enemy::SpawnEffect(int effectNum_)
+void Enemy::EffectInitialize(int color)
 {
-	//引数の数だけパーティクルを配列に格納
-	for (int i = 0; i < effectNum_; i++) {
 		Particle newParticle;
 		newParticle.SetParent(obj.pos);
-		Color c;
-		int color;
-		c.red = Random(128, 200);
-		c.green = Random(128, 200);
-		c.blue = Random(224, 255);
-		color = c.red * pow(16, 4) + c.green * pow(16, 2) + c.blue;
 		newParticle.SetColor(color);
 		newParticle.Initialize(true);
 		spawnEffect.push_back(newParticle);
-	}
 
 }
 
@@ -198,6 +198,18 @@ void Enemy::StateChange()
 	isChange = true;
 }
 
+void Enemy::Death() {
+	//ステートを死亡に
+	state = State::Death;
+	//エフェクトを4つ出す
+	for (int i = 0; i < Random(8,12); i++) {
+		Color c;
+		c.red = Random(128, 256);
+		c.blue = Random(64, 96);
+		c.green = Random(64, 96);
+		EffectInitialize(ColorHexadecimal(c));
+	}
+}
 
 //void Enemy::AllEnemyDeath()
 //{

@@ -1,4 +1,6 @@
 #pragma once
+// --コントローラークラス-- //
+#include "JoyPadInput.h"
 
 class TitleScene {
 	/// --メンバ変数-- ///
@@ -7,6 +9,9 @@ public:
 private:
 	// --インスタンス-- //
 	static TitleScene* myInstance;
+
+	// --コントローラークラス-- //
+	JoyPadInput* pad;
 
 	// --タイトルロゴ画像ハンドル-- //
 	int titlelogoGraph[4];

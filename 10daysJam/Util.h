@@ -29,7 +29,9 @@ struct Line {
 };
 
 struct Box {
-	
+	Vector2 pos;
+	float radiusX;
+	float radiusY;
 };
 
 typedef struct Color
@@ -119,5 +121,10 @@ namespace Util {
 	/// 16進数をRGBに変更
 	/// </summary>
 	Color GetColor16(const char str[]);
+
+	/// <summary>
+		/// RGBを16進数に変更
+		/// </summary>
+	int ColorHexadecimal(Color color_);
 
 } // namespace MathUtility

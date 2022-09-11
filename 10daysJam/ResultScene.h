@@ -2,7 +2,11 @@
 // --コントローラークラス-- //
 #include "JoyPadInput.h"
 
+// --便利関数-- //
+#include "Util.h"
+
 class ResultScene {
+
 	/// --メンバ変数-- ///
 public:
 
@@ -17,8 +21,11 @@ private:
 	// --リトライテキスト-- //
 	int retryGraph;
 
-	// --ASBCランクのテキスト-- //
-	int sabcGraph[4];
+	// --ASBCランクのテキスト（小）-- //
+	int sabcSmallGraph[4];
+
+	// --ASBCランクのテキスト（大）-- //
+	int sabcBigGraph[4];
 
 	// --スコア表示に使う番号のテキスト-- //
 	int numberGraph[10];
@@ -33,13 +40,16 @@ private:
 	int resultGraph;
 #pragma endregion
 
+	// --選択表示の中心座標-- //
+	Box selectBox;
+
 #pragma region クラス宣言
 	// --コントローラークラス-- //
 	JoyPadInput* pad;
 #pragma endregion
 
-	// --背景画像ハンドル-- //
-	int backGroundGraph;
+	// --選択中のシーン-- //
+	int selectScene;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///

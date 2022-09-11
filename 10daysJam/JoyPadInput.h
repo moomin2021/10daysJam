@@ -81,6 +81,8 @@ public:
 	/// <returns> 下 1, 上 -1 </returns>
 	int GetRightStickVertical();
 
+	int Get();
+
 private:
 	// --コンストラクタ-- //
 	JoyPadInput();
@@ -89,9 +91,13 @@ private:
 };
 
 // コントローラーのボタン入力定義
-// PAD_INPUT_1 Aボタン
-// PAD_INPUT_2 Bボタン
-// PAD_INPUT_3 Xボタン
-// PAD_INPUT_4 Yボタン
-// PAD_INPUT_5 LBボタン
-// PAD_INPUT_6 RBボタン
+// PAD_INPUT_1  Aボタン
+// PAD_INPUT_2  Bボタン
+// PAD_INPUT_3  Xボタン
+// PAD_INPUT_4  Yボタン
+// PAD_INPUT_5  LBボタン
+// PAD_INPUT_6  RBボタン
+// PAD_INPUT_7  ビューボタン
+// PAD_INPUT_8  メニューボタン
+// PAD_INPUT_9  左スティック押し込みボタン
+// PAD_INPUT_10 右スティック押し込みボタン

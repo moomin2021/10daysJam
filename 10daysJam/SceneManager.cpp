@@ -9,6 +9,8 @@ int SceneManager::changeScene = 0;
 // --シーン変更フラグの初期化-- //
 bool SceneManager::isChangeScene = false;
 
+bool SceneManager::isDebugMode = false;
+
 // --インスタンス読み込み-- //
 SceneManager* SceneManager::GetInstance() {
 	// --インスタンスが無かったら生成する-- //
@@ -43,10 +45,16 @@ SceneManager::SceneManager() {
 
 	// --スコア-- //
 	score = Score::GetInstance();
+
+	// --サウンド-- //
+	sound = Sound::GetInstance();
+
+	// --入力-- //
+	input = Input::GetInstance();
 #pragma endregion
 
 	// --シーン-- //
-	scene = RESULTSCENE;
+	scene = TITLESCENE;
 
 	// --シーンを移動する際の時間-- //
 	sceneInterval = 100;
@@ -95,24 +103,31 @@ void SceneManager::Initialize() {
 
 // --更新処理-- //
 void SceneManager::Update() {
-	// --タイトルシーン更新処理-- //
-	if (scene == TITLESCENE) {
-		titleScene->Update();
+	// --デバッグモード切替え-- //
+	if (input->IsTrigger(KEY_INPUT_F1)) {
+		isDebugMode = !isDebugMode;
 	}
 
-	// --ゲームシーン更新処理-- //
-	else if (scene == GAMESCENE) {
+	if (isChangeScene == false) {
+		// --タイトルシーン更新処理-- //
+		if (scene == TITLESCENE) {
+			titleScene->Update();
+		}
+
 		// --ゲームシーン更新処理-- //
-		gameScene->Update();
+		else if (scene == GAMESCENE) {
+			// --ゲームシーン更新処理-- //
+			gameScene->Update();
 
-		// --スコア更新処理-- //
-		score->Update();
-	}
+			// --スコア更新処理-- //
+			score->Update();
+		}
 
-	// --リザルトシーン更新処理-- //
-	else if (scene == RESULTSCENE) {
 		// --リザルトシーン更新処理-- //
-		resultScene->Update();
+		else if (scene == RESULTSCENE) {
+			// --リザルトシーン更新処理-- //
+			resultScene->Update();
+		}
 	}
 
 	// --シーン変更更新処理-- //
@@ -164,10 +179,12 @@ void SceneManager::UpdateChangeScene() {
 			else if (circleSize <= 0) {
 				timer++;
 				if (timer >= sceneInterval) {
+					sound->StopBGM(scene);
 					isFadeOut = false;
 					isFadeIn = true;
 					scene = changeScene;
 					timer = 0;
+					sound->PlayBGM(scene);
 				}
 			}
 		}
@@ -205,9 +222,13 @@ void SceneManager::DrawChangeScene() {
 		DrawGraph(0, 0, screenHandle, true);
 	}
 
-	DrawFormatString(0, 0, 0xFFFFFF, "isChangeScene:%d", isChangeScene);
-	DrawFormatString(0, 40, 0xFFFFFF, "isFadeOut:%d", isFadeOut);
-	DrawFormatString(0, 60, 0xFFFFFF, "isFadeIn:%d", isFadeIn);
-	DrawFormatString(0, 80, 0xFFFFFF, "circleSize:%d", circleSize);
-	DrawFormatString(0, 100, 0xFFFFFF, "timer:%d", timer);
+	// --デバッグモード-- //
+	if (isDebugMode == true) {
+
+	}
+}
+
+// --デバッグモードか取得-- //
+bool SceneManager::GetDebugMode() {
+	return isDebugMode;
 }

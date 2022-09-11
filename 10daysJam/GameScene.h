@@ -37,6 +37,14 @@ private:
 	Camera camera;
 #pragma endregion
 
+//オープニング演出系の変数
+	bool isOpening;
+	int opEnemyMax = 5;
+	std::vector<int> opSpawnFrame;
+	int openingTime = 400; //8秒
+	int animationTime = 250; //5秒
+	int nowTime;
+
 #pragma region エネミーのスポーン関係変数の宣言
 	
 	// --次に敵が発生するまでの間隔-- //
@@ -149,7 +157,7 @@ public:
 	void Collision();
 
 	// --敵のスポーン処理-- //
-	void EnemySpawn();
+	void EnemySpawn(float radian);
 
 	// --レベル更新-- //
 	void LevelUpdate();
@@ -159,6 +167,10 @@ public:
 
 	// --針の反転力を増加させる関数-- //
 	void AddReversePower(int power);
+
+	// --ゲームが開始されたときの更新処理--
+	void OpeningUpdate();
+
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数

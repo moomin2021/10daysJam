@@ -78,7 +78,7 @@ public:
 	void Update(Line hourHand, Circle clock, float radius);
 
 	// --描画処理-- //
-	void Draw(Camera camera_);
+	void Draw(Camera camera_ ,int bright);
 
 	/// <summary>
 	/// プレイヤーのゲッター

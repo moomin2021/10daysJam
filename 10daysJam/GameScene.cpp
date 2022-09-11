@@ -128,12 +128,26 @@ void GameScene::Initialize() {
 
 	//パーティクルの数とか
 	maxStarparticle = 32;
-	for (int i = 0; i< maxStarparticle; i++) {
+	for (int i = 0; i < maxStarparticle; i++) {
 		Particle newParticle;
 		newParticle.SetParent(star.end);
 		newParticle.SetState(ParticleState::Endress);
 		newParticle.Initialize();
 		starParticles.push_back(newParticle);
+	}
+
+	//オープニングを始める
+	isOpening = true;
+	nowTime = 0;
+	//オープニング用変数の初期化
+
+	//敵のスポーン時間のブレ
+
+	for (int i = 0; i < opEnemyMax; i++) {
+		//敵のスポーンフレームをランダムに
+		int spawnFrame;
+		spawnFrame = 30 + i * 50;
+		opSpawnFrame.push_back(spawnFrame);
 	}
 }
 
@@ -141,247 +155,281 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 #pragma region 針の座標計算
 
-	//Lボタンで短針のステートを「反転」に
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
-		hourHand.state = State::Reverse;
-	}
+	//オープニング処理
+	if (isOpening) {
+		OpeningUpdate();
+	} 
+	else {
 
-	//ステートが通常なら短針は自動回転
-	if (hourHand.state == State::Normal) {
-		hourHand.radian += hourHandSpeed + hourHandlevelSpeed * (level - 1);
-
-		//任意のキーで短針を動かす(デバッグ用)
-		//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
-	}//ステートが反転しているなら短針を逆走させる
-	else if (hourHand.state == State::Reverse) {
-		hourHand.radian -= reverseSpeed;
-		//短針が長針に追いついたら長針のステートを「反転」に
-		if (hourHand.radian < longHand.radian + reverseSpeed && hourHand.radian > longHand.radian - reverseSpeed) {
-			longHand.state = State::Reverse;
-			//短針のステートをとめる
-			hourHand.state = State::Stop;
-
-			//はさんだオブジェクトの数で戻す力を増やす
-			reverseTime += level * 2;
-			reverseTime += itemSandwichCount / 2 * level;
-			reverseTime += enemySandwichCount * 2 * level;
-			//スコアを加算、はさんだ数をリセット
-			Score::AddScore(300 * itemSandwichCount);
-			Score::AddScore(500 * enemySandwichCount);
-			itemSandwichCount = 0;
-			enemySandwichCount = 0;
-
-			LevelReset();
-
-			//はさんだ瞬間にはさまれている敵を消滅させる
-			for (int i = enemys.size()-1; i >=0; i--) {
-				if (enemys[i].GetState() == State::Reverse) {
-					enemys[i].SetState(State::Death);
-					//enemys.erase(enemys.begin() + i);
-				}
-			}
+		//Lボタンで短針のステートを「反転」に
+		if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
+			hourHand.state = State::Reverse;
 		}
-	}
 
-	//ステートが通常なら長針は自動回転
-	if (longHand.state == State::Normal) {
-		longHand.radian += longHandSpeed;
-	}//ステートが「反転」かつ、反転する力がまだ残っているなら逆走
-	else if (longHand.state == State::Reverse) {
-		if (reverseTime > 0) {
-			//速度は短針と等速
-			longHand.radian -= reverseSpeed;
-			//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
-			if (longHand.radian < reverseSpeed) {
-				longHand.state = State::Normal;
-				hourHand.state = State::Normal;
-				longHand.radian = 0;
-				//	hourHand.radian = 0;
-				//ステートがデスでない敵は削除、デスはそのまま
-				for (int i = enemys.size()-1; i>= 0; i--) {
-					if (enemys[i].GetState() != State::Death) {
-						enemys.erase(enemys.begin() + i);
+		//ステートが通常なら短針は自動回転
+		if (hourHand.state == State::Normal) {
+			hourHand.radian += hourHandSpeed + hourHandlevelSpeed * (level - 1);
+
+			//任意のキーで短針を動かす(デバッグ用)
+			//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
+		}//ステートが反転しているなら短針を逆走させる
+		else if (hourHand.state == State::Reverse) {
+			hourHand.radian -= reverseSpeed;
+			//短針が長針に追いついたら長針のステートを「反転」に
+			if (hourHand.radian < longHand.radian + reverseSpeed && hourHand.radian > longHand.radian - reverseSpeed) {
+				longHand.state = State::Reverse;
+				//短針のステートをとめる
+				hourHand.state = State::Stop;
+
+				//はさんだオブジェクトの数で戻す力を増やす
+				reverseTime += level * 2;
+				reverseTime += itemSandwichCount / 2 * level;
+				reverseTime += enemySandwichCount * 2 * level;
+				//スコアを加算、はさんだ数をリセット
+				Score::AddScore(300 * itemSandwichCount);
+				Score::AddScore(500 * enemySandwichCount);
+				itemSandwichCount = 0;
+				enemySandwichCount = 0;
+
+				LevelReset();
+
+				//はさんだ瞬間にはさまれている敵を消滅させる
+				for (int i = enemys.size() - 1; i >= 0; i--) {
+					if (enemys[i].GetState() == State::Reverse) {
+						enemys[i].Death();
+						//enemys.erase(enemys.begin() + i);
 					}
 				}
-				LevelReset();
-				// --スコア加算-- //
-				Score::AddScore(1000);
-				//シェイク
-				camera.SetShakeCount(10);
-				//敵のスポーンタイマーもリセット
-				spawnTimer = spawnInterval;
-				//衝撃エフェクトを作成
-				CreateBreakEffect(clock.pos, 128);
-				//戻す力をリセット
-				reverseTime = 0;
 			}
-			//反転速度の減算
-			reverseTime--;
-		}//戻す力がなくなったらステートをノーマルに戻す
-		else if (reverseTime <= 0) {
-			longHand.state = State::Normal;
-			hourHand.state = State::Normal;
-			//敵のスポーンタイマーをリセット
-			spawnTimer = spawnInterval;
 		}
-	}
 
-	//360度超えたら0に戻し、0を下回ったら360加算する
-	longHand.radian = fmodf(longHand.radian, 360.0f);
-	if (longHand.radian <= 0)longHand.radian += 360.0f;
-	//360度超えたら0に戻し、0を下回ったら360加算する
-	hourHand.radian = fmodf(hourHand.radian, 360.0f);
-	if (hourHand.radian <= 0)hourHand.radian += 360.0f;
+		//ステートが通常なら長針は自動回転
+		if (longHand.state == State::Normal) {
+			longHand.radian += longHandSpeed;
+		}//ステートが「反転」かつ、反転する力がまだ残っているなら逆走
+		else if (longHand.state == State::Reverse) {
+			if (reverseTime > 0) {
+				//速度は短針と等速
+				longHand.radian -= reverseSpeed;
+				//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
+				if (longHand.radian < reverseSpeed) {
+					longHand.state = State::Normal;
+					hourHand.state = State::Normal;
+					longHand.radian = 0;
+					//	hourHand.radian = 0;
+					//ステートがデスでない敵は削除、デスはそのまま
+					for (int i = enemys.size() - 1; i >= 0; i--) {
+						if (enemys[i].GetState() != State::Death) {
+							enemys.erase(enemys.begin() + i);
+						}
+					}
+					LevelReset();
+					// --スコア加算-- //
+					Score::AddScore(1000);
+					//シェイク
+					camera.SetShakeCount(10);
+					//敵のスポーンタイマーもリセット
+					spawnTimer = spawnInterval;
+					//衝撃エフェクトを作成
+					CreateBreakEffect(clock.pos, 128);
+					//戻す力をリセット
+					reverseTime = 0;
 
-	//位置調整件描画用のラジアン宣言
-	float radL = longHand.radian - 90;
-	float radH = hourHand.radian - 90;
+					//敵を5体スポーンさせる
+					for (int i = 0; i < 5; i++) {
+						EnemySpawn(Random(0.0f, 360.0f));
+					}
 
-	//針の角度で終点座標を計算
-	longHand.end.x = (longHand.length * cosf(radL / 180 * PI)) + clock.pos.x;
-	longHand.end.y = (longHand.length * sinf(radL / 180 * PI)) + clock.pos.y;
-	//針の角度で終点座標を計算
-	hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
-	hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
+				}
+				//反転速度の減算
+				reverseTime--;
+			}//戻す力がなくなったらステートをノーマルに戻す
+			else if (reverseTime <= 0) {
+				longHand.state = State::Normal;
+				hourHand.state = State::Normal;
+				//敵のスポーンタイマーをリセット
+				spawnTimer = spawnInterval;
+			}
+		}
 
+		//360度超えたら0に戻し、0を下回ったら360加算する
+		hourHand.radian = fmodf(hourHand.radian, 360.0f);
+		if (hourHand.radian <= 0)hourHand.radian += 360.0f;
+
+		//位置調整件描画用のラジアン宣言
+		float radL = longHand.radian - 90;
+		float radH = hourHand.radian - 90;
+
+		//針の角度で終点座標を計算
+		longHand.end.x = (longHand.length * cosf(radL / 180 * PI)) + clock.pos.x;
+		longHand.end.y = (longHand.length * sinf(radL / 180 * PI)) + clock.pos.y;
+		//針の角度で終点座標を計算
+		hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
+		hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
+
+		// --長針が一周したらリザルト
+		if (longHand.radian >= 360.0f) {
+			// --シーンを変える-- //
+			SceneManager::SetScene(RESULTSCENE);
+		}
 
 #pragma endregion
 
 
-	if (star.state == State::Normal) {
-		star.radian += 0.4f;
-	}
+		if (star.state == State::Normal) {
+			star.radian += 0.4f;
+		}
 
-	//角度が上限、下限を超えたら戻す
-	star.radian = fmodf(star.radian, 360.f);
-	if (star.radian <= 0)star.radian += 360.0f;
-	//位置用のラジアン
-	float radStar = star.radian - 90;
-	//座標計算
-	star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
-	star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
+		//角度が上限、下限を超えたら戻す
+		star.radian = fmodf(star.radian, 360.f);
+		if (star.radian <= 0)star.radian += 360.0f;
+		//位置用のラジアン
+		float radStar = star.radian - 90;
+		//座標計算
+		star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
+		star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
 
-	//パーティクルの更新
-	for (int i = 0; i < starParticles.size(); i++) {
-		starParticles[i].SetParent(star.end);
-	
-		starParticles[i].Update();
-	}
+		//パーティクルの更新
+		for (int i = 0; i < starParticles.size(); i++) {
+			starParticles[i].SetParent(star.end);
+
+			starParticles[i].Update();
+		}
 
 
 #pragma region プレイヤー更新処理
-	player->Update(hourHand, clock, levelCircle.radius);
+		player->Update(hourHand, clock, levelCircle.radius);
 #pragma endregion
 
 #pragma region エネミー関係の処理
-	// --エネミーのスポーン処理-- //
-	//短針が通常状態なら行う
-	if (hourHand.state == State::Normal) {
-		EnemySpawn();
-	}
+		// --エネミーのスポーン処理-- //
+		//短針が通常状態なら行う
+		if (hourHand.state == State::Normal) {
+			//スポーンタイマーを減らす
+			if (spawnTimer > 0) {
+				spawnTimer--;
+				//タイマーが0になったらスポーン位置を決める
+			}
+			else if (spawnTimer == 0) {
 
-	// --エネミークラス更新処理-- //
-	for (int i = enemys.size() - 1; i >= 0; i--) {
-		enemys[i].Update(hourHand);
-		if (enemys[i].GetState() == State::Delete) {
-			enemys.erase(enemys.begin() + i);
-		}
-
-
-		//短針が反転モードなら判定をとる
-		if (hourHand.state == State::Reverse) {
-			//短針と敵の当たり判定
-			if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpeed)) {
-				//オブジェクトのステートがまだ「反転」でないなら当たり判定のコールバック関数を呼び出し、挟んだ数をカウントする
-				if (enemys[i].GetState() != State::Reverse) {
-					if (enemys[i].GetState() == State::Item) {
-						itemSandwichCount++;
-					}
-					else if (enemys[i].GetState() == State::Enemy) {
-						enemySandwichCount++;
-					}
-
-					enemys[i].OnCollison();
-				}
+				EnemySpawn(hourHand.radian - 5);
+				//タイマーをリセット
+				spawnTimer = spawnInterval;
 			}
 		}
 
-		//長針がノーマルモードなら判定をとる
-	//	if (longHand.state == State::Normal) {
-			//長針と敵の当たり判定
-		if (CollisionCtoL(enemys[i].GetCircle(), longHand, longHandSpeed)) {
-			//一度もステート変更が行われていないなら
-			if (!enemys[i].GetIsChange()) {
-				//敵の状態がアイテムなら敵に
-				if (enemys[i].GetState() == State::Item) {
-					enemys[i].SetState(State::Enemy);
-				}//敵ならアイテムに
-				else if (enemys[i].GetState() == State::Enemy) {
-					enemys[i].SetState(State::Item);
+		// --エネミークラス更新処理-- //
+		for (int i = enemys.size() - 1; i >= 0; i--) {
+			enemys[i].Update(hourHand);
+			//短針が反転モードなら判定をとる
+			if (hourHand.state == State::Reverse) {
+				//短針と敵の当たり判定
+				if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpeed)) {
+					//オブジェクトのステートがまだ「反転」でないなら当たり判定のコールバック関数を呼び出し、挟んだ数をカウントする
+					if (enemys[i].GetState() != State::Reverse) {
+						if (enemys[i].GetState() == State::Item) {
+							itemSandwichCount++;
+						}
+						else if (enemys[i].GetState() == State::Enemy) {
+							enemySandwichCount++;
+						}
+
+						enemys[i].OnCollison();
+					}
 				}
-				enemys[i].StateChange();
 			}
 
-		}
+			//長針がノーマルモードなら判定をとる
+			if (longHand.state == State::Normal) {
+				//長針と敵の当たり判定
+				if (CollisionCtoL(enemys[i].GetCircle(), longHand, longHandSpeed)) {
+					//一度もステート変更が行われていないなら
+					if (!enemys[i].GetIsChange()) {
+						//敵の状態がアイテムなら敵に
+						if (enemys[i].GetState() == State::Item) {
+							enemys[i].SetState(State::Enemy);
+						}//敵ならアイテムに
+						else if (enemys[i].GetState() == State::Enemy) {
+							enemys[i].SetState(State::Item);
+						}
+						enemys[i].StateChange();
+					}
 
-		//}
+				}
 
-		//爆発円との当たり判定
-		if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
-			//当たったアイテムを消す
-			enemys.erase(enemys.begin() + i);
+			}
+
+			//爆発円との当たり判定
+			if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
+				//当たったアイテムを消す
+				enemys[i].SetState(State::Delete);
+			}
+
+			if (enemys[i].GetState() == State::Delete) {
+				enemys.erase(enemys.begin() + i);
+			}
 		}
-	}
 #pragma endregion
 
 #pragma region エフェクト処理
-	//　--爆発円の座標リセット-- //
-	burstCircle = { {0.0f,0.0f}, 0.0f };
+		//　--爆発円の座標リセット-- //
+		burstCircle = { {0.0f,0.0f}, 0.0f };
 
-	//エフェクト更新処理
-	for (int i = 0; i < breakEffects.size(); i++) {
-		breakEffects[i].Update();
-		//生存フラグがfalseなら該当要素を消す
-		if (!breakEffects[i].GetAllive()) {
-			breakEffects.erase(breakEffects.begin() + i);
+		//エフェクト更新処理
+		for (int i = 0; i < breakEffects.size(); i++) {
+			breakEffects[i].Update();
+			//生存フラグがfalseなら該当要素を消す
+			if (!breakEffects[i].GetAllive()) {
+				breakEffects.erase(breakEffects.begin() + i);
+			}
 		}
-	}
 #pragma endregion
 
 #pragma region カメラシェイク処理
-	camera.CameraShake();
+		camera.CameraShake();
 #pragma endregion
 
 #pragma region ゲームシーンの当たり判定処理
-	Collision();
+		Collision();
 #pragma endregion
 
 #pragma region レベルの更新処理
-	LevelUpdate();
+		LevelUpdate();
 #pragma endregion
 
 #pragma region デバッグ用処理
-	// --レベルサークルの半径変更-- //
-	levelCircle.radius += input->IsPress(KEY_INPUT_A) - input->IsPress(KEY_INPUT_D);
+		if (SceneManager::GetDebugMode() == true) {
+			// --レベルサークルの半径変更-- //
+			levelCircle.radius += input->IsPress(KEY_INPUT_A) - input->IsPress(KEY_INPUT_D);
 
-	// --レベルサークルの半径制限-- //
-	levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
+			// --レベルサークルの半径制限-- //
+			levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
 
-	// --短針の速度変更-- //
-	hourHandSpeed += (input->IsTrigger(KEY_INPUT_Z) - input->IsTrigger(KEY_INPUT_C)) * 0.1f;
+			// --短針の速度変更-- //
+			hourHandSpeed += (input->IsTrigger(KEY_INPUT_Z) - input->IsTrigger(KEY_INPUT_C)) * 0.1f;
 
-	// --長針の速度変更-- //
-	longHandSpeed += (input->IsTrigger(KEY_INPUT_I) - input->IsTrigger(KEY_INPUT_P)) * 0.1f;
+			// --長針の速度変更-- //
+			longHandSpeed += (input->IsTrigger(KEY_INPUT_I) - input->IsTrigger(KEY_INPUT_P)) * 0.1f;
 
-	// --SPACEキーを押すと画面がシェイクする-- //
-	if (input->IsTrigger(KEY_INPUT_SPACE)) { camera.SetShakeCount(5); }
+			// --SPACEキーを押すと画面がシェイクする-- //
+			if (input->IsTrigger(KEY_INPUT_SPACE)) { camera.SetShakeCount(5); }
+		}
 #pragma endregion
+	}
 }
 
 // --描画処理-- //
 void GameScene::Draw() {
+	//現在時間を参照してライトアップ
+	int brightLongHand = 0;
+	brightLongHand = (256.0f / 25.0f) * (nowTime - 175) + 16.0f;
+	int brightClock = 0;
+	brightClock = (256.0f / 25.0f) * (nowTime - 125) + 16.0f;
+	int brightHourHand = 0;
+	brightHourHand = (256.0f / 25.0f) * (nowTime - 75) + 16.0f;
+
 #pragma region プレイヤー描画
-	player->Draw(camera);
+	player->Draw(camera,brightHourHand);
 #pragma endregion
 
 #pragma region エネミー描画
@@ -398,7 +446,9 @@ void GameScene::Draw() {
 	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
 	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightClock);
 	SetDrawBright(255, 255, 255);
 
 	// --時計の外枠の描画-- //
@@ -420,7 +470,9 @@ void GameScene::Draw() {
 	longHandLine.end = { longHand.end + camera.GetPos() };
 	longHandLine.color = longHand.color;
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
 	SetDrawBright(119, 28, 28);
 
 	// --長針の描画-- //
@@ -440,9 +492,9 @@ void GameScene::Draw() {
 	Line hourHandLine;
 	hourHandLine.start = { hourHand.start + camera.GetPos() };
 	hourHandLine.end = { hourHand.end + camera.GetPos() };
-	hourHandLine.color = hourHand.color;
+	hourHandLine.color = hourHand.color;	
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightHourHand);
 	SetDrawBright(39, 32, 225);
 
 	// --短針の描画-- //
@@ -466,7 +518,7 @@ void GameScene::Draw() {
 	Circle starC;
 	starC = { star.end + camera.GetPos(),10 };
 	DrawCircle(starC, 0xffffff, true);
-	
+
 
 #pragma region レベルサークルの描画
 	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
@@ -485,7 +537,7 @@ void GameScene::Draw() {
 	line.color = 0x60FFBF;
 
 	// --0時の針描画-- //
-	DrawLine(line, 6);
+	//DrawLine(line, 6);
 #pragma endregion
 
 #pragma region 敵の爆発円描画
@@ -501,57 +553,48 @@ void GameScene::Draw() {
 #pragma endregion
 
 #pragma region デバッグ描画
-	DrawFormatString(0, 80, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
-	DrawFormatString(0, 100, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
-	DrawFormatString(0, 120, 0xFFFFFF, "ZCキー:短針の速度変更");
-	DrawFormatString(0, 140, 0xFFFFFF, "短針の速度:%f", hourHandSpeed);
-	DrawFormatString(0, 160, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
-	DrawFormatString(0, 180, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-	DrawFormatString(0, 280, 0xFFFFFF, "IPキーで長針の速度を変更");
-	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
-	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
-	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
-	DrawFormatString(0, 360, 0xFFFFFF, "敵の総数:%d", enemys.size());
-	DrawFormatString(0, 380, 0xFFFFFF, "FPS");
-	DrawFormatString(0, 400, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
-	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
-
-
-
-	/*SetFontSize(80);*/
-	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
-	/*SetFontSize(16);*/
+	if (SceneManager::GetDebugMode() == true) {
+		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
+		DrawFormatString(0, 120, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
+		DrawFormatString(0, 140, 0xFFFFFF, "ZCキー:短針の速度変更");
+		DrawFormatString(0, 160, 0xFFFFFF, "短針の速度:%f", hourHandSpeed);
+		DrawFormatString(0, 180, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
+		DrawFormatString(0, 200, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+		DrawFormatString(0, 220, 0xFFFFFF, "IPキーで長針の速度を変更");
+		DrawFormatString(0, 240, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
+		DrawFormatString(0, 260, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
+		DrawFormatString(0, 280, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
+		DrawFormatString(0, 300, 0xFFFFFF, "敵の総数:%d", enemys.size());
+		DrawFormatString(0, 320, 0xFFFFFF, "FPS");
+		DrawFormatString(0, 340, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
+		DrawFormatString(0, 360, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+		/*SetFontSize(80);*/
+		DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
+		/*SetFontSize(16);*/
+	}
 #pragma endregion
 }
 
 // --敵のスポーン処理-- //
-void GameScene::EnemySpawn() {
-	//スポーンタイマーを減らす
-	if (spawnTimer > 0) {
-		spawnTimer--;
-		//タイマーが0になったらスポーン位置を決める
+void GameScene::EnemySpawn(float radian) {
+
+	enemyLength = Random(levelCircle.radius, hourHand.length);
+	float rad = radian - 90;
+	enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
+	enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
+	enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
+	enemyPos.y -= (10.0f * sinf((rad + 90) / 180 * PI));
+	Enemy newEnemy;
+	//Circle newPos = {enemyPos,8.0f}
+	newEnemy.SetObj({ {enemyPos} , 8.0f });
+	newEnemy.Initialize();
+	enemys.push_back(newEnemy);
+	if (Random(0, 100) <= enemySpawnRate) {
+		//5%の確率で敵としてスポーン
+		enemys.back().SetState(State::Enemy);
 	}
-	else if (spawnTimer == 0) {
-		enemyLength = Random(levelCircle.radius, hourHand.length);
-		float rad = hourHand.radian - 90;
-		enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
-		enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
-		enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
-		enemyPos.y -= (10.0f * sinf((rad + 90) / 180 * PI));
-		Enemy newEnemy;
-		//Circle newPos = {enemyPos,8.0f}
-		newEnemy.SetObj({ {enemyPos} , 8.0f });
-		newEnemy.Initialize();
-		enemys.push_back(newEnemy);
-		if (Random(0, 100) <= enemySpawnRate) {
-			//5%の確率で敵としてスポーン
-			enemys.back().SetState(State::Enemy);
-		}
-		else {//それ以外の95%でアイテムとしてスポーン
-			enemys.back().SetState(State::Item);
-		}
-		//タイマーをリセット
-		spawnTimer = spawnInterval;
+	else {//それ以外の95%でアイテムとしてスポーン
+		enemys.back().SetState(State::Item);
 	}
 }
 
@@ -562,7 +605,7 @@ void GameScene::Collision() {
 		if (CollisionCtoC(player->player, enemys[i].obj)) {
 			//敵のステートがItemなら消滅
 			if (enemys[i].GetState() == State::Item) {
-				enemys[i].SetState(State::Death);
+				enemys[i].Death();
 				//enemys.erase(enemys.begin() + i);
 				point++;
 				Score::AddScore(100);
@@ -586,7 +629,10 @@ void GameScene::Collision() {
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(levelCircle, enemys[i].obj)) {
-			enemys.erase(enemys.begin() + i);
+			//敵のステートが死亡でないなら(死亡演出中でないなら)
+			if (enemys[i].GetState() != State::Death) {
+				enemys.erase(enemys.begin() + i);
+			}
 		}
 	}
 }
@@ -606,6 +652,8 @@ void GameScene::LevelUpdate() {
 	case 0:
 		enemySpawnRate = 0.0f;
 		spawnInterval = 180;
+		//デバッグ用仮変更
+		spawnInterval = 40;
 		break;
 	case 1:
 		enemySpawnRate = 15.0f;
@@ -666,3 +714,40 @@ void GameScene::AddReversePower(int power) {
 	//加算
 	reverseTime += power;
 }
+
+void GameScene::OpeningUpdate() {
+	if (!isOpening) {
+		return;
+	}
+	//時間を加算
+	nowTime++;
+
+	if (nowTime <= animationTime) {
+
+		//1秒で一回転するように回転速度を変更
+		reverseSpeed = 360.0f / 250.0f;
+
+		hourHand.radian -= reverseSpeed;
+		float radH = hourHand.radian - 90;
+		//針の角度で終点座標を計算
+		hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
+	hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
+
+	}
+		//経過時間が指定のフレームに来たらスポーン
+		for (int i = 0; i < opSpawnFrame.size(); i++) {
+			if (nowTime == opSpawnFrame[i]) {
+				EnemySpawn(hourHand.radian - 5.0f);
+			}
+		}
+
+		player->Update(hourHand, clock, levelCircle.radius);
+
+		for (int i = enemys.size() - 1; i >= 0; i--) {
+			enemys[i].Update(hourHand);
+		}
+	if (nowTime == openingTime) {
+		isOpening = false;
+	}
+}
+
