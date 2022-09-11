@@ -120,4 +120,9 @@ namespace Util {
 	/// </summary>
 	Color GetColor16(const char str[]);
 
+	/// <summary>
+		/// RGB‚ğ16i”‚É•ÏX
+		/// </summary>
+	int ColorHexadecimal(Color color_);
+
 } // namespace MathUtility

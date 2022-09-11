@@ -77,10 +77,14 @@ public:
 	void StateChange();
 
 	//スポーンした時のエフェクト
-	void SpawnEffect(int EffetctNum_ = 1);
+	void EffectInitialize(int color);
 
 	//オブジェクトの情報のセッター
 	void SetObj(Circle obj_);
+
+	//エネミーが死亡したときに呼ばれるコールバック関数
+	void Death();
+
 
 	//void AllEnemyDeath();
 

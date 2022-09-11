@@ -128,7 +128,7 @@ void GameScene::Initialize() {
 
 	//パーティクルの数とか
 	maxStarparticle = 32;
-	for (int i = 0; i< maxStarparticle; i++) {
+	for (int i = 0; i < maxStarparticle; i++) {
 		Particle newParticle;
 		newParticle.SetParent(star.end);
 		newParticle.SetState(ParticleState::Endress);
@@ -174,9 +174,9 @@ void GameScene::Update() {
 			LevelReset();
 
 			//はさんだ瞬間にはさまれている敵を消滅させる
-			for (int i = enemys.size()-1; i >=0; i--) {
+			for (int i = enemys.size() - 1; i >= 0; i--) {
 				if (enemys[i].GetState() == State::Reverse) {
-					enemys[i].SetState(State::Death);
+					enemys[i].Death();
 					//enemys.erase(enemys.begin() + i);
 				}
 			}
@@ -198,7 +198,7 @@ void GameScene::Update() {
 				longHand.radian = 0;
 				//	hourHand.radian = 0;
 				//ステートがデスでない敵は削除、デスはそのまま
-				for (int i = enemys.size()-1; i>= 0; i--) {
+				for (int i = enemys.size() - 1; i >= 0; i--) {
 					if (enemys[i].GetState() != State::Death) {
 						enemys.erase(enemys.begin() + i);
 					}
@@ -270,7 +270,7 @@ void GameScene::Update() {
 	//パーティクルの更新
 	for (int i = 0; i < starParticles.size(); i++) {
 		starParticles[i].SetParent(star.end);
-	
+
 		starParticles[i].Update();
 	}
 
@@ -289,19 +289,17 @@ void GameScene::Update() {
 			//タイマーが0になったらスポーン位置を決める
 		}
 		else if (spawnTimer == 0) {
-		
-		EnemySpawn(hourHand.radian - 5);
-		//タイマーをリセット
-		spawnTimer = spawnInterval;
+
+			EnemySpawn(hourHand.radian - 5);
+			//タイマーをリセット
+			spawnTimer = spawnInterval;
 		}
 	}
 
 	// --エネミークラス更新処理-- //
 	for (int i = enemys.size() - 1; i >= 0; i--) {
 		enemys[i].Update(hourHand);
-		if (enemys[i].GetState() == State::Delete) {
-			enemys.erase(enemys.begin() + i);
-		}
+
 
 
 		//短針が反転モードなら判定をとる
@@ -323,28 +321,32 @@ void GameScene::Update() {
 		}
 
 		//長針がノーマルモードなら判定をとる
-	//	if (longHand.state == State::Normal) {
+		if (longHand.state == State::Normal) {
 			//長針と敵の当たり判定
-		if (CollisionCtoL(enemys[i].GetCircle(), longHand, longHandSpeed)) {
-			//一度もステート変更が行われていないなら
-			if (!enemys[i].GetIsChange()) {
-				//敵の状態がアイテムなら敵に
-				if (enemys[i].GetState() == State::Item) {
-					enemys[i].SetState(State::Enemy);
-				}//敵ならアイテムに
-				else if (enemys[i].GetState() == State::Enemy) {
-					enemys[i].SetState(State::Item);
+			if (CollisionCtoL(enemys[i].GetCircle(), longHand, longHandSpeed)) {
+				//一度もステート変更が行われていないなら
+				if (!enemys[i].GetIsChange()) {
+					//敵の状態がアイテムなら敵に
+					if (enemys[i].GetState() == State::Item) {
+						enemys[i].SetState(State::Enemy);
+					}//敵ならアイテムに
+					else if (enemys[i].GetState() == State::Enemy) {
+						enemys[i].SetState(State::Item);
+					}
+					enemys[i].StateChange();
 				}
-				enemys[i].StateChange();
+
 			}
 
 		}
 
-		//}
-
 		//爆発円との当たり判定
 		if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
 			//当たったアイテムを消す
+			enemys.erase(enemys.begin() + i);
+		}
+
+		if (enemys[i].GetState() == State::Delete) {
 			enemys.erase(enemys.begin() + i);
 		}
 	}
@@ -482,7 +484,7 @@ void GameScene::Draw() {
 	Circle starC;
 	starC = { star.end + camera.GetPos(),10 };
 	DrawCircle(starC, 0xffffff, true);
-	
+
 
 #pragma region レベルサークルの描画
 	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
@@ -543,24 +545,24 @@ void GameScene::Draw() {
 // --敵のスポーン処理-- //
 void GameScene::EnemySpawn(float radian) {
 
-		enemyLength = Random(levelCircle.radius, hourHand.length);
-		float rad = radian - 90;
-		enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
-		enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
-		enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
-		enemyPos.y -= (10.0f * sinf((rad + 90) / 180 * PI));
-		Enemy newEnemy;
-		//Circle newPos = {enemyPos,8.0f}
-		newEnemy.SetObj({ {enemyPos} , 8.0f });
-		newEnemy.Initialize();
-		enemys.push_back(newEnemy);
-		if (Random(0, 100) <= enemySpawnRate) {
-			//5%の確率で敵としてスポーン
-			enemys.back().SetState(State::Enemy);
-		}
-		else {//それ以外の95%でアイテムとしてスポーン
-			enemys.back().SetState(State::Item);
-		}
+	enemyLength = Random(levelCircle.radius, hourHand.length);
+	float rad = radian - 90;
+	enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
+	enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
+	enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
+	enemyPos.y -= (10.0f * sinf((rad + 90) / 180 * PI));
+	Enemy newEnemy;
+	//Circle newPos = {enemyPos,8.0f}
+	newEnemy.SetObj({ {enemyPos} , 8.0f });
+	newEnemy.Initialize();
+	enemys.push_back(newEnemy);
+	if (Random(0, 100) <= enemySpawnRate) {
+		//5%の確率で敵としてスポーン
+		enemys.back().SetState(State::Enemy);
+	}
+	else {//それ以外の95%でアイテムとしてスポーン
+		enemys.back().SetState(State::Item);
+	}
 }
 
 // --自機と敵の当たり判定処理-- //
@@ -570,7 +572,7 @@ void GameScene::Collision() {
 		if (CollisionCtoC(player->player, enemys[i].obj)) {
 			//敵のステートがItemなら消滅
 			if (enemys[i].GetState() == State::Item) {
-				enemys[i].SetState(State::Death);
+				enemys[i].Death();
 				//enemys.erase(enemys.begin() + i);
 				point++;
 				Score::AddScore(100);
@@ -594,7 +596,10 @@ void GameScene::Collision() {
 	// --レベルサークルとエネミーの当たり判定-- //
 	for (int i = 0; i < enemys.size(); i++) {
 		if (CollisionCtoC(levelCircle, enemys[i].obj)) {
-			enemys.erase(enemys.begin() + i);
+			//敵のステートが死亡でないなら(死亡演出中でないなら)
+			if (enemys[i].GetState() != State::Death) {
+				enemys.erase(enemys.begin() + i);
+			}
 		}
 	}
 }
