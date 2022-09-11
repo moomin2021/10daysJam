@@ -77,7 +77,8 @@ void ResultScene::Initialize() {
 
 // --XVˆ—-- //
 void ResultScene::Update() {
-
+	if (pad->GetButton(PAD_INPUT_1)) SceneManager::SetScene(GAMESCENE);
+	DrawFormatString(0, 20, 0xFFFFFF, "%d", pad->GetButton(PAD_INPUT_1));
 }
 
 // --•`‰æˆ—-- //

@@ -27,6 +27,9 @@ public:
 	// --インスタンス読み込み-- //
 	static Score* GetInstance();
 
+	// --インスタンス解放-- //
+	void Relese();
+
 	// --デストラクタ-- //
 	~Score();
 

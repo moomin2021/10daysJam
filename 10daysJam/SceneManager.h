@@ -14,14 +14,14 @@
 // --スコアクラス-- //
 #include "Score.h"
 
-class SceneManager {
+// --シーン番号-- //
+enum SceneNum {
+	TITLESCENE,
+	GAMESCENE,
+	RESULTSCENE
+};
 
-	// --シーン番号-- //
-	enum SceneNum {
-		TITLESCENE,
-		GAMESCENE,
-		RESULTSCENE
-	};
+class SceneManager {
 
 	/// --メンバ変数-- ///
 public:
@@ -44,8 +44,39 @@ private:
 	Score* score;
 #pragma endregion
 
+#pragma region シーン関係変数
+
 	// --シーンの番号-- //
-	static int scene;
+	int scene;
+
+	// --変更するシーン-- //
+	static int changeScene;
+
+	// --シーン変更フラグ-- //
+	static bool isChangeScene;
+
+	// --シーンを移動する際の時間-- //
+	int sceneInterval;
+
+	// --タイマー-- //
+	int timer;
+
+	// --円のサイズ-- //
+	int circleSize;
+	
+	// --円の拡縮の速度-- //
+	int sizeChangeSpeed;
+
+	// --スクリーンハンドル-- //
+	int screenHandle;
+
+	// --フェードアウトするか-- //
+	bool isFadeOut;
+
+	// --フェードイン
+	bool isFadeIn;
+
+#pragma endregion
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -53,6 +84,9 @@ private:
 public:
 	// --インスタンス取得-- //
 	static SceneManager* GetInstance();
+
+	// --インスタンス解放-- //
+	void Relese();
 
 	// --デストラクタ-- //
 	~SceneManager();
@@ -66,8 +100,14 @@ public:
 	// --描画処理-- //
 	void Draw();
 
-	// --シーン切り替え-- //
-	static void SceneChange(int sceneNum);
+	// --シーンを設定-- //
+	static void SetScene(int sceneNum);
+
+	// --シーン変更更新処理-- //
+	void UpdateChangeScene();
+
+	// --シーン変更描画処理-- //
+	void DrawChangeScene();
 
 private:
 	// --コンストラクタ-- //

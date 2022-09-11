@@ -18,6 +18,16 @@ Score* Score::GetInstance() {
 	return myInstance;
 }
 
+// --インスタンス解放-- //
+void Score::Relese() {
+	// --インスタンスが無かったら何もせずに終了する-- //
+	if (myInstance == nullptr) return;
+
+	// --インスタンス解放-- //
+	delete myInstance;
+	myInstance = nullptr;
+}
+
 // --コンストラクタ-- //
 Score::Score() : displayScore(0), scoreTime(10) {
 	// --表示するスコア-- //
