@@ -12,6 +12,8 @@ void Particle::Update() {
 	//大きさをランダムに減らす
 	obj.radius -= Random(0.0f, 0.5f);
 
+	radian += Random(0.0f, 5.0f);
+
 	//大きさが0以下かつステートがエンドレスなら再初期化
 	if (obj.radius <= 0) {
 		if (state == ParticleState::Endress) {
