@@ -129,6 +129,9 @@ private:
 #pragma region 画像用ハンドル変数の宣言
 	// --時計や針の描画用画像-- //
 	int whiteCircleGraph;
+
+	// --カウント-- //
+	int countNumGraph[3];
 #pragma endregion
 
 	/// --メンバ変数END-- ///

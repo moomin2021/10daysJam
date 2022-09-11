@@ -103,6 +103,9 @@ GameScene::GameScene() {
 #pragma region 画像読み込み
 	// --時計や針の描画用画像-- //
 	whiteCircleGraph = LoadGraph("Resources/whiteCircle.png");
+
+	// --カウント-- //
+	LoadDivGraph("Resources/countNum.png", 3, 3, 1, 102, 135, countNumGraph);
 #pragma endregion
 }
 
@@ -562,6 +565,8 @@ void GameScene::Draw() {
 	countDownBright = 256 - ( (256.0f / 25.0f) * (nowTime - animationTime + ( graphNum *50) )) * (nowTime >= animationTime);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, countDownBright);
 	// --画像描画をここに-- //
+	DrawGraphF(487.0f, 412.5f, countNumGraph[graphNum], true);
+	DrawFormatString(0, 370, 0xFFFFFF, "%d", graphNum);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
 
 #pragma region デバッグ描画
