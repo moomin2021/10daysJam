@@ -552,6 +552,18 @@ void GameScene::Draw() {
 	}
 #pragma endregion
 
+	//カウントダウンの描画
+	//数字
+	int countDownBright;
+	int graphNum = (nowTime - animationTime) / 50;	//画像配列の順番が321ならこっち
+	if (graphNum > 2)graphNum = 2;					//1,2,3ならこっち
+	int graphNumR = 2 - graphNum;
+
+	countDownBright = 256 - ( (256.0f / 25.0f) * (nowTime - animationTime + ( graphNum *50) )) * (nowTime >= animationTime);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, countDownBright);
+	// --画像描画をここに-- //
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
+
 #pragma region デバッグ描画
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
