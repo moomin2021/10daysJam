@@ -213,7 +213,9 @@ void SceneManager::DrawChangeScene() {
 
 		SetDrawBlendMode(DX_BLENDMODE_SRCCOLOR, 0);
 
-		DrawCircle(640, 480, circleSize, 0x000000, true);
+		if (circleSize > 0) {
+			DrawCircle(640, 480, circleSize, 0x000000, true);
+		}
 
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 

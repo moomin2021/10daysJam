@@ -565,7 +565,7 @@ void GameScene::Draw() {
 	countDownBright = (256-( (256.0f / 50.0f) * (nowTime - (animationTime + ( graphNum *50)) ))) * (nowTime >= animationTime);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, countDownBright);
 	// --‰æ‘œ•`‰æ‚ð‚±‚±‚É-- //
-	DrawGraphF(487.0f, 412.5f, countNumGraph[graphNum], true);
+	DrawGraphF(589.0f, 412.5f, countNumGraph[graphNum], true);
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
 	DrawFormatString(0, 370, 0xFFFFFF, "graphNum:%d", graphNum);
