@@ -39,7 +39,10 @@ private:
 
 //オープニング演出系の変数
 	bool isOpening;
-	int openingTime = 200; //4秒
+	int opEnemyMax = 5;
+	std::vector<int> opSpawnFrame;
+	int openingTime = 400; //8秒
+	int animationTime = 250; //5秒
 	int nowTime;
 
 #pragma region エネミーのスポーン関係変数の宣言
@@ -167,6 +170,7 @@ public:
 
 	// --ゲームが開始されたときの更新処理--
 	void OpeningUpdate();
+
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数

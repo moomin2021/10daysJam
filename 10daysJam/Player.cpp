@@ -202,7 +202,7 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 }
 
 // --描画処理-- //
-void Player::Draw(Camera camera_) {
+void Player::Draw(Camera camera_,int bright) {
 #pragma region プレイヤー描画処理
 	// --カメラシェイク用に座標を再計算-- //
 	Circle pos = {
@@ -211,7 +211,7 @@ void Player::Draw(Camera camera_) {
 	};
 
 	// --描画-- //
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, bright);
 	Color color = GetColor16("2720e1");
 	SetDrawBright(color.red, color.green, color.blue);
 
@@ -222,7 +222,7 @@ void Player::Draw(Camera camera_) {
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-	DrawRotaGraph(pos.pos.x, pos.pos.y, 1.0f, Degree2Radian(hourHandAngle - 90), playerGraph[1], true);
+	//DrawRotaGraph(pos.pos.x, pos.pos.y, 1.0f, Degree2Radian(hourHandAngle - 90), playerGraph[1], true);
 	//DrawCircle(pos, 0xffffff, true);
 
 #pragma endregion

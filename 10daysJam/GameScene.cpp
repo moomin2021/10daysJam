@@ -139,6 +139,16 @@ void GameScene::Initialize() {
 	//オープニングを始める
 	isOpening = true;
 	nowTime = 0;
+	//オープニング用変数の初期化
+
+	//敵のスポーン時間のブレ
+
+	for (int i = 0; i < opEnemyMax; i++) {
+		//敵のスポーンフレームをランダムに
+		int spawnFrame;
+		spawnFrame = 30 + i * 50;
+		opSpawnFrame.push_back(spawnFrame);
+	}
 }
 
 // --更新処理-- //
@@ -148,8 +158,9 @@ void GameScene::Update() {
 	//オープニング処理
 	if (isOpening) {
 		OpeningUpdate();
-	}
+	} 
 	else {
+
 		//Lボタンで短針のステートを「反転」に
 		if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
 			hourHand.state = State::Reverse;
@@ -408,8 +419,16 @@ void GameScene::Update() {
 
 // --描画処理-- //
 void GameScene::Draw() {
+	//現在時間を参照してライトアップ
+	int brightLongHand = 0;
+	brightLongHand = (256.0f / 25.0f) * (nowTime - 175) + 16.0f;
+	int brightClock = 0;
+	brightClock = (256.0f / 25.0f) * (nowTime - 125) + 16.0f;
+	int brightHourHand = 0;
+	brightHourHand = (256.0f / 25.0f) * (nowTime - 75) + 16.0f;
+
 #pragma region プレイヤー描画
-	player->Draw(camera);
+	player->Draw(camera,brightHourHand);
 #pragma endregion
 
 #pragma region エネミー描画
@@ -426,7 +445,9 @@ void GameScene::Draw() {
 	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
 	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightClock);
 	SetDrawBright(255, 255, 255);
 
 	// --時計の外枠の描画-- //
@@ -448,7 +469,9 @@ void GameScene::Draw() {
 	longHandLine.end = { longHand.end + camera.GetPos() };
 	longHandLine.color = longHand.color;
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
 	SetDrawBright(119, 28, 28);
 
 	// --長針の描画-- //
@@ -468,9 +491,9 @@ void GameScene::Draw() {
 	Line hourHandLine;
 	hourHandLine.start = { hourHand.start + camera.GetPos() };
 	hourHandLine.end = { hourHand.end + camera.GetPos() };
-	hourHandLine.color = hourHand.color;
+	hourHandLine.color = hourHand.color;	
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightHourHand);
 	SetDrawBright(39, 32, 225);
 
 	// --短針の描画-- //
@@ -513,7 +536,7 @@ void GameScene::Draw() {
 	line.color = 0x60FFBF;
 
 	// --0時の針描画-- //
-	DrawLine(line, 6);
+	//DrawLine(line, 6);
 #pragma endregion
 
 #pragma region 敵の爆発円描画
@@ -698,17 +721,33 @@ void GameScene::OpeningUpdate() {
 	}
 	//時間を加算
 	nowTime++;
-	//1秒で一回転するように回転速度を変更
-	reverseSpeed = 360.0f / 50.0f;
 
-	hourHand.radian -= reverseSpeed;
-	float radH = hourHand.radian - 90;
-	//針の角度で終点座標を計算
-	hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
+	if (nowTime <= animationTime) {
+
+		//1秒で一回転するように回転速度を変更
+		reverseSpeed = 360.0f / 250.0f;
+
+		hourHand.radian -= reverseSpeed;
+		float radH = hourHand.radian - 90;
+		//針の角度で終点座標を計算
+		hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
 	hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
 
+	}
+		//経過時間が指定のフレームに来たらスポーン
+		for (int i = 0; i < opSpawnFrame.size(); i++) {
+			if (nowTime == opSpawnFrame[i]) {
+				EnemySpawn(hourHand.radian - 5.0f);
+			}
+		}
+
+		player->Update(hourHand, clock, levelCircle.radius);
+
+		for (int i = enemys.size() - 1; i >= 0; i--) {
+			enemys[i].Update(hourHand);
+		}
 	if (nowTime == openingTime) {
 		isOpening = false;
 	}
-
 }
+
