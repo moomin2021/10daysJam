@@ -91,7 +91,7 @@ GameScene::GameScene() {
 	point = 0;
 
 	// --レベルによって必要な経験値-- //
-	int needPointCopy[10] = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+	int needPointCopy[10] = { 2, 4, 8, 10, 10, 10, 10, 10, 10, 10 };
 	for (int i = 0; i < 10; i++) { needPoint[i] = needPointCopy[i]; }
 #pragma endregion
 
