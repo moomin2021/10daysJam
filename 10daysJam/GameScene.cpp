@@ -558,16 +558,19 @@ void GameScene::Draw() {
 	//カウントダウンの描画
 	//数字
 	int countDownBright;
-	int graphNum = (nowTime - animationTime) / 50;	//画像配列の順番が321ならこっち
+	int graphNum = (nowTime - animationTime) / 50 *(nowTime >= animationTime);	//画像配列の順番が321ならこっち
 	if (graphNum > 2)graphNum = 2;					//1,2,3ならこっち
 	int graphNumR = 2 - graphNum;
 
-	countDownBright = 256 - ( (256.0f / 25.0f) * (nowTime - animationTime + ( graphNum *50) )) * (nowTime >= animationTime);
+	countDownBright = (256-( (256.0f / 50.0f) * (nowTime - (animationTime + ( graphNum *50)) ))) * (nowTime >= animationTime);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, countDownBright);
 	// --画像描画をここに-- //
 	DrawGraphF(487.0f, 412.5f, countNumGraph[graphNum], true);
-	DrawFormatString(0, 370, 0xFFFFFF, "%d", graphNum);
+
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
+	DrawFormatString(0, 370, 0xFFFFFF, "graphNum:%d", graphNum);
+	DrawFormatString(0, 390, 0xFFFFFF, "nowTime:%d", nowTime);
+	DrawFormatString(0, 410, 0xFFFFFF, "countDownBright:%d", countDownBright);
 
 #pragma region デバッグ描画
 	if (SceneManager::GetDebugMode() == true) {
