@@ -214,6 +214,12 @@ void GameScene::Update() {
 				CreateBreakEffect(clock.pos, 128);
 				//戻す力をリセット
 				reverseTime = 0;
+
+				//敵を5体スポーンさせる
+				for (int i = 0; i < 5; i++) {
+					EnemySpawn(Random(0.0f, 360.0f));
+				}
+
 			}
 			//反転速度の減算
 			reverseTime--;
@@ -277,7 +283,17 @@ void GameScene::Update() {
 	// --エネミーのスポーン処理-- //
 	//短針が通常状態なら行う
 	if (hourHand.state == State::Normal) {
-		EnemySpawn();
+		//スポーンタイマーを減らす
+		if (spawnTimer > 0) {
+			spawnTimer--;
+			//タイマーが0になったらスポーン位置を決める
+		}
+		else if (spawnTimer == 0) {
+		
+		EnemySpawn(hourHand.radian - 5);
+		//タイマーをリセット
+		spawnTimer = spawnInterval;
+		}
 	}
 
 	// --エネミークラス更新処理-- //
@@ -525,15 +541,10 @@ void GameScene::Draw() {
 }
 
 // --敵のスポーン処理-- //
-void GameScene::EnemySpawn() {
-	//スポーンタイマーを減らす
-	if (spawnTimer > 0) {
-		spawnTimer--;
-		//タイマーが0になったらスポーン位置を決める
-	}
-	else if (spawnTimer == 0) {
+void GameScene::EnemySpawn(float radian) {
+
 		enemyLength = Random(levelCircle.radius, hourHand.length);
-		float rad = hourHand.radian - 90;
+		float rad = radian - 90;
 		enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
 		enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
 		enemyPos.y = (enemyLength * sinf(rad / 180 * PI)) + clock.pos.y;
@@ -550,9 +561,6 @@ void GameScene::EnemySpawn() {
 		else {//それ以外の95%でアイテムとしてスポーン
 			enemys.back().SetState(State::Item);
 		}
-		//タイマーをリセット
-		spawnTimer = spawnInterval;
-	}
 }
 
 // --自機と敵の当たり判定処理-- //
@@ -606,6 +614,8 @@ void GameScene::LevelUpdate() {
 	case 0:
 		enemySpawnRate = 0.0f;
 		spawnInterval = 180;
+		//デバッグ用仮変更
+		spawnInterval = 40;
 		break;
 	case 1:
 		enemySpawnRate = 15.0f;

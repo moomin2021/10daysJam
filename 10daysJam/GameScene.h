@@ -149,7 +149,7 @@ public:
 	void Collision();
 
 	// --敵のスポーン処理-- //
-	void EnemySpawn();
+	void EnemySpawn(float radian);
 
 	// --レベル更新-- //
 	void LevelUpdate();
@@ -159,6 +159,8 @@ public:
 
 	// --針の反転力を増加させる関数-- //
 	void AddReversePower(int power);
+
+	void OpeningUpdate();
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数
