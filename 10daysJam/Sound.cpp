@@ -27,7 +27,13 @@ void Sound::Relese() {
 
 // --コンストラクタ-- //
 Sound::Sound() {
+#pragma region BGM読み込み
+	// --ゲームシーンBGM読み込み-- //
+	gameSceneBGM = LoadSoundMem("Sounds/playBGM.mp3");
+#pragma endregion
 
+	// --ボリューム設定-- //
+	ChangeVolumeSoundMem(100, gameSceneBGM);
 }
 
 // --デストラクタ-- //

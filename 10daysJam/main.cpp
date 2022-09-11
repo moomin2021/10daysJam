@@ -4,6 +4,9 @@
 #include"JoyPadInput.h"
 #include "SceneManager.h"
 
+// --サウンドクラス-- //
+#include "Sound.h"
+
 // ウィンドウのタイトルに表示する文字列
 const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
 
@@ -33,8 +36,10 @@ void FpsTimeFanction() {
 	}
 	else
 		FpsTime_i++;//現在何周目かカウント
-	if (Fps != 0)
+	if (Fps != 0) {
+		if (SceneManager::GetDebugMode() == true)
 		DrawFormatString(0, 380, 0xFFFFFF, "FPS %.1f", Fps); //fpsを表示
+	}
 	return;
 }
 
@@ -87,6 +92,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// --コントローラークラスインスタンス取得-- //
 	JoyPadInput* pad = JoyPadInput::GetInstance();
 
+	// --サウンドクラスインスタンス読み込み-- //
+	Sound* sound = Sound::GetInstance();
+
+	// --サウンドの読み込み-- //
+	sound->LoadSound();
+
 	// ゲームループ
 	while (true) {
 
@@ -107,8 +118,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// --シーン管理クラス描画処理-- //
 		sceneM->Draw();
-
-		DrawFormatString(0, 140, 0xFFFFFF, "%d", pad->Get());
 
 		FpsTimeFanction();
 

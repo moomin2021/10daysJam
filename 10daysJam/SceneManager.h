@@ -14,6 +14,12 @@
 // --スコアクラス-- //
 #include "Score.h"
 
+// --サウンドクラス-- //
+#include "Sound.h"
+
+// --入力クラス-- //
+#include "Input.h"
+
 // --シーン番号-- //
 enum SceneNum {
 	TITLESCENE,
@@ -42,6 +48,12 @@ private:
 
 	// --スコア-- //
 	Score* score;
+
+	// --サウンド-- //
+	Sound* sound;
+
+	// --入力-- //
+	Input* input;
 #pragma endregion
 
 #pragma region シーン関係変数
@@ -78,6 +90,9 @@ private:
 
 #pragma endregion
 
+	// --デバッグモードフラグ-- //
+	static bool isDebugMode;
+
 	/// --メンバ変数END-- ///
 	/// --------------- ///
 	/// --メンバ関数-- ///
@@ -108,6 +123,9 @@ public:
 
 	// --シーン変更描画処理-- //
 	void DrawChangeScene();
+
+	// --デバッグモードか取得-- //
+	static bool GetDebugMode();
 
 private:
 	// --コンストラクタ-- //
