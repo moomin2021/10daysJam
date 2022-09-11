@@ -108,24 +108,26 @@ void SceneManager::Update() {
 		isDebugMode = !isDebugMode;
 	}
 
-	// --タイトルシーン更新処理-- //
-	if (scene == TITLESCENE) {
-		titleScene->Update();
-	}
+	if (isChangeScene == false) {
+		// --タイトルシーン更新処理-- //
+		if (scene == TITLESCENE) {
+			titleScene->Update();
+		}
 
-	// --ゲームシーン更新処理-- //
-	else if (scene == GAMESCENE) {
 		// --ゲームシーン更新処理-- //
-		gameScene->Update();
+		else if (scene == GAMESCENE) {
+			// --ゲームシーン更新処理-- //
+			gameScene->Update();
 
-		// --スコア更新処理-- //
-		score->Update();
-	}
+			// --スコア更新処理-- //
+			score->Update();
+		}
 
-	// --リザルトシーン更新処理-- //
-	else if (scene == RESULTSCENE) {
 		// --リザルトシーン更新処理-- //
-		resultScene->Update();
+		else if (scene == RESULTSCENE) {
+			// --リザルトシーン更新処理-- //
+			resultScene->Update();
+		}
 	}
 
 	// --シーン変更更新処理-- //
@@ -222,7 +224,7 @@ void SceneManager::DrawChangeScene() {
 
 	// --デバッグモード-- //
 	if (isDebugMode == true) {
-		
+
 	}
 }
 
