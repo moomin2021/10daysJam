@@ -3,6 +3,9 @@
 // --DXライブラリ-- //
 #include "DxLib.h"
 
+// --シーンマネージャークラス-- //
+#include "SceneManager.h"
+
 // --インスタンスにNULLを代入-- //
 TitleScene* TitleScene::myInstance = nullptr;
 
@@ -27,6 +30,9 @@ void TitleScene::Relese() {
 
 // --コンストラクタ-- //
 TitleScene::TitleScene() {
+	// --インスタンス読み込み-- //
+	pad = JoyPadInput::GetInstance();
+
 #pragma region 画像読み込み
 	// --タイトルロゴ-- //
 	LoadDivGraph("Resources/titleRogo.png", 4, 4, 1, 572, 572, titlelogoGraph);
@@ -45,7 +51,10 @@ void TitleScene::Initialize() {
 
 // --更新処理-- //
 void TitleScene::Update() {
-
+	// --Aボタンを押すとゲームシーンに移動-- //
+	if (pad->GetButtonTrigger(PAD_INPUT_1)) {
+		SceneManager::SetScene(GAMESCENE);
+	}
 }
 
 // --描画処理-- //

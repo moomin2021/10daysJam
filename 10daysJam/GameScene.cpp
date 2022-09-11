@@ -253,9 +253,6 @@ void GameScene::Update() {
 		}
 
 		//360度超えたら0に戻し、0を下回ったら360加算する
-		longHand.radian = fmodf(longHand.radian, 360.0f);
-		if (longHand.radian <= 0)longHand.radian += 360.0f;
-		//360度超えたら0に戻し、0を下回ったら360加算する
 		hourHand.radian = fmodf(hourHand.radian, 360.0f);
 		if (hourHand.radian <= 0)hourHand.radian += 360.0f;
 
@@ -270,6 +267,11 @@ void GameScene::Update() {
 		hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
 		hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
 
+		// --長針が一周したらリザルト
+		if (longHand.radian >= 360.0f) {
+			// --シーンを変える-- //
+			SceneManager::SetScene(RESULTSCENE);
+		}
 
 #pragma endregion
 
@@ -319,9 +321,6 @@ void GameScene::Update() {
 		// --エネミークラス更新処理-- //
 		for (int i = enemys.size() - 1; i >= 0; i--) {
 			enemys[i].Update(hourHand);
-
-
-
 			//短針が反転モードなら判定をとる
 			if (hourHand.state == State::Reverse) {
 				//短針と敵の当たり判定
@@ -399,20 +398,22 @@ void GameScene::Update() {
 #pragma endregion
 
 #pragma region デバッグ用処理
-		// --レベルサークルの半径変更-- //
-		levelCircle.radius += input->IsPress(KEY_INPUT_A) - input->IsPress(KEY_INPUT_D);
+		if (SceneManager::GetDebugMode() == true) {
+			// --レベルサークルの半径変更-- //
+			levelCircle.radius += input->IsPress(KEY_INPUT_A) - input->IsPress(KEY_INPUT_D);
 
-		// --レベルサークルの半径制限-- //
-		levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
+			// --レベルサークルの半径制限-- //
+			levelCircle.radius = Clamp(levelCircle.radius, 300.0f, 8.0f);
 
-		// --短針の速度変更-- //
-		hourHandSpeed += (input->IsTrigger(KEY_INPUT_Z) - input->IsTrigger(KEY_INPUT_C)) * 0.1f;
+			// --短針の速度変更-- //
+			hourHandSpeed += (input->IsTrigger(KEY_INPUT_Z) - input->IsTrigger(KEY_INPUT_C)) * 0.1f;
 
-		// --長針の速度変更-- //
-		longHandSpeed += (input->IsTrigger(KEY_INPUT_I) - input->IsTrigger(KEY_INPUT_P)) * 0.1f;
+			// --長針の速度変更-- //
+			longHandSpeed += (input->IsTrigger(KEY_INPUT_I) - input->IsTrigger(KEY_INPUT_P)) * 0.1f;
 
-		// --SPACEキーを押すと画面がシェイクする-- //
-		if (input->IsTrigger(KEY_INPUT_SPACE)) { camera.SetShakeCount(5); }
+			// --SPACEキーを押すと画面がシェイクする-- //
+			if (input->IsTrigger(KEY_INPUT_SPACE)) { camera.SetShakeCount(5); }
+		}
 #pragma endregion
 	}
 }
@@ -552,26 +553,25 @@ void GameScene::Draw() {
 #pragma endregion
 
 #pragma region デバッグ描画
-	DrawFormatString(0, 80, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
-	DrawFormatString(0, 100, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
-	DrawFormatString(0, 120, 0xFFFFFF, "ZCキー:短針の速度変更");
-	DrawFormatString(0, 140, 0xFFFFFF, "短針の速度:%f", hourHandSpeed);
-	DrawFormatString(0, 160, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
-	DrawFormatString(0, 180, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-	DrawFormatString(0, 280, 0xFFFFFF, "IPキーで長針の速度を変更");
-	DrawFormatString(0, 300, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
-	DrawFormatString(0, 320, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
-	DrawFormatString(0, 340, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
-	DrawFormatString(0, 360, 0xFFFFFF, "敵の総数:%d", enemys.size());
-	DrawFormatString(0, 380, 0xFFFFFF, "FPS");
-	DrawFormatString(0, 400, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
-	DrawFormatString(0, 420, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
-
-
-
-	/*SetFontSize(80);*/
-	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
-	/*SetFontSize(16);*/
+	if (SceneManager::GetDebugMode() == true) {
+		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
+		DrawFormatString(0, 120, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
+		DrawFormatString(0, 140, 0xFFFFFF, "ZCキー:短針の速度変更");
+		DrawFormatString(0, 160, 0xFFFFFF, "短針の速度:%f", hourHandSpeed);
+		DrawFormatString(0, 180, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
+		DrawFormatString(0, 200, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+		DrawFormatString(0, 220, 0xFFFFFF, "IPキーで長針の速度を変更");
+		DrawFormatString(0, 240, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
+		DrawFormatString(0, 260, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
+		DrawFormatString(0, 280, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
+		DrawFormatString(0, 300, 0xFFFFFF, "敵の総数:%d", enemys.size());
+		DrawFormatString(0, 320, 0xFFFFFF, "FPS");
+		DrawFormatString(0, 340, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
+		DrawFormatString(0, 360, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+		/*SetFontSize(80);*/
+		DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
+		/*SetFontSize(16);*/
+	}
 #pragma endregion
 }
 

@@ -3,6 +3,9 @@
 using namespace Util;
 #include "GameScene.h"
 
+// --シーンマネージャークラス-- //
+#include "SceneManager.h"
+
 // --インスタンスにNULLを代入-- //
 Player* Player::myInstance = nullptr;
 
@@ -185,19 +188,21 @@ void Player::Update(Line hourHand, Circle clock, float radius) {
 #pragma endregion
 
 #pragma region デバッグ用処理
-	// --プレイヤー速度の変更-- //
-	playerSpeed += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
+	if (SceneManager::GetDebugMode() == true) {
+		// --プレイヤー速度の変更-- //
+		playerSpeed += ((input->IsPress(KEY_INPUT_E) - input->IsPress(KEY_INPUT_Q)) * 0.2f);
 
-	// --プレイヤー速度のリセット-- //
-	if (input->IsPress(KEY_INPUT_R)) playerSpeed = 2.0f;
+		// --プレイヤー速度のリセット-- //
+		if (input->IsPress(KEY_INPUT_R)) playerSpeed = 2.0f;
 
-	// --プレイヤー速度制限-- //
-	playerSpeed = Clamp(playerSpeed, 100.0f, 0.1f);
+		// --プレイヤー速度制限-- //
+		playerSpeed = Clamp(playerSpeed, 100.0f, 0.1f);
 
-	// --操作のモードチェンジ-- //
-	if (input->IsTrigger(KEY_INPUT_1)) controlMode = MODE1;
-	if (input->IsTrigger(KEY_INPUT_2)) controlMode = MODE2;
-	if (input->IsTrigger(KEY_INPUT_3)) controlMode = MODE3;
+		// --操作のモードチェンジ-- //
+		if (input->IsTrigger(KEY_INPUT_1)) controlMode = MODE1;
+		if (input->IsTrigger(KEY_INPUT_2)) controlMode = MODE2;
+		if (input->IsTrigger(KEY_INPUT_3)) controlMode = MODE3;
+	}
 #pragma endregion
 }
 
@@ -241,10 +246,12 @@ void Player::Draw(Camera camera_,int bright) {
 #pragma endregion
 
 #pragma region デバッグ用処理
-	DrawFormatString(0, 20, 0xFFFFFF, "QEキー:プレイヤーの速度変更");
-	DrawFormatString(0, 40, 0xffffff, "Rキー:プレイヤーの速度リセット");
-	DrawFormatString(0, 60, 0xffffff, "プレイヤー速度:%f", playerSpeed);
-	DrawFormatString(0, 240, 0xFFFFFF, "123キーで操作のモードを変える");
-	DrawFormatString(0, 260, 0xFFFFFF, "操作モード:モード%d", controlMode + 1);
+	if (SceneManager::GetDebugMode() == true) {
+		DrawFormatString(0, 0, 0xFFFFFF, "QEキー:プレイヤーの速度変更");
+		DrawFormatString(0, 20, 0xffffff, "Rキー:プレイヤーの速度リセット");
+		DrawFormatString(0, 40, 0xffffff, "プレイヤー速度:%f", playerSpeed);
+		DrawFormatString(0, 60, 0xFFFFFF, "123キーで操作のモードを変える");
+		DrawFormatString(0, 80, 0xFFFFFF, "操作モード:モード%d", controlMode + 1);
+	}
 #pragma endregion
 }

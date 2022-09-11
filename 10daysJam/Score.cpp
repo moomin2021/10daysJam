@@ -76,8 +76,6 @@ void Score::Update() {
 
 // --描画処理-- //
 void Score::Draw() {
-	DrawFormatString(0, 200, 0xFFFFFF, "実際のスコア = %d", realScore);
-	DrawFormatString(0, 220, 0xFFFFFF, "表示するスコア = %d", displayScore);
 	int num = displayScore;
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	SetDrawBright(119, 28, 28);
