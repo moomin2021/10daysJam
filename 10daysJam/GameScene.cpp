@@ -125,7 +125,8 @@ void GameScene::Initialize() {
 	starC.radius = 6;
 
 	for (int i = 0; i < 5; i++) {
-		star_[i].Initialize(starC, 72 * i, starLen, 32);
+		star[i].Initialize(starC, 72 * i, starLen, 32);
+		star2[i].Initialize(starC, 72 * i + 36, starLen + 108, 32);
 	}
 
 	lineParticleMax = 64;
@@ -288,7 +289,9 @@ void GameScene::Update() {
 #pragma endregion
 
 		for (int i = 0; i < 5; i++) {
-			star_[i].Update(hourHand);
+			star[i].Update(hourHand);
+			//star2[i].SetSpd(0.8f);
+			star2[i].Update(hourHand);
 		}
 
 		for (int i = 0; i < lineParticleMax; i++) {
@@ -537,7 +540,10 @@ void GameScene::Draw() {
 
 	//パーティクルスターの描画
 	for (int i = 0; i < 5; i++) {
-		if (!isOpening)star_[i].Draw(camera, 0x9720e1);
+		if (!isOpening) {
+			star[i].Draw(camera, PURPLE);
+		star2[i].Draw(camera, ORANGE);
+		}
 	}
 
 

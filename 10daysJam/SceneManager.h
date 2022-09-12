@@ -90,6 +90,9 @@ private:
 
 #pragma endregion
 
+	// --ぼかした円の画像-- //
+	int circleGraph;
+
 	// --デバッグモードフラグ-- //
 	static bool isDebugMode;
 
