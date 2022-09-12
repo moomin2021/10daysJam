@@ -100,6 +100,12 @@ private:
 	int maxStarparticle;
 	std::vector<Particle> starParticles;
 
+	//短針、長針からでるパーティクル
+	int lineParticleMax;
+	std::vector<Particle> hourHandParticle;
+	std::vector<Particle> longHandParticle;
+
+
 
 #pragma endregion
 
