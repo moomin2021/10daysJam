@@ -592,6 +592,7 @@ void GameScene::Draw() {
 		DrawFormatString(0, 320, 0xFFFFFF, "FPS");
 		DrawFormatString(0, 340, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
 		DrawFormatString(0, 360, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+		DrawFormatString(0, 400, 0xFFFFFF, "point:%d", point);
 		/*SetFontSize(80);*/
 		/*SetFontSize(16);*/
 	}
@@ -636,8 +637,9 @@ void GameScene::Collision() {
 			}//敵のステートがenemyならレベルを減らして消滅させる
 			else if (enemys[i].GetState() == State::Enemy) {
 				//レベルを下げて、爆発サークルを出現
-				if (level > 1) {
+				if (level > 0) {
 					level--;
+					point = 0;
 				}
 				burstCircle.pos = enemys[i].GetCircle().pos + camera.GetPos();
 				burstCircle.radius = 96.0f;
