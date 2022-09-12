@@ -247,6 +247,9 @@ void GameScene::Update() {
 					spawnTimer = spawnInterval;
 					//衝撃エフェクトを作成
 					CreateBreakEffect(clock.pos, 128);
+					//レベル変動エフェクトを作成
+					LevelUpEfffect(64 * 3);
+					
 					//戻す力をリセット
 					reverseTime = 0;
 
@@ -295,35 +298,7 @@ void GameScene::Update() {
 
 #pragma endregion
 
-		for (int i = 0; i < 5; i++) {
-			star[i].Update(hourHand);
-			//star2[i].SetSpd(0.8f);
-			star2[i].Update(hourHand);
-		}
-
-		for (int i = 0; i < lineParticleMax; i++) {
-			Vector2 pos;
-			float len, rad;
-			len = Random(levelCircle.radius, hourHand.length);
-			rad = hourHand.radian - 90.0f;
-			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
-			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
-			hourHandParticle[i].SetParent(pos);
-			hourHandParticle[i].SetSpeed(Random(0.0f, 0.2f));
-			hourHandParticle[i].SetRadius(Random(3.0f,6.0f));
-			hourHandParticle[i].Update();
-
-			len = Random(levelCircle.radius, longHand.length);
-			rad = longHand.radian - 90.0f;
-			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
-			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
-			longHandParticle[i].SetParent(pos);
-			longHandParticle[i].SetSpeed(Random(0.5f, 2.0f));
-			hourHandParticle[i].SetRadius(Random(1.0f, 3.0f));
-			longHandParticle[i].SetRadian(Random(rad - 135, rad - 45));
-			longHandParticle[i].Update();
-
-		}
+		
 
 #pragma region プレイヤー更新処理
 		player->Update(hourHand, clock, levelCircle.radius);
@@ -411,6 +386,52 @@ void GameScene::Update() {
 				breakEffects.erase(breakEffects.begin() + i);
 			}
 		}
+
+		for (int i = 0; i < 5; i++) {
+			star[i].Update(hourHand);
+			//star2[i].SetSpd(0.8f);
+			star2[i].Update(hourHand);
+		}
+
+		for (int i = 0; i < lineParticleMax; i++) {
+			Vector2 pos;
+			float len, rad;
+			len = Random(levelCircle.radius, hourHand.length);
+			rad = hourHand.radian - 90.0f;
+			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+			hourHandParticle[i].SetParent(pos);
+			hourHandParticle[i].SetSpeed(Random(0.0f, 0.2f));
+			hourHandParticle[i].SetRadius(Random(3.0f, 6.0f));
+			hourHandParticle[i].Update();
+
+			len = Random(levelCircle.radius, longHand.length);
+			rad = longHand.radian - 90.0f;
+			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+			longHandParticle[i].SetParent(pos);
+			longHandParticle[i].SetSpeed(Random(0.5f, 2.0f));
+			hourHandParticle[i].SetRadius(Random(1.0f, 3.0f));
+			longHandParticle[i].SetRadian(Random(rad - 135, rad - 45));
+			longHandParticle[i].Update();
+
+		}
+
+		for (int i = 0; i < levelChangeParticle.size(); i++) {
+			Vector2 pos;
+			float len, rad;
+			len = longHand.length;
+			rad = Random(0.0f, 360.0f);
+			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+			levelChangeParticle[i].SetParent(pos);
+			levelChangeParticle[i].SetSpeed(Random(3.0f, 8.0f));
+			levelChangeParticle[i].SetRadius(Random(6.0f, 10.0f));
+			//levelChangeParticle[i].SetRadian(Random(rad - 60, rad + 60));
+			//levelChangeParticle[i].SetRadian(rad);
+			levelChangeParticle[i].Update();
+		}
+
 #pragma endregion
 
 #pragma region カメラシェイク処理
@@ -547,13 +568,7 @@ void GameScene::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
-	//パーティクルスターの描画
-	for (int i = 0; i < 5; i++) {
-		if (!isOpening) {
-			star[i].Draw(camera, PURPLE, particleGraph);
-		star2[i].Draw(camera, ORANGE, particleGraph);
-		}
-	}
+
 
 
 
@@ -586,6 +601,19 @@ void GameScene::Draw() {
 #pragma region エフェクト描画
 	for (int i = 0; i < breakEffects.size(); i++) {
 		breakEffects[i].Draw(camera);
+	}
+
+	//パーティクルスターの描画
+	for (int i = 0; i < 5; i++) {
+		if (!isOpening) {
+			star[i].Draw(camera, PURPLE, particleGraph);
+			star2[i].Draw(camera, ORANGE, particleGraph);
+		}
+	}
+
+	//レベル変動エフェクト
+	for (int i = 0; i < levelChangeParticle.size(); i++) {
+		levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), particleGraph);
 	}
 #pragma endregion
 
@@ -701,6 +729,7 @@ void GameScene::LevelUpdate() {
 	if (needPoint[level] == point && level < 5) {
 		level++;
 		point = 0;
+		LevelUpEfffect(96);
 	}
 
 	//逆走速度の速度倍率
@@ -809,6 +838,26 @@ void GameScene::OpeningUpdate() {
 	}
 	if (nowTime == openingTime) {
 		isOpening = false;
+	}
+}
+
+void GameScene::LevelUpEfffect(int effectNum)
+{
+	for (int i = 0; i < effectNum; i++) {
+		Particle newpaticle;
+		Vector2 pos;
+		float len, rad;
+		len = longHand.length;
+		rad = Random(0.0f, 360.0f);
+		pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+		pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+		newpaticle.SetParent(pos);
+		newpaticle.SetSpeed(Random(3.0f, 8.0f));
+		newpaticle.SetRadius(Random(6.0f, 10.0f));
+		newpaticle.SetRadian(Random(rad - 60, rad + 60));
+		newpaticle.SetRadian(rad);
+		newpaticle.Initialize(true);
+		levelChangeParticle.push_back(newpaticle);
 	}
 }
 

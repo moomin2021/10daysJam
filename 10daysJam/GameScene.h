@@ -134,6 +134,9 @@ private:
 #pragma region エフェクト関係変数の宣言
 	// --敵の爆発したときの円の大きさ用-- //
 	Circle burstCircle;
+
+	// --レベルが変動した時のエフェクト--
+	std::vector<Particle> levelChangeParticle;
 #pragma endregion
 
 #pragma region 画像用ハンドル変数の宣言
@@ -187,6 +190,8 @@ public:
 
 	// --ゲームが開始されたときの更新処理--
 	void OpeningUpdate();
+
+	void LevelUpEfffect(int effectNum);
 
 
 /// <summary>
