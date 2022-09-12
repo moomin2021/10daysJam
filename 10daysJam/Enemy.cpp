@@ -67,11 +67,11 @@ void Enemy::Update(Line hourLine_) {
 		break;
 	case State::Item:
 		//色を黄色に変更
-		color = 0xffff00;
+		color = YELLOW;
 		break;
 	case State::Enemy:
 		//色を赤に変更
-		color = 0xff0000;
+		color = RED;
 		break;
 	case State::Death:
 		UpdateDeath(hourLine_.start, hourLine_.length);
