@@ -183,6 +183,9 @@ void GameScene::Update() {
 			hourHand.state = State::Reverse;
 		}
 
+		//逆走の速度は短針の速度 * 速度倍率に
+		reverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) *reverseVelocityScale;
+
 		//ステートが通常なら短針は自動回転
 		if (hourHand.state == State::Normal) {
 			hourHand.radian += hourHandSpeed + hourHandlevelSpeed * (level - 1);
@@ -615,20 +618,21 @@ void GameScene::Draw() {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
 		DrawFormatString(0, 120, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
 		DrawFormatString(0, 140, 0xFFFFFF, "ZCキー:短針の速度変更");
-		DrawFormatString(0, 160, 0xFFFFFF, "短針の速度:%f", hourHandSpeed);
-		DrawFormatString(0, 180, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
-		DrawFormatString(0, 200, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-		DrawFormatString(0, 220, 0xFFFFFF, "IPキーで長針の速度を変更");
-		DrawFormatString(0, 240, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
-		DrawFormatString(0, 260, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
-		DrawFormatString(0, 280, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
-		DrawFormatString(0, 300, 0xFFFFFF, "敵の総数:%d", enemys.size());
+		DrawFormatString(0, 160, 0xFFFFFF, "IPキーで長針の速度を変更");
+		DrawFormatString(0, 180, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
+		DrawFormatString(0, 200, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
+		DrawFormatString(0, 220, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+		DrawFormatString(0, 240, 0xFFFFFF, "短針の速度:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
+		DrawFormatString(0, 260, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
+		DrawFormatString(0, 280, 0xFFFFFF, "逆走の速度(短針):%f", reverseSpeed);
+		DrawFormatString(0, 300, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
+		DrawFormatString(0, 340, 0xFFFFFF, "敵の総数:%d", enemys.size());
 		DrawFormatString(0, 320, 0xFFFFFF, "FPS");
-		DrawFormatString(0, 340, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
-		DrawFormatString(0, 360, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+		DrawFormatString(0, 360, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
+	
+		DrawFormatString(0, 400, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+		DrawFormatString(0, 420, 0xFFFFFF, "point:%d", point);
 
-		DrawFormatString(0, 400, 0xFFFFFF, "point:%d", point);
-		DrawFormatString(0, 420, 0xFFFFFF, "逆走の速度:%f", reverseSpeed);
 		/*SetFontSize(80);*/
 		/*SetFontSize(16);*/
 	}
@@ -714,6 +718,10 @@ void GameScene::LevelUpdate() {
 		level++;
 		point = 0;
 	}
+
+	//逆走速度の速度倍率
+	reverseVelocityScale = 2.0f;
+
 
 	//レベルで敵の出現率を調整
 	switch (level)

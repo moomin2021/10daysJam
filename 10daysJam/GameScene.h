@@ -93,6 +93,9 @@ private:
 	// --’Zj‚ª‹t‰ñ‚è‚·‚é‚Æ‚«‚Ì‘¬“x-- //
 	float reverseSpeed;
 
+	//@--‹t‰ñ‚è‚Ì‘¬“x”{—¦
+	float reverseVelocityScale;
+
 	// --‹t‰ñ‚è‚Ì—Í-- //
 	float reverseTime;
 
