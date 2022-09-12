@@ -1,5 +1,6 @@
 #include"Particle.h"
 #include"Util.h"
+#include"DxLib.h"
 using namespace Util;
 
 void Particle::Update() {
@@ -26,9 +27,20 @@ void Particle::Update() {
 
 }
 
-void Particle::Draw(Camera camera_,int color){
+void Particle::Draw(Camera camera_, int color, int graph) {
 	Circle a = { obj.pos + camera_.GetPos(),obj.radius };
-	if(isAcive)DrawCircle(a, color, true);
+	//if (isAcive)DrawCircle(a, color, true);
+
+	Color c = HexadecimalColor(color);
+	int posX1 = a.pos.x - obj.radius;
+	int posX2 = a.pos.x + obj.radius;
+	int posY1 = a.pos.y - obj.radius;
+	int posY2 = a.pos.y + obj.radius;
+	SetDrawBright(c.red, c.green, c.blue);
+	for (int i = 0; i < 2; i++) {
+		DrawExtendGraph(posX1, posY1, posX2, posY2, graph, true);
+	}
+	SetDrawBright(255, 255, 255);
 }
 
 void Particle::Initialize(bool stateReset) {
@@ -40,7 +52,7 @@ void Particle::Initialize(bool stateReset) {
 	if (stateReset) {
 		state = ParticleState::Normal;
 	}
-	
+
 }
 
 void Particle::SetParent(Vector2 pos) {

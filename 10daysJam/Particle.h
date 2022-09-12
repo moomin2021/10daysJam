@@ -20,13 +20,15 @@ private: //メンバ変数
 
 	Vector2 parent ={0,0};	//初期化に使う親座標
 
+	
+
 public:	//メンバ関数
 	
 	//更新
 	void Update();
 
 	//描画
-	void Draw(Camera camera_,int color_ = Util::Random(0, 0xffffff));
+	void Draw(Camera camera_,int color_,int graph_);
 
 	//初期化
 	void Initialize(bool stateReset = false);

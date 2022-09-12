@@ -13,12 +13,14 @@ private:
 	float radian;
 	float len;
 	float spd = 0.4;
+
+	
 public:
 	void Initialize(Circle obj_,float radian_,float len_,int maxParticle);
 
 	void Update(Line hourHand);
 	void SetSpd(float s);
 
-	void Draw(Camera camera_,int color);
+	void Draw(Camera camera_,int color,int graph);
 };
 

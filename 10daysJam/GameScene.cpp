@@ -106,6 +106,7 @@ GameScene::GameScene() {
 
 	// --カウント-- //
 	LoadDivGraph("Resources/countNum.png", 3, 3, 1, 102, 135, countNumGraph);
+
 #pragma endregion
 }
 
@@ -453,7 +454,7 @@ void GameScene::Draw() {
 
 #pragma region エネミー描画
 	for (int i = 0; i < enemys.size(); i++) {
-		enemys[i].Draw(camera);
+		enemys[i].Draw(camera,whiteCircleGraph);
 	}
 
 	for (int i = 0; i < breakEffects.size(); i++) {
@@ -483,12 +484,12 @@ void GameScene::Draw() {
 #pragma endregion
 
 	//針のパーティクルの描画
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, 0x9720e1);
-		longHandParticle[i].Draw(camera, 0x771c1c);
+		hourHandParticle[i].Draw(camera, 0x9720e1,whiteCircleGraph);
+		longHandParticle[i].Draw(camera, 0x771c1c,whiteCircleGraph);
 	}
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
 
 #pragma region 長針の描画
 	// --長針の座標とカメラシェイクの座標足したLine変数-- //
@@ -541,8 +542,8 @@ void GameScene::Draw() {
 	//パーティクルスターの描画
 	for (int i = 0; i < 5; i++) {
 		if (!isOpening) {
-			star[i].Draw(camera, PURPLE);
-		star2[i].Draw(camera, ORANGE);
+			star[i].Draw(camera, PURPLE, whiteCircleGraph);
+		star2[i].Draw(camera, ORANGE, whiteCircleGraph);
 		}
 	}
 

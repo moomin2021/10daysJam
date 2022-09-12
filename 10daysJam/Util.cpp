@@ -163,6 +163,16 @@ Color Util::GetColor16(const char str[])
 	return color;
 }
 
+Color Util::HexadecimalColor(int color_) {
+
+	Color c;
+	c.red = (color_ >> 16);
+	c.blue = (color_ >> 0) ;
+	c.green = (color_ >> 8);
+
+	return c;
+}
+
 int Util::ColorHexadecimal(Color color_)
 {
 	int a;

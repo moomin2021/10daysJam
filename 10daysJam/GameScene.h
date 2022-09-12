@@ -139,6 +139,10 @@ private:
 
 	// --カウント-- //
 	int countNumGraph[3];
+
+	// --パーティクル--
+	//int particleGraph;
+
 #pragma endregion
 
 	/// --メンバ変数END-- ///

@@ -29,6 +29,7 @@ private:
 	std::vector<Particle> spawnEffect;
 	float spawnAddRadius;
 
+
 	/// --メンバ変数END-- ///
 	/// --------------- ///
 	/// --メンバ関数-- ///
@@ -59,7 +60,7 @@ public:
 	void OnCollison();
 
 	// --描画処理-- //
-	void Draw(Camera camera_);
+	void Draw(Camera camera_,int graph);
 
 	//自機の円のセッター
 	Circle GetCircle() const { return obj; }
