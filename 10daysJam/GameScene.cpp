@@ -106,6 +106,10 @@ GameScene::GameScene() {
 
 	// --カウント-- //
 	LoadDivGraph("Resources/countNum.png", 3, 3, 1, 102, 135, countNumGraph);
+
+	particleGraph = LoadGraph("Resources/particle.png");
+	particleGraph = whiteCircleGraph;
+
 #pragma endregion
 }
 
@@ -303,6 +307,7 @@ void GameScene::Update() {
 			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
 			hourHandParticle[i].SetParent(pos);
 			hourHandParticle[i].SetSpeed(Random(0.0f, 0.2f));
+			hourHandParticle[i].SetRadius(Random(3.0f,6.0f));
 			hourHandParticle[i].Update();
 
 			len = Random(levelCircle.radius, longHand.length);
@@ -310,7 +315,8 @@ void GameScene::Update() {
 			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
 			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
 			longHandParticle[i].SetParent(pos);
-			longHandParticle[i].SetSpeed(Random(1.0f, 3.0f));
+			longHandParticle[i].SetSpeed(Random(0.5f, 2.0f));
+			hourHandParticle[i].SetRadius(Random(1.0f, 3.0f));
 			longHandParticle[i].SetRadian(Random(rad - 135, rad - 45));
 			longHandParticle[i].Update();
 
@@ -453,7 +459,7 @@ void GameScene::Draw() {
 
 #pragma region エネミー描画
 	for (int i = 0; i < enemys.size(); i++) {
-		enemys[i].Draw(camera);
+		enemys[i].Draw(camera, particleGraph);
 	}
 
 	for (int i = 0; i < breakEffects.size(); i++) {
@@ -483,12 +489,12 @@ void GameScene::Draw() {
 #pragma endregion
 
 	//針のパーティクルの描画
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, 0x9720e1);
-		longHandParticle[i].Draw(camera, 0x771c1c);
+		hourHandParticle[i].Draw(camera, 0x9720e1,particleGraph);
+		longHandParticle[i].Draw(camera, 0x771c1c, particleGraph);
 	}
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
 
 #pragma region 長針の描画
 	// --長針の座標とカメラシェイクの座標足したLine変数-- //
@@ -541,8 +547,8 @@ void GameScene::Draw() {
 	//パーティクルスターの描画
 	for (int i = 0; i < 5; i++) {
 		if (!isOpening) {
-			star[i].Draw(camera, PURPLE);
-		star2[i].Draw(camera, ORANGE);
+			star[i].Draw(camera, PURPLE, particleGraph);
+		star2[i].Draw(camera, ORANGE, particleGraph);
 		}
 	}
 

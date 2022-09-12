@@ -12,6 +12,7 @@ class Particle {
 private: //メンバ変数
 	Circle obj;
 
+	float initRadius = 0;
 	float radian;
 	float Spd;
 	ParticleState state;
@@ -20,13 +21,15 @@ private: //メンバ変数
 
 	Vector2 parent ={0,0};	//初期化に使う親座標
 
+	
+
 public:	//メンバ関数
 	
 	//更新
 	void Update();
 
 	//描画
-	void Draw(Camera camera_,int color_ = Util::Random(0, 0xffffff));
+	void Draw(Camera camera_,int color_,int graph_);
 
 	//初期化
 	void Initialize(bool stateReset = false);
@@ -39,7 +42,7 @@ public:	//メンバ関数
 	bool GetActive()const { return isAcive; }
 
 	void SetSpeed(float s);
-
+	void SetRadius(float r);
 	void SetColor(int color_);
 	void SetRadian(int radian_);
 

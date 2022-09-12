@@ -31,7 +31,7 @@ void Enemy::Initialize() {
 		c.green = Random(128, 200);
 		c.blue = Random(224, 255);
 	//	color = c.red * pow(16, 4) + c.green * pow(16, 2) + c.blue;
-		EffectInitialize(ColorHexadecimal(c));
+		EffectInitialize(YELLOW);
 	}
 	spawnAddRadius = 8.0f;
 	obj.radius += spawnAddRadius;
@@ -153,13 +153,13 @@ void Enemy::OnCollison()
 }
 
 // --描画処理-- //
-void Enemy::Draw(Camera camera_) {
+void Enemy::Draw(Camera camera_,int graph) {
 
 	//スポーンエフェクト描画
-	//SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < spawnEffect.size(); i++) {
 
-		spawnEffect[i].Draw(camera_,spawnEffect[i].GetColor());
+		spawnEffect[i].Draw(camera_,spawnEffect[i].GetColor(),graph);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
 

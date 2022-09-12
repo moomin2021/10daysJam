@@ -42,11 +42,11 @@ void Star::SetSpd(float s)
 	spd = s;
 }
 
-void Star::Draw(Camera camera_, int color)
+void Star::Draw(Camera camera_, int color,int graph)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < starParticle.size(); i++) {
-		starParticle[i].Draw(camera_, color);
+		starParticle[i].Draw(camera_, color,graph);
 	}
 	Circle c;
 	c = obj;
