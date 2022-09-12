@@ -18,7 +18,7 @@ private: //メンバ変数
 	bool isAcive = false;
 	int color;
 
-	Vector2 parent;	//初期化に使う親座標
+	Vector2 parent ={0,0};	//初期化に使う親座標
 
 public:	//メンバ関数
 	
@@ -41,6 +41,7 @@ public:	//メンバ関数
 	void SetSpeed(float s);
 
 	void SetColor(int color_);
+	void SetRadian(int radian_);
 
 	int GetColor()const { return color; }
 

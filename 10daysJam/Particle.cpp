@@ -61,3 +61,8 @@ void Particle::SetColor(int color_)
 {
 	color = color_;
 }
+
+void Particle::SetRadian(int radian_)
+{
+	radian = radian_;
+}
