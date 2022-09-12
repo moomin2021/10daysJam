@@ -142,13 +142,14 @@ void GameScene::Initialize() {
 	lineParticleMax = 64;
 	for (int i = 0; i < lineParticleMax; i++) {
 		Particle newParticle;
-		Vector2 pos;
+		/*Vector2 pos;
 		pos.x = Random(hourHand.start.x + levelCircle.radius, hourHand.end.x);
-		pos.y = Random(hourHand.start.y + levelCircle.radius, hourHand.end.y);
-		newParticle.SetParent(hourHand.start);
+		pos.y = Random(hourHand.start.y + levelCircle.radius, hourHand.end.y);*/
+		//newParticle.SetParent(hourHand.start);
 		newParticle.SetState(ParticleState::Endress);
 		newParticle.Initialize();
 		hourHandParticle.push_back(newParticle);
+		longHandParticle.push_back(newParticle);
 	}
 
 	//オープニングを始める
@@ -325,6 +326,16 @@ void GameScene::Update() {
 			hourHandParticle[i].SetParent(pos);
 			hourHandParticle[i].SetSpeed(Random(0.0f, 0.2f));
 			hourHandParticle[i].Update();
+
+			len = Random(levelCircle.radius, longHand.length);
+			rad = longHand.radian - 90.0f;
+			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+			longHandParticle[i].SetParent(pos);
+			longHandParticle[i].SetSpeed(Random(1.0f,3.0f));
+			longHandParticle[i].SetRadian(Random(rad - 135,rad-45));
+			longHandParticle[i].Update();
+
 		}
 
 #pragma region プレイヤー更新処理
@@ -493,6 +504,14 @@ void GameScene::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
+	//針のパーティクルの描画
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+	for (int i = 0; i < lineParticleMax; i++) {
+		hourHandParticle[i].Draw(camera, 0x9720e1);
+		longHandParticle[i].Draw(camera, 0x771c1c);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+
 #pragma region 長針の描画
 	// --長針の座標とカメラシェイクの座標足したLine変数-- //
 	Line longHandLine;
@@ -535,10 +554,7 @@ void GameScene::Draw() {
 			0.5f, 0.0f, whiteCircleGraph, true);
 	}
 
-	//パーティクルの描画
-	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, 0x9720e1);
-	}
+	
 
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -553,6 +569,8 @@ void GameScene::Draw() {
 	Circle starC;
 	starC = { star.end + camera.GetPos(),10 };
 	DrawCircle(starC, 0xffffff, true);
+
+	
 
 
 #pragma region レベルサークルの描画
