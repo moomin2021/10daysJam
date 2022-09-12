@@ -37,9 +37,11 @@ void Particle::Draw(Camera camera_, int color, int graph) {
 	int posY1 = a.pos.y - obj.radius;
 	int posY2 = a.pos.y + obj.radius;
 	SetDrawBright(c.red, c.green, c.blue);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	for (int i = 0; i < 4; i++) {
-		DrawExtendGraph(posX1, posY1, posX2, posY2, graph, true);
+		if(isAcive)DrawExtendGraph(posX1, posY1, posX2, posY2, graph, true);
 	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	SetDrawBright(255, 255, 255);
 }
 
