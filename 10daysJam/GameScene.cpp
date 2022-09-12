@@ -676,7 +676,7 @@ void GameScene::LevelUpdate() {
 	{
 	case 0:
 		enemySpawnRate = 0.0f;
-		spawnInterval = 100;
+		spawnInterval = 120;
 		//デバッグ用仮変更
 		/*spawnInterval = 40;*/
 		break;
