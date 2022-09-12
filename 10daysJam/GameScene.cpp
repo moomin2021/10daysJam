@@ -118,25 +118,14 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	star.start = clock.pos;
-	star.radian = 0;
-	star.length = hourHand.length + 96;
-	star.end = { star.start.x + star.length,star.start.y + star.length };
-
-	//位置用のラジアン
-	float radStar = star.radian - 90;
-	//座標計算
-	star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
-	star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
-
 	//パーティクルの数とか
-	maxStarparticle = 32;
-	for (int i = 0; i < maxStarparticle; i++) {
-		Particle newParticle;
-		newParticle.SetParent(star.end);
-		newParticle.SetState(ParticleState::Endress);
-		newParticle.Initialize();
-		starParticles.push_back(newParticle);
+	Circle starC;
+	starLen = hourHand.length + 72;
+	starC.pos = clock.pos;
+	starC.radius = 6;
+
+	for (int i = 0; i < 5; i++) {
+		star_[i].Initialize(starC, 72 * i, starLen, 32);
 	}
 
 	lineParticleMax = 64;
@@ -165,6 +154,8 @@ void GameScene::Initialize() {
 		spawnFrame = 30 + i * 50;
 		opSpawnFrame.push_back(spawnFrame);
 	}
+
+
 }
 
 // --更新処理-- //
@@ -296,24 +287,8 @@ void GameScene::Update() {
 
 #pragma endregion
 
-
-		if (star.state == State::Normal) {
-			star.radian += 0.4f;
-		}
-
-		//角度が上限、下限を超えたら戻す
-		star.radian = fmodf(star.radian, 360.f);
-		if (star.radian <= 0)star.radian += 360.0f;
-		//位置用のラジアン
-		float radStar = star.radian - 90;
-		//座標計算
-		star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
-		star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
-
-		//パーティクルの更新
-		for (int i = 0; i < starParticles.size(); i++) {
-			starParticles[i].SetParent(star.end);
-			starParticles[i].Update();
+		for (int i = 0; i < 5; i++) {
+			star_[i].Update(hourHand);
 		}
 
 		for (int i = 0; i < lineParticleMax; i++) {
@@ -332,8 +307,8 @@ void GameScene::Update() {
 			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
 			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
 			longHandParticle[i].SetParent(pos);
-			longHandParticle[i].SetSpeed(Random(1.0f,3.0f));
-			longHandParticle[i].SetRadian(Random(rad - 135,rad-45));
+			longHandParticle[i].SetSpeed(Random(1.0f, 3.0f));
+			longHandParticle[i].SetRadian(Random(rad - 135, rad - 45));
 			longHandParticle[i].Update();
 
 		}
@@ -554,23 +529,17 @@ void GameScene::Draw() {
 			0.5f, 0.0f, whiteCircleGraph, true);
 	}
 
-	
+
 
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
-	for (int i = 0; i < starParticles.size(); i++) {
-		starParticles[i].Draw(camera);
-	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	//パーティクルスターの描画
-	Circle starC;
-	starC = { star.end + camera.GetPos(),10 };
-	DrawCircle(starC, 0xffffff, true);
+	for (int i = 0; i < 5; i++) {
+		if (!isOpening)star_[i].Draw(camera, 0x9720e1);
+	}
 
-	
 
 
 #pragma region レベルサークルの描画

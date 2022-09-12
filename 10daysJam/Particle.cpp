@@ -28,7 +28,7 @@ void Particle::Update() {
 
 void Particle::Draw(Camera camera_,int color){
 	Circle a = { obj.pos + camera_.GetPos(),obj.radius };
-	DrawCircle(a, color, true);
+	if(isAcive)DrawCircle(a, color, true);
 }
 
 void Particle::Initialize(bool stateReset) {
