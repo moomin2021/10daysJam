@@ -8,6 +8,7 @@
 #include"Camera.h"
 #include"BreakEffect.h"
 #include"Particle.h"
+#include"Star.h"
 
 class GameScene {
 	/// --メンバ変数-- ///
@@ -96,9 +97,15 @@ private:
 	float reverseTime;
 
 	// --回転するパーティクル-- //
-	Line star;
-	int maxStarparticle;
-	std::vector<Particle> starParticles;
+	float starLen;
+	Star star[5];
+	Star star2[5];
+
+	//短針、長針からでるパーティクル
+	int lineParticleMax;
+	std::vector<Particle> hourHandParticle;
+	std::vector<Particle> longHandParticle;
+
 
 
 #pragma endregion

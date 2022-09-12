@@ -91,7 +91,7 @@ GameScene::GameScene() {
 	point = 0;
 
 	// --レベルによって必要な経験値-- //
-	int needPointCopy[10] = { 2, 4, 8, 10, 10, 10, 10, 10, 10, 10 };
+	int needPointCopy[10] = { 2, 2, 3, 4, 5, 10, 10, 10, 10, 10 };
 	for (int i = 0; i < 10; i++) { needPoint[i] = needPointCopy[i]; }
 #pragma endregion
 
@@ -118,25 +118,28 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	star.start = clock.pos;
-	star.radian = 0;
-	star.length = hourHand.length + 96;
-	star.end = { star.start.x + star.length,star.start.y + star.length };
-
-	//位置用のラジアン
-	float radStar = star.radian - 90;
-	//座標計算
-	star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
-	star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
-
 	//パーティクルの数とか
-	maxStarparticle = 32;
-	for (int i = 0; i < maxStarparticle; i++) {
+	Circle starC;
+	starLen = hourHand.length + 72;
+	starC.pos = clock.pos;
+	starC.radius = 6;
+
+	for (int i = 0; i < 5; i++) {
+		star[i].Initialize(starC, 72 * i, starLen, 32);
+		star2[i].Initialize(starC, 72 * i + 36, starLen + 108, 32);
+	}
+
+	lineParticleMax = 64;
+	for (int i = 0; i < lineParticleMax; i++) {
 		Particle newParticle;
-		newParticle.SetParent(star.end);
+		/*Vector2 pos;
+		pos.x = Random(hourHand.start.x + levelCircle.radius, hourHand.end.x);
+		pos.y = Random(hourHand.start.y + levelCircle.radius, hourHand.end.y);*/
+		//newParticle.SetParent(hourHand.start);
 		newParticle.SetState(ParticleState::Endress);
 		newParticle.Initialize();
-		starParticles.push_back(newParticle);
+		hourHandParticle.push_back(newParticle);
+		longHandParticle.push_back(newParticle);
 	}
 
 	//オープニングを始める
@@ -152,6 +155,8 @@ void GameScene::Initialize() {
 		spawnFrame = 30 + i * 50;
 		opSpawnFrame.push_back(spawnFrame);
 	}
+
+
 }
 
 // --更新処理-- //
@@ -161,7 +166,7 @@ void GameScene::Update() {
 	//オープニング処理
 	if (isOpening) {
 		OpeningUpdate();
-	} 
+	}
 	else {
 		//Lボタンで短針のステートを「反転」に
 		if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
@@ -240,7 +245,7 @@ void GameScene::Update() {
 
 					//敵を5体スポーンさせる
 					for (int i = 0; i < 5; i++) {
-						EnemySpawn(Random(0.0f, 360.0f));
+						EnemySpawn(Random(0.0f, 72.0f) + 72.0f * i);
 					}
 
 				}
@@ -255,7 +260,7 @@ void GameScene::Update() {
 
 				//敵を5体スポーンさせる
 				for (int i = 0; i < 5; i++) {
-					EnemySpawn(Random(0.0f, 360.0f));
+					EnemySpawn(Random(0.0f, 72.0f) + 72.0f * i);
 				}
 			}
 		}
@@ -283,27 +288,33 @@ void GameScene::Update() {
 
 #pragma endregion
 
-
-		if (star.state == State::Normal) {
-			star.radian += 0.4f;
+		for (int i = 0; i < 5; i++) {
+			star[i].Update(hourHand);
+			//star2[i].SetSpd(0.8f);
+			star2[i].Update(hourHand);
 		}
 
-		//角度が上限、下限を超えたら戻す
-		star.radian = fmodf(star.radian, 360.f);
-		if (star.radian <= 0)star.radian += 360.0f;
-		//位置用のラジアン
-		float radStar = star.radian - 90;
-		//座標計算
-		star.end.x = (star.length * cosf(radStar / 180 * PI)) + star.start.x;
-		star.end.y = (star.length * sinf(radStar / 180 * PI)) + star.start.y;
+		for (int i = 0; i < lineParticleMax; i++) {
+			Vector2 pos;
+			float len, rad;
+			len = Random(levelCircle.radius, hourHand.length);
+			rad = hourHand.radian - 90.0f;
+			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+			hourHandParticle[i].SetParent(pos);
+			hourHandParticle[i].SetSpeed(Random(0.0f, 0.2f));
+			hourHandParticle[i].Update();
 
-		//パーティクルの更新
-		for (int i = 0; i < starParticles.size(); i++) {
-			starParticles[i].SetParent(star.end);
+			len = Random(levelCircle.radius, longHand.length);
+			rad = longHand.radian - 90.0f;
+			pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+			longHandParticle[i].SetParent(pos);
+			longHandParticle[i].SetSpeed(Random(1.0f, 3.0f));
+			longHandParticle[i].SetRadian(Random(rad - 135, rad - 45));
+			longHandParticle[i].Update();
 
-			starParticles[i].Update();
 		}
-
 
 #pragma region プレイヤー更新処理
 		player->Update(hourHand, clock, levelCircle.radius);
@@ -333,8 +344,8 @@ void GameScene::Update() {
 			if (hourHand.state == State::Reverse) {
 				//短針と敵の当たり判定
 				if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpeed)) {
-					//オブジェクトのステートがまだ「反転」でないなら当たり判定のコールバック関数を呼び出し、挟んだ数をカウントする
-					if (enemys[i].GetState() != State::Reverse) {
+					//オブジェクトのステートがまだ「反転」でなく、死んでもいないなら当たり判定のコールバック関数を呼び出し、挟んだ数をカウントする
+					if (enemys[i].GetState() != State::Reverse && enemys[i].GetState() != State::Death) {
 						if (enemys[i].GetState() == State::Item) {
 							itemSandwichCount++;
 						}
@@ -437,7 +448,7 @@ void GameScene::Draw() {
 	brightHourHand = (256.0f / 25.0f) * (nowTime - 75) + 16.0f;
 
 #pragma region プレイヤー描画
-	player->Draw(camera,brightHourHand);
+	player->Draw(camera, brightHourHand);
 #pragma endregion
 
 #pragma region エネミー描画
@@ -471,6 +482,14 @@ void GameScene::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
+	//針のパーティクルの描画
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+	for (int i = 0; i < lineParticleMax; i++) {
+		hourHandParticle[i].Draw(camera, 0x9720e1);
+		longHandParticle[i].Draw(camera, 0x771c1c);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+
 #pragma region 長針の描画
 	// --長針の座標とカメラシェイクの座標足したLine変数-- //
 	Line longHandLine;
@@ -478,7 +497,7 @@ void GameScene::Draw() {
 	longHandLine.end = { longHand.end + camera.GetPos() };
 	longHandLine.color = longHand.color;
 
-	
+
 
 	SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
 	SetDrawBright(119, 28, 28);
@@ -500,7 +519,7 @@ void GameScene::Draw() {
 	Line hourHandLine;
 	hourHandLine.start = { hourHand.start + camera.GetPos() };
 	hourHandLine.end = { hourHand.end + camera.GetPos() };
-	hourHandLine.color = hourHand.color;	
+	hourHandLine.color = hourHand.color;
 
 	SetDrawBlendMode(DX_BLENDMODE_ADD, brightHourHand);
 	SetDrawBright(39, 32, 225);
@@ -513,19 +532,20 @@ void GameScene::Draw() {
 			0.5f, 0.0f, whiteCircleGraph, true);
 	}
 
+
+
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
-	for (int i = 0; i < starParticles.size(); i++) {
-		starParticles[i].Draw(camera);
-	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	//パーティクルスターの描画
-	Circle starC;
-	starC = { star.end + camera.GetPos(),10 };
-	DrawCircle(starC, 0xffffff, true);
+	for (int i = 0; i < 5; i++) {
+		if (!isOpening) {
+			star[i].Draw(camera, PURPLE);
+		star2[i].Draw(camera, ORANGE);
+		}
+	}
+
 
 
 #pragma region レベルサークルの描画
@@ -563,11 +583,11 @@ void GameScene::Draw() {
 	//カウントダウンの描画
 	//数字
 	int countDownBright;
-	int graphNum = (nowTime - animationTime) / 50 *(nowTime >= animationTime);	//画像配列の順番が321ならこっち
+	int graphNum = (nowTime - animationTime) / 50 * (nowTime >= animationTime);	//画像配列の順番が321ならこっち
 	if (graphNum > 2)graphNum = 2;					//1,2,3ならこっち
 	int graphNumR = 2 - graphNum;
 
-	countDownBright = (256-( (256.0f / 50.0f) * (nowTime - (animationTime + ( graphNum *50)) ))) * (nowTime >= animationTime);
+	countDownBright = (256 - ((256.0f / 50.0f) * (nowTime - (animationTime + (graphNum * 50))))) * (nowTime >= animationTime);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, countDownBright);
 	// --画像描画をここに-- //
 	DrawGraphF(589.0f, 412.5f, countNumGraph[graphNum], true);
@@ -602,7 +622,7 @@ void GameScene::Draw() {
 // --敵のスポーン処理-- //
 void GameScene::EnemySpawn(float radian) {
 
-	enemyLength = Random(levelCircle.radius, hourHand.length);
+	enemyLength = Random(levelCircle.radius + 8.0f, hourHand.length);
 	float rad = radian - 90;
 	enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
 	enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
@@ -652,14 +672,14 @@ void GameScene::Collision() {
 	}
 
 	// --レベルサークルとエネミーの当たり判定-- //
-	for (int i = 0; i < enemys.size(); i++) {
-		if (CollisionCtoC(levelCircle, enemys[i].obj)) {
-			//敵のステートが死亡でないなら(死亡演出中でないなら)
-			if (enemys[i].GetState() != State::Death) {
-				enemys.erase(enemys.begin() + i);
-			}
-		}
-	}
+	//for (int i = 0; i < enemys.size(); i++) {
+	//	if (CollisionCtoC(levelCircle, enemys[i].obj)) {
+	//		//敵のステートが死亡でないなら(死亡演出中でないなら)
+	//		if (enemys[i].GetState() != State::Death) {
+	//			enemys.erase(enemys.begin() + i);
+	//		}
+	//	}
+	//}
 }
 
 // --レベル-- //
@@ -676,7 +696,7 @@ void GameScene::LevelUpdate() {
 	{
 	case 0:
 		enemySpawnRate = 0.0f;
-		spawnInterval = 100;
+		spawnInterval = 120;
 		//デバッグ用仮変更
 		/*spawnInterval = 40;*/
 		break;
@@ -686,11 +706,11 @@ void GameScene::LevelUpdate() {
 		break;
 	case 2:
 		enemySpawnRate = 19.0f;
-		spawnInterval = 54;
+		spawnInterval = 40;
 		break;
 	case 3:
 		enemySpawnRate = 23.0f;
-		spawnInterval = 38;
+		spawnInterval = 30;
 		break;
 	case 4:
 		enemySpawnRate = 26.0f;
@@ -756,21 +776,21 @@ void GameScene::OpeningUpdate() {
 		float radH = hourHand.radian - 90;
 		//針の角度で終点座標を計算
 		hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
-	hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
+		hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
 
 	}
-		//経過時間が指定のフレームに来たらスポーン
-		for (int i = 0; i < opSpawnFrame.size(); i++) {
-			if (nowTime == opSpawnFrame[i]) {
-				EnemySpawn(hourHand.radian - 5.0f);
-			}
+	//経過時間が指定のフレームに来たらスポーン
+	for (int i = 0; i < opSpawnFrame.size(); i++) {
+		if (nowTime == opSpawnFrame[i]) {
+			EnemySpawn(hourHand.radian - 5.0f);
 		}
+	}
 
-		player->Update(hourHand, clock, levelCircle.radius);
+	player->Update(hourHand, clock, levelCircle.radius);
 
-		for (int i = enemys.size() - 1; i >= 0; i--) {
-			enemys[i].Update(hourHand);
-		}
+	for (int i = enemys.size() - 1; i >= 0; i--) {
+		enemys[i].Update(hourHand);
+	}
 	if (nowTime == openingTime) {
 		isOpening = false;
 	}
