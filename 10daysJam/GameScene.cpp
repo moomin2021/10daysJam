@@ -163,7 +163,6 @@ void GameScene::Update() {
 		OpeningUpdate();
 	} 
 	else {
-
 		//Lボタンで短針のステートを「反転」に
 		if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
 			hourHand.state = State::Reverse;
@@ -185,9 +184,10 @@ void GameScene::Update() {
 				hourHand.state = State::Stop;
 
 				//はさんだオブジェクトの数で戻す力を増やす
-				reverseTime += level * 2;
+				reverseTime += level * 1.5;
 				reverseTime += itemSandwichCount / 2 * level;
 				reverseTime += enemySandwichCount * 2 * level;
+
 				//スコアを加算、はさんだ数をリセット
 				Score::AddScore(300 * itemSandwichCount);
 				Score::AddScore(500 * enemySandwichCount);
@@ -213,7 +213,7 @@ void GameScene::Update() {
 		else if (longHand.state == State::Reverse) {
 			if (reverseTime > 0) {
 				//速度は短針と等速
-				longHand.radian -= reverseSpeed;
+				longHand.radian -= reverseSpeed * 3.0f;
 				//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
 				if (longHand.radian < reverseSpeed) {
 					longHand.state = State::Normal;
@@ -669,13 +669,13 @@ void GameScene::LevelUpdate() {
 	{
 	case 0:
 		enemySpawnRate = 0.0f;
-		spawnInterval = 180;
+		spawnInterval = 100;
 		//デバッグ用仮変更
-		spawnInterval = 40;
+		/*spawnInterval = 40;*/
 		break;
 	case 1:
 		enemySpawnRate = 15.0f;
-		spawnInterval = 80;
+		spawnInterval = 50;
 		break;
 	case 2:
 		enemySpawnRate = 19.0f;
