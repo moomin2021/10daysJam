@@ -110,6 +110,12 @@ GameScene::GameScene() {
 	particleGraph = LoadGraph("Resources/particle.png");
 	particleGraph = whiteCircleGraph;
 
+	// --アイテム-- //
+	LoadDivGraph("Resources/Item.png", 2, 2, 1, 48, 48, itemGraph);
+
+	// --敵-- //
+	LoadDivGraph("Resources/Enemy.png", 2, 2, 1, 48, 48, enemyGraph);
+
 #pragma endregion
 }
 
@@ -351,9 +357,11 @@ void GameScene::Update() {
 						//敵の状態がアイテムなら敵に
 						if (enemys[i].GetState() == State::Item) {
 							enemys[i].SetState(State::Enemy);
+							enemys[i].SetHandle(enemyGraph);
 						}//敵ならアイテムに
 						else if (enemys[i].GetState() == State::Enemy) {
 							enemys[i].SetState(State::Item);
+							enemys[i].SetHandle(itemGraph);
 						}
 						enemys[i].StateChange();
 					}
@@ -515,7 +523,7 @@ void GameScene::Draw() {
 	//針のパーティクルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, 0x9720e1,particleGraph);
+		hourHandParticle[i].Draw(camera, 0x9720e1, particleGraph);
 		longHandParticle[i].Draw(camera, 0x771c1c, particleGraph);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
@@ -657,6 +665,12 @@ void GameScene::Draw() {
 		/*SetFontSize(16);*/
 	}
 #pragma endregion
+
+	//SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	//for (int i = 0; i < 3; i++) {
+	//	DrawGraph(0, 800, enemyGraph[0], true);
+	//}
+	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
 // --敵のスポーン処理-- //
@@ -676,9 +690,11 @@ void GameScene::EnemySpawn(float radian) {
 	if (Random(0, 100) <= enemySpawnRate) {
 		//5%の確率で敵としてスポーン
 		enemys.back().SetState(State::Enemy);
+		enemys.back().SetHandle(enemyGraph);
 	}
 	else {//それ以外の95%でアイテムとしてスポーン
 		enemys.back().SetState(State::Item);
+		enemys.back().SetHandle(itemGraph);
 	}
 }
 
@@ -742,28 +758,31 @@ void GameScene::LevelUpdate() {
 	case 0:
 		enemySpawnRate = 0.0f;
 		spawnInterval = 120;
-		//デバッグ用仮変更
-		/*spawnInterval = 40;*/
 		break;
 	case 1:
 		enemySpawnRate = 15.0f;
 		spawnInterval = 50;
+		reverseVelocityScale = 3.5f;
 		break;
 	case 2:
 		enemySpawnRate = 19.0f;
 		spawnInterval = 40;
+		reverseVelocityScale = 3.5f;
 		break;
 	case 3:
 		enemySpawnRate = 23.0f;
 		spawnInterval = 30;
+		reverseVelocityScale = 3.0f;
 		break;
 	case 4:
 		enemySpawnRate = 26.0f;
 		spawnInterval = 30;
+		reverseVelocityScale = 2.5f;
 		break;
 	case 5:
 		enemySpawnRate = 28.0f;
 		spawnInterval = 25;
+		reverseVelocityScale = 2.5f;
 		break;
 	case 6:
 		enemySpawnRate = 29.0f;
