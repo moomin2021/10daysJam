@@ -29,6 +29,8 @@ private:
 	std::vector<Particle> spawnEffect;
 	float spawnAddRadius;
 
+	// --画像ハンドル-- //
+	int handle[2];
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
@@ -61,6 +63,9 @@ public:
 
 	// --描画処理-- //
 	void Draw(Camera camera_,int graph);
+
+	// --描画で使う画像ハンドルを設定-- //
+	void SetHandle(int handle[]);
 
 	//自機の円のセッター
 	Circle GetCircle() const { return obj; }
