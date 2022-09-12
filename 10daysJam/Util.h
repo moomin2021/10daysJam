@@ -129,6 +129,8 @@ namespace Util {
 	/// </summary>
 	Color GetColor16(const char str[]);
 
+	Color HexadecimalColor(int color_);
+
 	/// <summary>
 		/// RGB‚ğ16i”‚É•ÏX
 		/// </summary>
