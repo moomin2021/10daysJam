@@ -31,7 +31,7 @@ void Enemy::Initialize() {
 		c.green = Random(128, 200);
 		c.blue = Random(224, 255);
 	//	color = c.red * pow(16, 4) + c.green * pow(16, 2) + c.blue;
-		EffectInitialize(ColorHexadecimal(c));
+		EffectInitialize(YELLOW);
 	}
 	spawnAddRadius = 8.0f;
 	obj.radius += spawnAddRadius;

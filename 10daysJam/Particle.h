@@ -12,6 +12,7 @@ class Particle {
 private: //ƒƒ“ƒo•Ï”
 	Circle obj;
 
+	float initRadius = 0;
 	float radian;
 	float Spd;
 	ParticleState state;
@@ -41,7 +42,7 @@ public:	//ƒƒ“ƒoŠÖ”
 	bool GetActive()const { return isAcive; }
 
 	void SetSpeed(float s);
-
+	void SetRadius(float r);
 	void SetColor(int color_);
 	void SetRadian(int radian_);
 

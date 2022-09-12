@@ -141,7 +141,7 @@ private:
 	int countNumGraph[3];
 
 	// --パーティクル--
-	//int particleGraph;
+	int particleGraph;
 
 #pragma endregion
 

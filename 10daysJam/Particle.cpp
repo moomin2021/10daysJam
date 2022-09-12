@@ -37,7 +37,7 @@ void Particle::Draw(Camera camera_, int color, int graph) {
 	int posY1 = a.pos.y - obj.radius;
 	int posY2 = a.pos.y + obj.radius;
 	SetDrawBright(c.red, c.green, c.blue);
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 4; i++) {
 		DrawExtendGraph(posX1, posY1, posX2, posY2, graph, true);
 	}
 	SetDrawBright(255, 255, 255);
@@ -45,7 +45,12 @@ void Particle::Draw(Camera camera_, int color, int graph) {
 
 void Particle::Initialize(bool stateReset) {
 	obj.pos = parent;
-	obj.radius = Random(3.0f, 8.0f);
+	if (initRadius == 0) {
+		obj.radius = Random(3.0f, 8.0f);
+	}
+	else {
+		obj.radius = initRadius;
+	}
 	radian = Random(0.0f, 360.0f);
 	isAcive = true;
 	Spd = Random(0.0f, 3.0f);
@@ -67,6 +72,11 @@ void Particle::SetState(ParticleState state_)
 void Particle::SetSpeed(float s)
 {
 	Spd = s;
+}
+
+void Particle::SetRadius(float r)
+{
+	initRadius = r;
 }
 
 void Particle::SetColor(int color_)
