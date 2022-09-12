@@ -252,6 +252,11 @@ void GameScene::Update() {
 				hourHand.state = State::Normal;
 				//敵のスポーンタイマーをリセット
 				spawnTimer = spawnInterval;
+
+				//敵を5体スポーンさせる
+				for (int i = 0; i < 5; i++) {
+					EnemySpawn(Random(0.0f, 360.0f));
+				}
 			}
 		}
 
