@@ -91,7 +91,7 @@ GameScene::GameScene() {
 	point = 0;
 
 	// --レベルによって必要な経験値-- //
-	int needPointCopy[10] = { 2, 4, 8, 10, 10, 10, 10, 10, 10, 10 };
+	int needPointCopy[10] = {2, 2, 3, 4, 5, 10, 10, 10, 10, 10 };
 	for (int i = 0; i < 10; i++) { needPoint[i] = needPointCopy[i]; }
 #pragma endregion
 
@@ -682,15 +682,15 @@ void GameScene::LevelUpdate() {
 		break;
 	case 1:
 		enemySpawnRate = 15.0f;
-		spawnInterval = 40;
+		spawnInterval = 50;
 		break;
 	case 2:
 		enemySpawnRate = 19.0f;
-		spawnInterval = 30;
+		spawnInterval = 40;
 		break;
 	case 3:
 		enemySpawnRate = 23.0f;
-		spawnInterval = 38;
+		spawnInterval = 30;
 		break;
 	case 4:
 		enemySpawnRate = 26.0f;
