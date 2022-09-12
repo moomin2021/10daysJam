@@ -1,5 +1,10 @@
 #include "SceneManager.h"
 
+// --便利系クラス-- //
+#include "Util.h"
+
+using namespace Util;
+
 // --インスタンスにNULLを代入-- //
 SceneManager* SceneManager::myInstance = nullptr;
 
@@ -76,6 +81,8 @@ SceneManager::SceneManager() {
 
 	// --フェードイン
 	isFadeIn = false;
+
+	circleGraph = LoadGraph("Resources/SceneChangeCircle.png");
 }
 
 // --デストラクタ-- //
@@ -210,6 +217,37 @@ void SceneManager::DrawChangeScene() {
 		SetDrawScreen(screenHandle);
 
 		DrawBox(0, 0, 1280, 960, 0x000000, true);
+
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+
+		// --色-- //
+		Color color = GetColor16("2720e1");
+
+		SetDrawBright(color.red, color.green, color.blue);
+
+		// --横線-- //
+		for (int i = 0; i < 1280; i++) {
+			DrawRotaGraph(i, 480, 0.20f, 0.0f, circleGraph, true);
+		}
+
+		// --横線-- //
+		for (int i = 0; i < 960; i++) {
+			DrawRotaGraph(640, i, 0.20f, 0.0f, circleGraph, true);
+		}
+
+		// --透明な円の外側の装飾-- //
+		for (int i = 0; i < circleSize * 2.1f; i++) {
+			DrawRotaGraphF(
+				640.0f + cosf(Degree2Radian((360.0f / (circleSize * 2.1f)) * i)) * (circleSize + 13),
+				480.0f + sinf(Degree2Radian((360.0f / (circleSize * 2.1f)) * i)) * (circleSize + 13),
+				0.375f, 0.0f,
+				circleGraph, true
+			);
+		}
+
+		SetDrawBright(255, 255, 255);
+
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 		SetDrawBlendMode(DX_BLENDMODE_SRCCOLOR, 0);
 
