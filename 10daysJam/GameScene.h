@@ -146,6 +146,11 @@ private:
 	// --パーティクル--
 	int particleGraph;
 
+	// --アイテム-- //
+	int itemGraph[2];
+
+	// --敵-- //
+	int enemyGraph[2];
 #pragma endregion
 
 	/// --メンバ変数END-- ///

@@ -110,6 +110,12 @@ GameScene::GameScene() {
 	particleGraph = LoadGraph("Resources/particle.png");
 	particleGraph = whiteCircleGraph;
 
+	// --アイテム-- //
+	LoadDivGraph("Resources/Item.png", 2, 2, 1, 48, 48, itemGraph);
+
+	// --敵-- //
+	LoadDivGraph("Resources/Enemy.png", 2, 2, 1, 48, 48, enemyGraph);
+
 #pragma endregion
 }
 
@@ -310,7 +316,7 @@ void GameScene::Update() {
 			pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
 			hourHandParticle[i].SetParent(pos);
 			hourHandParticle[i].SetSpeed(Random(0.0f, 0.2f));
-			hourHandParticle[i].SetRadius(Random(3.0f,6.0f));
+			hourHandParticle[i].SetRadius(Random(3.0f, 6.0f));
 			hourHandParticle[i].Update();
 
 			len = Random(levelCircle.radius, longHand.length);
@@ -376,9 +382,11 @@ void GameScene::Update() {
 						//敵の状態がアイテムなら敵に
 						if (enemys[i].GetState() == State::Item) {
 							enemys[i].SetState(State::Enemy);
+							enemys[i].SetHandle(enemyGraph);
 						}//敵ならアイテムに
 						else if (enemys[i].GetState() == State::Enemy) {
 							enemys[i].SetState(State::Item);
+							enemys[i].SetHandle(itemGraph);
 						}
 						enemys[i].StateChange();
 					}
@@ -494,7 +502,7 @@ void GameScene::Draw() {
 	//針のパーティクルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, 0x9720e1,particleGraph);
+		hourHandParticle[i].Draw(camera, 0x9720e1, particleGraph);
 		longHandParticle[i].Draw(camera, 0x771c1c, particleGraph);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
@@ -551,7 +559,7 @@ void GameScene::Draw() {
 	for (int i = 0; i < 5; i++) {
 		if (!isOpening) {
 			star[i].Draw(camera, PURPLE, particleGraph);
-		star2[i].Draw(camera, ORANGE, particleGraph);
+			star2[i].Draw(camera, ORANGE, particleGraph);
 		}
 	}
 
@@ -629,6 +637,12 @@ void GameScene::Draw() {
 		/*SetFontSize(16);*/
 	}
 #pragma endregion
+
+	//SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	//for (int i = 0; i < 3; i++) {
+	//	DrawGraph(0, 800, enemyGraph[0], true);
+	//}
+	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 }
 
 // --敵のスポーン処理-- //
@@ -648,9 +662,11 @@ void GameScene::EnemySpawn(float radian) {
 	if (Random(0, 100) <= enemySpawnRate) {
 		//5%の確率で敵としてスポーン
 		enemys.back().SetState(State::Enemy);
+		enemys.back().SetHandle(enemyGraph);
 	}
 	else {//それ以外の95%でアイテムとしてスポーン
 		enemys.back().SetState(State::Item);
+		enemys.back().SetHandle(itemGraph);
 	}
 }
 
