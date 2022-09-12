@@ -23,18 +23,24 @@ void Star::Initialize(Circle obj_, float radian_, float len_, int maxParticle)
 
 void Star::Update(Line hourHand)
 {
-	if (state == State::Normal) {
-		radian += spd;
-		float rad = radian - 90;
-		obj.pos.x = (len * cosf(rad / 180 * PI)) + hourHand.start.x;
-		obj.pos.y = (len * sinf(rad / 180 * PI)) + hourHand.start.y;
-
-		for (int i = 0; i < starParticle.size(); i++) {
-			starParticle[i].SetParent(obj.pos);
-			starParticle[i].SetRadian(rad - 90);
-			starParticle[i].Update();
-		}
+	float rad;
+	if (hourHand.state != State::Normal) {
+		radian -= spd;
+		rad = radian + 90;
 	}
+	else {
+		radian += spd;
+		rad = radian - 90;
+	}
+	obj.pos.x = (len * cosf(rad / 180 * PI)) + hourHand.start.x;
+	obj.pos.y = (len * sinf(rad / 180 * PI)) + hourHand.start.y;
+
+	for (int i = 0; i < starParticle.size(); i++) {
+		starParticle[i].SetParent(obj.pos);
+		starParticle[i].SetRadian(rad - 90);
+		starParticle[i].Update();
+	}
+
 }
 
 void Star::SetSpd(float s)
@@ -42,11 +48,11 @@ void Star::SetSpd(float s)
 	spd = s;
 }
 
-void Star::Draw(Camera camera_, int color,int graph)
+void Star::Draw(Camera camera_, int color, int graph)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < starParticle.size(); i++) {
-		starParticle[i].Draw(camera_, color,graph);
+		starParticle[i].Draw(camera_, color, graph);
 	}
 	Circle c;
 	c = obj;

@@ -123,7 +123,6 @@ void Enemy::UpdateDeath(Vector2 afterPos, float randParam) {
 			}
 			bezire.SetControllPoint(pos, i);
 		}
-		
 		//ベジエ曲線の更新
 		bezire.Update();
 	}
