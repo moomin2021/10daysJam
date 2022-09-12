@@ -240,7 +240,7 @@ void GameScene::Update() {
 
 					//敵を5体スポーンさせる
 					for (int i = 0; i < 5; i++) {
-						EnemySpawn(Random(0.0f, 360.0f));
+						EnemySpawn(Random(0.0f, 72.0f) + 72.0f *i);
 					}
 
 				}
@@ -255,7 +255,7 @@ void GameScene::Update() {
 
 				//敵を5体スポーンさせる
 				for (int i = 0; i < 5; i++) {
-					EnemySpawn(Random(0.0f, 360.0f));
+					EnemySpawn(Random(0.0f, 72.0f) + 72.0f * i);
 				}
 			}
 		}
@@ -602,7 +602,7 @@ void GameScene::Draw() {
 // --敵のスポーン処理-- //
 void GameScene::EnemySpawn(float radian) {
 
-	enemyLength = Random(levelCircle.radius, hourHand.length);
+	enemyLength = Random(levelCircle.radius + 8.0f, hourHand.length);
 	float rad = radian - 90;
 	enemyPos.x = (enemyLength * cosf(rad / 180 * PI)) + clock.pos.x;
 	enemyPos.x -= (10.0f * cosf((rad + 90) / 180 * PI));
@@ -652,14 +652,14 @@ void GameScene::Collision() {
 	}
 
 	// --レベルサークルとエネミーの当たり判定-- //
-	for (int i = 0; i < enemys.size(); i++) {
-		if (CollisionCtoC(levelCircle, enemys[i].obj)) {
-			//敵のステートが死亡でないなら(死亡演出中でないなら)
-			if (enemys[i].GetState() != State::Death) {
-				enemys.erase(enemys.begin() + i);
-			}
-		}
-	}
+	//for (int i = 0; i < enemys.size(); i++) {
+	//	if (CollisionCtoC(levelCircle, enemys[i].obj)) {
+	//		//敵のステートが死亡でないなら(死亡演出中でないなら)
+	//		if (enemys[i].GetState() != State::Death) {
+	//			enemys.erase(enemys.begin() + i);
+	//		}
+	//	}
+	//}
 }
 
 // --レベル-- //
