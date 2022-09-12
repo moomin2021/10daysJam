@@ -618,7 +618,9 @@ void GameScene::Draw() {
 		DrawFormatString(0, 320, 0xFFFFFF, "FPS");
 		DrawFormatString(0, 340, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
 		DrawFormatString(0, 360, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+
 		DrawFormatString(0, 400, 0xFFFFFF, "point:%d", point);
+		DrawFormatString(0, 420, 0xFFFFFF, "逆走の速度:%f", reverseSpeed);
 		/*SetFontSize(80);*/
 		/*SetFontSize(16);*/
 	}
