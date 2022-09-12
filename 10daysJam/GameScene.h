@@ -98,7 +98,8 @@ private:
 
 	// --回転するパーティクル-- //
 	float starLen;
-	Star star_[5];
+	Star star[5];
+	Star star2[5];
 
 	//短針、長針からでるパーティクル
 	int lineParticleMax;

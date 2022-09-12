@@ -24,7 +24,7 @@ void Star::Initialize(Circle obj_, float radian_, float len_, int maxParticle)
 void Star::Update(Line hourHand)
 {
 	if (state == State::Normal) {
-		radian += 0.4f;
+		radian += spd;
 		float rad = radian - 90;
 		obj.pos.x = (len * cosf(rad / 180 * PI)) + hourHand.start.x;
 		obj.pos.y = (len * sinf(rad / 180 * PI)) + hourHand.start.y;
@@ -35,6 +35,11 @@ void Star::Update(Line hourHand)
 			starParticle[i].Update();
 		}
 	}
+}
+
+void Star::SetSpd(float s)
+{
+	spd = s;
 }
 
 void Star::Draw(Camera camera_, int color)
