@@ -106,6 +106,9 @@ void SceneManager::Initialize() {
 	// --リザルトシーン-- //
 	resultScene->Initialize();
 #pragma endregion
+
+	// --最初にタイトルシーンのBGMを再生-- //
+	sound->PlayBGM(TITLESCENEBGM);
 }
 
 // --更新処理-- //

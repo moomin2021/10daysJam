@@ -30,8 +30,13 @@ void TitleScene::Relese() {
 
 // --コンストラクタ-- //
 TitleScene::TitleScene() {
-	// --インスタンス読み込み-- //
+#pragma region インスタンス読み込み
+	// --コントローラー-- //
 	pad = JoyPadInput::GetInstance();
+
+	// --サウンド-- //
+	sound = Sound::GetInstance();
+#pragma endregion
 
 #pragma region 画像読み込み
 	// --タイトルロゴ-- //
@@ -53,7 +58,11 @@ void TitleScene::Initialize() {
 void TitleScene::Update() {
 	// --Aボタンを押すとゲームシーンに移動-- //
 	if (pad->GetButtonTrigger(PAD_INPUT_1)) {
+		// --シーン変更-- //
 		SceneManager::SetScene(GAMESCENE);
+
+		// --SEを再生-- //
+		sound->PlaySE(SELECTSE);
 	}
 }
 

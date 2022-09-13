@@ -35,6 +35,9 @@ GameScene::GameScene() {
 	// -コントローラークラス-- //
 	pad = JoyPadInput::GetInstance();
 
+	// --サウンド-- //
+	sound = Sound::GetInstance();
+
 	// --プレイヤークラス-- //
 	player = Player::GetInstance();
 #pragma endregion

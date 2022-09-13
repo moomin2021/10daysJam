@@ -2,6 +2,9 @@
 // --コントローラークラス-- //
 #include "JoyPadInput.h"
 
+// --サウンドクラス-- //
+#include "Sound.h"
+
 // --便利関数-- //
 #include "Util.h"
 
@@ -46,6 +49,9 @@ private:
 #pragma region クラス宣言
 	// --コントローラークラス-- //
 	JoyPadInput* pad;
+
+	// --サウンドクラス-- //
+	Sound* sound;
 #pragma endregion
 
 	// --選択中のシーン-- //

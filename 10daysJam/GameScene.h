@@ -25,6 +25,9 @@ private:
 	// --コントローラークラス-- //
 	JoyPadInput* pad;
 
+	// --サウンドクラス-- //
+	Sound* sound;
+
 	// --プレイヤークラス-- //
 	Player* player;
 

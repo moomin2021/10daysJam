@@ -6,6 +6,14 @@ enum BGM {
 	RESULTSCENEBGM,
 };
 
+enum SE {
+	LEVELUPSE,
+	SANDSE,
+	GETITEMSE,
+	HITENEMYSE,
+	SELECTSE
+};
+
 class Sound {
 	/// --メンバ変数-- ///
 public:
@@ -26,8 +34,27 @@ private:
 #pragma endregion
 
 #pragma region SEハンドル変数
+	// --レベルアップSE-- //
+	int levelUpSE;
 
+	// --挟んだ（長針と短針がぶつかった）時のSE
+	int sandSE;
+
+	// --アイテム獲得SE-- //
+	int getItemSE;
+
+	// --敵に当たったSE-- //
+	int hitEnemySE;
+
+	// --決定SE-- //
+	int selectSE;
 #pragma endregion
+
+	// --BGM全体の音量-- //
+	int volumeBGM;
+
+	// --SE全体の音量-- //
+	int volumeSE;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///

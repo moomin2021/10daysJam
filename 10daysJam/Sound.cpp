@@ -28,12 +28,66 @@ void Sound::Relese() {
 // --コンストラクタ-- //
 Sound::Sound() {
 #pragma region BGM読み込み
-	// --ゲームシーンBGM読み込み-- //
+	// --タイトルシーンBGM-- //
+	titleSceneBGM = LoadSoundMem("Sounds/titleBGM.mp3");
+
+	// --ゲームシーンBGM-- //
 	gameSceneBGM = LoadSoundMem("Sounds/playBGM.mp3");
+
+	// --リザルトシーンBGM-- //
+	resultSceneBGM = LoadSoundMem("Sounds/resultBGM.mp3");
 #pragma endregion
 
-	// --ボリューム設定-- //
-	ChangeVolumeSoundMem(10, gameSceneBGM);
+#pragma region SE読み込み
+	// --レベルアップSE-- //
+	levelUpSE = LoadSoundMem("Sounds/lvUp.mp3");
+
+	// --挟んだ（長針と短針がぶつかった）時のSE
+	sandSE = LoadSoundMem("Sounds/sand.mp3");
+
+	// --アイテム獲得SE-- //
+	getItemSE = LoadSoundMem("Sounds/getItem.mp3");
+
+	// --敵に当たったSE-- //
+	hitEnemySE = LoadSoundMem("Sounds/getItem.mp3");
+
+	// --決定SE-- //
+	selectSE = LoadSoundMem("Sounds/select.mp3");
+#pragma endregion
+
+	// --BGM全体の音量初期化-- //
+	volumeBGM = 50;
+
+	// --SE全体の音量初期化-- //
+	volumeSE = 50;
+
+#pragma region BGMの音量設定
+	// --タイトルシーン-- //
+	ChangeVolumeSoundMem(volumeBGM, titleSceneBGM);
+
+	// --ゲームシーン-- //
+	ChangeVolumeSoundMem(volumeBGM, gameSceneBGM);
+
+	// --リザルトシーン-- //
+	ChangeVolumeSoundMem(volumeBGM, resultSceneBGM);
+#pragma endregion
+
+#pragma region SEの音量設定
+	// --レベルアップSE-- //
+	ChangeVolumeSoundMem(volumeSE, levelUpSE);
+
+	// --挟んだ（長針と短針がぶつかった）時のSE
+	ChangeVolumeSoundMem(volumeSE, sandSE);
+
+	// --アイテム獲得SE-- //
+	ChangeVolumeSoundMem(volumeSE, getItemSE);
+
+	// --敵に当たったSE-- //
+	ChangeVolumeSoundMem(volumeSE, hitEnemySE);
+
+	// --決定SE-- //
+	ChangeVolumeSoundMem(volumeSE, selectSE);
+#pragma endregion
 }
 
 // --デストラクタ-- //
@@ -55,6 +109,7 @@ void Sound::PlayBGM(int bgmName) {
 
 		// --BGMをループ設定で再生-- //
 		PlaySoundMem(titleSceneBGM, DX_PLAYTYPE_LOOP, true);
+		return;
 	}
 
 	// --ゲームシーンBGM再生-- //
@@ -64,6 +119,7 @@ void Sound::PlayBGM(int bgmName) {
 
 		// --BGMをループ設定で再生-- //
 		PlaySoundMem(gameSceneBGM, DX_PLAYTYPE_LOOP, true);
+		return;
 	}
 
 	// --リザルトシーン再生-- //
@@ -73,12 +129,46 @@ void Sound::PlayBGM(int bgmName) {
 		
 		// --BGMをループ設定で再生-- //
 		PlaySoundMem(resultSceneBGM, DX_PLAYTYPE_LOOP, true);
+		return;
 	}
 }
 
 // --SEを再生する-- //
 void Sound::PlaySE(int seName) {
+	// --レベルアップSE再生-- //
+	if (seName == LEVELUPSE) {
+		// --SEを再生-- //
+		PlaySoundMem(levelUpSE, DX_PLAYTYPE_BACK, true);
+		return;
+	}
 
+	// --挟んだ（長針と短針がぶつかった）時のSE再生-- //
+	if (seName == SANDSE) {
+		// --SEを再生-- //
+		PlaySoundMem(sandSE, DX_PLAYTYPE_BACK, true);
+		return;
+	}
+
+	// --アイテム獲得SE再生-- //
+	if (seName == GETITEMSE) {
+		// --SEを再生-- //
+		PlaySoundMem(getItemSE, DX_PLAYTYPE_BACK, true);
+		return;
+	}
+
+	// --敵に当たった再生-- //
+	if (seName == HITENEMYSE) {
+		// --SEを再生-- //
+		PlaySoundMem(hitEnemySE, DX_PLAYTYPE_BACK, true);
+		return;
+	}
+
+	// --決定SE再生-- //
+	if (seName == SELECTSE) {
+		// --SEを再生-- //
+		PlaySoundMem(selectSE, DX_PLAYTYPE_BACK, true);
+		return;
+	}
 }
 
 // --BGMの再生を止める-- //

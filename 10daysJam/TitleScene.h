@@ -2,6 +2,9 @@
 // --コントローラークラス-- //
 #include "JoyPadInput.h"
 
+// --サウンドクラス-- //
+#include "Sound.h"
+
 class TitleScene {
 	/// --メンバ変数-- ///
 public:
@@ -12,6 +15,9 @@ private:
 
 	// --コントローラークラス-- //
 	JoyPadInput* pad;
+
+	// --サウンドクラス-- //
+	Sound* sound;
 
 	// --タイトルロゴ画像ハンドル-- //
 	int titlelogoGraph[4];

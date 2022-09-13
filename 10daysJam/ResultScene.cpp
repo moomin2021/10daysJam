@@ -39,6 +39,9 @@ ResultScene::ResultScene() {
 #pragma region インスタンス読み込み
 	// --コントローラークラス-- //
 	pad = JoyPadInput::GetInstance();
+
+	// --サウンドクラス-- //
+	sound = Sound::GetInstance();
 #pragma endregion
 
 #pragma region 画像読み込み
@@ -101,7 +104,11 @@ void ResultScene::Update() {
 
 	if (selectScene <= GAMESCENE) {
 		if (pad->GetButtonTrigger(PAD_INPUT_1)) {
+			// --シーン設定-- //
 			SceneManager::SetScene(selectScene);
+
+			// --SE再生-- //
+			sound->PlaySE(SELECTSE);
 		}
 	}
 }
