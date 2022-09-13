@@ -194,6 +194,17 @@ void SceneManager::UpdateChangeScene() {
 					sound->StopBGM(scene);
 					isFadeOut = false;
 					isFadeIn = true;
+					// --ƒV[ƒ“‚Ì‰Šú‰»-- //
+					if (scene == TITLESCENE) {
+						titleScene->Initialize();
+					}
+					else if (scene == GAMESCENE) {
+						gameScene->Initialize();
+					}
+					else if (scene == RESULTSCENE) {
+						resultScene->Initialize();
+						score->Initialize();
+					}
 					scene = changeScene;
 					timer = 0;
 					sound->PlayBGM(scene);
