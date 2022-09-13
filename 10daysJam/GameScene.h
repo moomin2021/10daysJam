@@ -101,6 +101,7 @@ private:
 
 	//@--‹t‰ñ‚è‚Ì‘¬“x”{—¦
 	float reverseVelocityScale;
+	float reverseVelocityScaleLong;
 
 	// --‹t‰ñ‚è‚Ì—Í-- //
 	float reverseTime;
