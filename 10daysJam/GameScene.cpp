@@ -68,7 +68,7 @@ GameScene::GameScene() {
 	longHandSpeed = 0.1f;
 
 	// --長針の速度の追加値-- //
-	addLongHandSpeed = 0.05f;
+	addLongHandSpeed = 0.02f;
 
 	// --短針-- //
 	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
@@ -215,8 +215,8 @@ void GameScene::Update() {
 
 				//はさんだオブジェクトの数で戻す力を増やす
 				reverseTime += level * 1.5;
-				reverseTime += itemSandwichCount / 2 * level;
-				reverseTime += enemySandwichCount * 2 * level;
+				/*reverseTime += itemSandwichCount / 2 * level;
+				reverseTime += enemySandwichCount * 2 * level;*/
 
 				//スコアを加算、はさんだ数をリセット
 				Score::AddScore(300 * itemSandwichCount);
@@ -826,35 +826,35 @@ void GameScene::LevelUpdate() {
 	{
 	case 0:
 		enemySpawnRate = 0.0f;
-		spawnInterval = 120;
+		spawnInterval = 100;
 		break;
 	case 1:
 		enemySpawnRate = 15.0f;
-		spawnInterval = 50;
+		spawnInterval = 45;
 		reverseVelocityScale = 3.5f;
 		reverseVelocityScaleLong = 1.5f;
 		break;
 	case 2:
 		enemySpawnRate = 19.0f;
-		spawnInterval = 40;
+		spawnInterval = 32;
 		reverseVelocityScale = 3.5f;
 		reverseVelocityScaleLong = 1.5f;
 		break;
 	case 3:
 		enemySpawnRate = 23.0f;
-		spawnInterval = 30;
+		spawnInterval = 24;
 		reverseVelocityScale = 3.0f;
 		reverseVelocityScaleLong = 1.2f;
 		break;
 	case 4:
 		enemySpawnRate = 26.0f;
-		spawnInterval = 30;
+		spawnInterval = 20;
 		reverseVelocityScale = 2.5f;
 		reverseVelocityScaleLong = 1.2f;
 		break;
 	case 5:
 		enemySpawnRate = 28.0f;
-		spawnInterval = 25;
+		spawnInterval = 15;
 		reverseVelocityScale = 2.5f;
 		reverseVelocityScaleLong = 1.2f;
 		break;
