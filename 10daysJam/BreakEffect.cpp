@@ -1,4 +1,5 @@
 #include "BreakEffect.h"
+#include"DxLib.h"
 using namespace Util;
 
 BreakEffect::BreakEffect() {
@@ -30,10 +31,17 @@ void BreakEffect::Update() {
 	}
 }
 
-void BreakEffect::Draw(Camera camera_) {
+void BreakEffect::Draw(Camera camera_,int graph) {
 	Circle pos = obj;
 	pos.pos += camera_.GetPos();
-	DrawCircle(pos, color, true);
+	//DrawCircle(pos, color, true);
+	pos.radius += 4;
+
+	int posX1 = pos.pos.x - pos.radius;
+	int posX2 = pos.pos.x + pos.radius;
+	int posY1 = pos.pos.y - pos.radius;
+	int posY2 = pos.pos.y + pos.radius;
+	DrawExtendGraph(posX1, posY1, posX2, posY2, graph, true);
 }
 
 void BreakEffect::Initialize(Vector2 pos) {

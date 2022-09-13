@@ -31,7 +31,7 @@ public:
 
 	void Update();
 
-	void Draw(Camera camera_);
+	void Draw(Camera camera_, int graph);
 
 	void Initialize(Vector2 pos);
 

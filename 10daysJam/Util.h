@@ -5,7 +5,8 @@
 #define RED 0x771c1c
 #define ORANGE 0x612a11
 #define YELLOW 0x615e13
-#define GREEN 0x1f6113
+#define GREEN 0x152713
+#define EFFECT_GREEN 0x1f6113
 #define LIGHTBLUE 0x1a7971
 #define BLUE 0x2720e1
 #define PURPLE 0x9720e1

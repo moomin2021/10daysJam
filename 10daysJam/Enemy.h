@@ -29,6 +29,8 @@ private:
 	std::vector<Particle> spawnEffect;
 	float spawnAddRadius;
 
+	Vector2 afterPos;
+
 	// --画像ハンドル-- //
 	int handle[2];
 
@@ -47,7 +49,7 @@ public:
 	void Initialize();
 
 	// --更新処理-- //
-	void Update(Line hourLine_);
+	void Update(Line hourLine_,Vector2 scorePos);
 
 	//通常状態の更新処理
 	void UpdateNormal();
