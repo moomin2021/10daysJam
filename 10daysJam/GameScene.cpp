@@ -213,9 +213,9 @@ void GameScene::Update() {
 				longHandSpeed += addLongHandSpeed;
 
 				//はさんだオブジェクトの数で戻す力を増やす
-				reverseTime += level * 1.5;
-				/*reverseTime += itemSandwichCount / 2 * level;
-				reverseTime += enemySandwichCount * 2 * level;*/
+				reverseTime += level * 2;
+				/*reverseTime += (float)itemSandwichCount / 6;
+				reverseTime += (float)enemySandwichCount * (float)level/ 1.5f;*/
 
 				//スコアを加算、はさんだ数をリセット
 				Score::AddScore(300 * itemSandwichCount);
