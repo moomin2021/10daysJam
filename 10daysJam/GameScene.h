@@ -94,7 +94,9 @@ private:
 	float hourHandlevelSpeed;
 
 	// --’Zj‚ª‹t‰ñ‚è‚·‚é‚Æ‚«‚Ì‘¬“x-- //
-	float reverseSpeed;
+	float hourHandReverseSpeed;
+
+	float longHandReverseSpeed;
 
 	//@--‹t‰ñ‚è‚Ì‘¬“x”{—¦
 	float reverseVelocityScale;
