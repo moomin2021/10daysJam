@@ -38,7 +38,7 @@ void Enemy::Initialize() {
 }
 
 // --更新処理-- //
-void Enemy::Update(Line hourLine_) {
+void Enemy::Update(Line hourLine_,Vector2 scorePos) {
 
 	//スポーンエフェクトの更新
 	for (int i = spawnEffect.size() - 1; i >= 0; i--) {
@@ -55,6 +55,8 @@ void Enemy::Update(Line hourLine_) {
 		obj.radius -= (spawnAddRadius / 5);
 	}
 
+	
+
 	switch (state)
 	{
 	case State::Normal:
@@ -62,19 +64,22 @@ void Enemy::Update(Line hourLine_) {
 		break;
 	case State::Reverse:
 		UpdateReverse(hourLine_);
+		afterPos = scorePos;
 		break;
 	case State::Stop:
 		break;
 	case State::Item:
 		//色を黄色に変更
 		color = YELLOW;
+		afterPos = hourLine_.start;
 		break;
 	case State::Enemy:
 		//色を赤に変更
 		color = RED;
+		afterPos = hourLine_.start;
 		break;
 	case State::Death:
-		UpdateDeath(hourLine_.start, hourLine_.length);
+		UpdateDeath(afterPos, hourLine_.length);
 	default:
 		break;
 	}

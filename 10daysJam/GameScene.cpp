@@ -16,7 +16,7 @@ GameScene* GameScene::GetInstance() {
 	return myInstance;
 }
 
-// --インスタンス解放-- //
+// --インスタンス解放-- 
 void GameScene::Relese() {
 	// --インスタンスが無かったら何もせずに終了する-- //
 	if (myInstance == nullptr) return;
@@ -327,9 +327,13 @@ void GameScene::Update() {
 			}
 		}
 
+		
+
 		// --エネミークラス更新処理-- //
 		for (int i = enemys.size() - 1; i >= 0; i--) {
-			enemys[i].Update(hourHand);
+			Vector2 scorePos = { 1200,60 };
+			//DrawCircle({ scorePos,32 }, 0xffffff, true);
+			enemys[i].Update(hourHand,scorePos);
 			//短針が反転モードなら判定をとる
 			if (hourHand.state == State::Reverse) {
 				//短針と敵の当たり判定
@@ -399,6 +403,7 @@ void GameScene::Update() {
 			star[i].Update(hourHand);
 			//star2[i].SetSpd(0.8f);
 			star2[i].Update(hourHand);
+			//if(star[i].)
 		}
 
 		for (int i = 0; i < lineParticleMax; i++) {
@@ -425,7 +430,7 @@ void GameScene::Update() {
 
 		}
 
-		for (int i = 0; i < levelChangeParticle.size(); i++) {
+		for (int i = levelChangeParticle.size()- 1; i >= 0; i--) {
 			Vector2 pos;
 			float len, rad;
 			len = longHand.length;
@@ -438,6 +443,10 @@ void GameScene::Update() {
 			//levelChangeParticle[i].SetRadian(Random(rad - 60, rad + 60));
 			//levelChangeParticle[i].SetRadian(rad);
 			levelChangeParticle[i].Update();
+			//アクティブじゃなくなったら消す
+			if (!levelChangeParticle[i].GetActive()) {
+				levelChangeParticle.erase(levelChangeParticle.begin() + i);
+			}
 		}
 
 #pragma endregion
@@ -494,9 +503,6 @@ void GameScene::Draw() {
 		enemys[i].Draw(camera, particleGraph);
 	}
 
-	for (int i = 0; i < breakEffects.size(); i++) {
-		breakEffects[i].Draw(camera);
-	}
 #pragma endregion
 
 #pragma region 時計の外枠の描画
@@ -523,8 +529,8 @@ void GameScene::Draw() {
 	//針のパーティクルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, 0x9720e1, particleGraph);
-		longHandParticle[i].Draw(camera, 0x771c1c, particleGraph);
+		hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
+		longHandParticle[i].Draw(camera, GREEN, particleGraph);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
 
@@ -538,8 +544,10 @@ void GameScene::Draw() {
 
 
 	SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
-	SetDrawBright(119, 28, 28);
-
+	//etDrawBright(119, 28, 28);
+	Color c;
+	c = HexadecimalColor(GREEN);
+	SetDrawBright(c.red, c.green, c.blue);
 	// --長針の描画-- //
 	for (int i = 0; i < longHand.length * 1.3f; i++) {
 		DrawRotaGraph(
@@ -608,20 +616,26 @@ void GameScene::Draw() {
 
 #pragma region エフェクト描画
 	for (int i = 0; i < breakEffects.size(); i++) {
-		breakEffects[i].Draw(camera);
+		int graph;
+		if (Random(0, 100) > 50)graph = itemGraph[0];
+		else graph = enemyGraph[0];
+		breakEffects[i].Draw(camera,graph);
 	}
 
 	//パーティクルスターの描画
-	for (int i = 0; i < 5; i++) {
+	/*for (int i = 0; i < 5; i++) {
 		if (!isOpening) {
 			star[i].Draw(camera, PURPLE, particleGraph);
 			star2[i].Draw(camera, ORANGE, particleGraph);
 		}
-	}
+	}*/
 
 	//レベル変動エフェクト
 	for (int i = 0; i < levelChangeParticle.size(); i++) {
-		levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), particleGraph);
+		int graph;
+		if (Random(0, 100) > 50)graph = itemGraph[0];
+		else graph = enemyGraph[0];
+		levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
 	}
 #pragma endregion
 
@@ -813,7 +827,7 @@ void GameScene::CreateBreakEffect(Vector2 pos, int effectParam) {
 
 	//作成するエフェクトの数だけ動的配列に入れる
 	for (int i = 0; i < effectParam; i++) {
-		BreakEffect newEffect{};
+		BreakEffect newEffect;
 		newEffect.Initialize(pos);
 		breakEffects.push_back(newEffect);
 	}
@@ -853,7 +867,7 @@ void GameScene::OpeningUpdate() {
 	player->Update(hourHand, clock, levelCircle.radius);
 
 	for (int i = enemys.size() - 1; i >= 0; i--) {
-		enemys[i].Update(hourHand);
+		enemys[i].Update(hourHand,{0,0});
 	}
 	if (nowTime == openingTime) {
 		isOpening = false;
@@ -872,7 +886,7 @@ void GameScene::LevelUpEfffect(int effectNum)
 		pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
 		newpaticle.SetParent(pos);
 		newpaticle.SetSpeed(Random(3.0f, 8.0f));
-		newpaticle.SetRadius(Random(6.0f, 10.0f));
+		newpaticle.SetRadius(Random(8.0f, 12.0f));
 		newpaticle.SetRadian(Random(rad - 60, rad + 60));
 		newpaticle.SetRadian(rad);
 		newpaticle.Initialize(true);
