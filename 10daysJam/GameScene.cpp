@@ -390,6 +390,17 @@ void GameScene::Update() {
 			if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
 				//当たったアイテムを消す
 				enemys[i].SetState(State::Delete);
+				
+			}
+
+			for (int i = burstCircleEffects.size() - 1; i >= 0; i--) {
+				//バーストサークルの色を落とす
+				burstEffectColorParam[i] -= Random(-5, 15);
+				if (burstEffectColorParam[i] <= 0) {
+					burstEffectColorParam.erase(burstEffectColorParam.begin() + i);
+					burstEffectColor.erase(burstEffectColor.begin() + i);
+					burstCircleEffects.erase(burstCircleEffects.begin() + i);
+				}
 			}
 
 			if (enemys[i].GetState() == State::Delete) {
@@ -625,8 +636,19 @@ void GameScene::Draw() {
 
 #pragma region 敵の爆発円描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	DrawCircle(burstCircle, 0xff0000, true);
+	//DrawCircle(burstCircle, 0xff0000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+
+	for (int i = 0; i < burstCircleEffects.size(); i++) {
+		SetDrawBlendMode(DX_BLENDMODE_ADD, burstEffectColorParam[i]);
+		int X1 = burstCircleEffects[i].pos.x;
+		int Y1 = burstCircleEffects[i].pos.y;
+		int X2 = burstCircleEffects[i].pos.x + burstCircleEffects[i].radiusX;
+		int Y2 = burstCircleEffects[i].pos.y + burstCircleEffects[i].radiusY;
+		DrawBox(X1, Y1, X2, Y2, burstEffectColor[i], true);
+
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, burstEffectColorParam[i]);
+	}
 #pragma endregion
 
 #pragma region エフェクト描画
@@ -752,6 +774,7 @@ void GameScene::Collision() {
 				}
 				burstCircle.pos = enemys[i].GetCircle().pos + camera.GetPos();
 				burstCircle.radius = 96.0f;
+				CreateBurstEffect(burstCircle, 128);
 				//敵を消滅
 				enemys.erase(enemys.begin() + i);
 				//逆走する力をリセット
@@ -923,3 +946,43 @@ void GameScene::LevelUpEfffect(int effectNum)
 	}
 }
 
+void GameScene::CreateBurstEffect(Circle burstRange, int effectNum) {
+	for (int i = 0; i < effectNum; i++) {
+		Box newbox;
+		float rad = Random(0.0f, 360.0f);
+		float len = Random(0.0f, burstCircle.radius);
+		float lenX ;
+		float lenY ;
+
+		while (true) {
+			lenX = Random(0.0f, burstRange.radius / 3);
+			lenY = Random(0.0f, burstRange.radius / 3);
+			newbox.pos.x = len * cosf(rad / 180 * PI) + burstCircle.pos.x;
+			newbox.pos.y = len * sinf(rad / 180 * PI) + burstCircle.pos.y;
+			//エフェクトの左上座標に応じて半径をマイナスにする
+			if (burstCircle.pos.x < newbox.pos.x) lenX = -lenX;
+			if (burstCircle.pos.x < newbox.pos.x) lenY = -lenY;
+			newbox.radiusX = lenX;
+			newbox.radiusY = lenY;
+
+			//座標+半径がサークルを出なければ座標確定
+			if (newbox.pos.x + lenX <= burstCircle.pos.x + burstCircle.radius &&
+				newbox.pos.x - lenX >= burstCircle.pos.x - burstCircle.radius &&
+				newbox.pos.y + lenY <= burstCircle.pos.y + burstCircle.radius &&
+				newbox.pos.y - lenY >= burstCircle.pos.y - burstCircle.radius) {
+				break;
+			}
+		}
+		burstCircleEffects.push_back(newbox);
+		int newcolor = 256;
+		burstEffectColorParam.push_back(newcolor);
+		Color c;
+		c = HexadecimalColor(RED);
+		c.red +=   Random(-16, 16);
+		c.blue +=  Random(-16, 16);
+		c.green += Random(-16, 16);
+		newcolor = ColorHexadecimal(c);
+		burstEffectColor.push_back(newcolor);
+	}
+
+}
