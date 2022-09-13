@@ -227,8 +227,8 @@ void GameScene::Update() {
 				reverseTime += ((enemySandwichCount + itemSandwichCount) / 3);
 
 				//スコアを加算、はさんだ数をリセット
-				Score::AddScore(300 * itemSandwichCount);
-				Score::AddScore(500 * enemySandwichCount);
+				Score::AddScore(100 * itemSandwichCount * level);
+				Score::AddScore(500 * enemySandwichCount * level);
 				itemSandwichCount = 0;
 				enemySandwichCount = 0;
 
