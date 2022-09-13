@@ -157,7 +157,9 @@ void SceneManager::Draw() {
 		gameScene->Draw();
 
 		// --スコア描画-- //
-		score->Draw();
+		if (gameScene->GetIsMainGame()) {
+			score->Draw();
+		}
 	}
 
 	// --リザルトシーン描画処理-- //
