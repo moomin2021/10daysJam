@@ -195,6 +195,17 @@ void Enemy::SetHandle(int handle[]) {
 void Enemy::SetState(State state_)
 {
 	state = state_;
+	//状態が変わったエフェクトを出す
+	for (int i = 0; i < 24; i++) {
+		if (state == State::Item) {
+			EffectInitialize(YELLOW);
+		}
+		else if (state == State::Enemy) {
+			EffectInitialize(RED);
+		}
+		
+
+	}
 
 }
 
