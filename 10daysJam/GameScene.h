@@ -9,6 +9,7 @@
 #include"BreakEffect.h"
 #include"Particle.h"
 #include"Star.h"
+#include "Sound.h"
 
 class GameScene {
 	/// --ƒƒ“ƒo•Ï”-- ///
