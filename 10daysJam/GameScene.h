@@ -57,6 +57,7 @@ private:
 	bool isTutorialClear;
 	int sceneChangeTime = 50;
 	int sceneChangeTimer;
+	int tutorialStep;
 
 
 #pragma region エネミーのスポーン関係変数の宣言
@@ -228,6 +229,8 @@ public:
 	void UpdateTutorial();
 
 	void DrawTutorial();
+
+	bool GetIsMainGame()const { return (!isOpening && !isTutorial); }
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数

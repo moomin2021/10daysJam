@@ -25,13 +25,16 @@ void Enemy::Initialize() {
 	//色
 	Color c;
 
+	if (state == State::Enemy)color = RED;
+	else if (state == State::Item)color = YELLOW;
+
 	//スポーンエフェクトを出す
 	for (int i = 0; i < particleNum; i++) {
 		c.red = Random(128, 200);
 		c.green = Random(128, 200);
 		c.blue = Random(224, 255);
 		//	color = c.red * pow(16, 4) + c.green * pow(16, 2) + c.blue;
-		EffectInitialize(YELLOW);
+		EffectInitialize(color);
 	}
 	spawnAddRadius = 8.0f;
 	obj.radius += spawnAddRadius;

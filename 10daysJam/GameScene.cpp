@@ -137,16 +137,6 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
-	//パーティクルの数とか
-	//Circle starC;
-	//starLen = hourHand.length + 72;
-	//starC.pos = clock.pos;
-	//starC.radius = 6;
-
-	//for (int i = 0; i < 5; i++) {
-	//	star[i].Initialize(starC, 72 * i, starLen, 32);
-	//	star2[i].Initialize(starC, 72 * i + 36, starLen + 108, 32);
-	//}
 
 	lineParticleMax = 64;
 	for (int i = 0; i < lineParticleMax; i++) {
@@ -163,6 +153,8 @@ void GameScene::Initialize() {
 
 	isTutorial = true;
 	isTutorialClear = false;
+	 level = 1;
+	tutorialStep = 0;
 	sceneChangeTime = 75;
 	sceneChangeTimer = sceneChangeTime;
 	for (int i = 0; i < 3; i++) {
@@ -746,17 +738,18 @@ void GameScene::EnemySpawn(float radian) {
 	Enemy newEnemy;
 	//Circle newPos = {enemyPos,8.0f}
 	newEnemy.SetObj({ {enemyPos} , 8.0f });
-	newEnemy.Initialize();
-	enemys.push_back(newEnemy);
+	
 	if (Random(0, 100) <= enemySpawnRate) {
 		//5%の確率で敵としてスポーン
-		enemys.back().SetState(State::Enemy);
-		enemys.back().SetHandle(enemyGraph);
+		newEnemy.SetState(State::Enemy);
+		newEnemy.SetHandle(enemyGraph);
 	}
 	else {//それ以外の95%でアイテムとしてスポーン
-		enemys.back().SetState(State::Item);
-		enemys.back().SetHandle(itemGraph);
+		newEnemy.SetState(State::Item);
+		newEnemy.SetHandle(itemGraph);
 	}
+	newEnemy.Initialize();
+	enemys.push_back(newEnemy);
 }
 
 // --自機と敵の当たり判定処理-- //
@@ -811,20 +804,39 @@ void GameScene::Collision() {
 void GameScene::LevelUpdate() {
 #pragma region 経験値によってレベルを変える処理
 	// --現在のレベルの必要経験値が手に入ったらレベルを上げる-- //
-	if (needPoint[level] == point && level < 5) {
-		level++;
-		point = 0;
-		LevelUpEfffect(96);
-
-		//サウンド再生
-		sound->PlaySE(LEVELUPSE);
+	//チュートリアル中は必要経験値固定
+	if (isTutorial) {
+		if (point == 3) {
+			level++;
+			point = 0;
+			LevelUpEfffect(96);
+			//サウンド再生
+			sound->PlaySE(LEVELUPSE);
+			//チュートリアルのステップを進める
+			tutorialStep++;
+			//敵のスポーン率を100%にして敵を大量にスポーン
+			enemySpawnRate = 100;
+			for (int i = 0; i < 32; i++) {
+				EnemySpawn(Random(longHand.radian - 45,longHand.radian - 40));
+			}
+		}
+		
 	}
+	else {
 
-	//逆走速度の速度倍率
-	reverseVelocityScale = 2.0f;		//短針	
-	reverseVelocityScaleLong = 2.0f;	//長針
+		if (needPoint[level] == point && level < 5) {
+			level++;
+			point = 0;
+			LevelUpEfffect(96);
+			//サウンド再生
+			sound->PlaySE(LEVELUPSE);
+		}
 
+		//逆走速度の速度倍率
+		reverseVelocityScale = 2.0f;		//短針	
+		reverseVelocityScaleLong = 2.0f;	//長針
 
+	}
 	//レベルで敵の出現率を調整
 	switch (level)
 	{
@@ -1021,9 +1033,9 @@ void GameScene::UpdateTutorial() {
 	}
 
 
-	//Lボタンで短針のステートを「反転」に
+	//Lボタンで短針のステートを「反転」に(チュートリアルのステップが最後なら)
 	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
-		hourHand.state = State::Reverse;
+		if(tutorialStep == 2)hourHand.state = State::Reverse;
 	}
 
 	//逆走の速度は短針の速度 * 速度倍率に
@@ -1143,6 +1155,10 @@ void GameScene::UpdateTutorial() {
 	//エネミー関係
 	//エネミー更新
 	for (int i = enemys.size() - 1; i >= 0; i--) {
+
+		
+
+
 		Vector2 scorePos = { 1200,60 };
 		enemys[i].Update(hourHand, scorePos);
 		//短針が反転モードなら判定をとる
@@ -1193,14 +1209,12 @@ void GameScene::UpdateTutorial() {
 			enemys[i].SetState(State::Delete);
 		}
 
-		for (int i = burstCircleEffects.size() - 1; i >= 0; i--) {
-			//バーストサークルの色を落とす
-			burstEffectColorParam[i] -= Random(-5, 15);
-			if (burstEffectColorParam[i] <= 0) {
-				burstEffectColorParam.erase(burstEffectColorParam.begin() + i);
-				burstEffectColor.erase(burstEffectColor.begin() + i);
-				burstCircleEffects.erase(burstCircleEffects.begin() + i);
-			}
+		
+
+		//チュートリアルが最終ステップにきてたら敵を全削除
+		if (tutorialStep == 2) {
+			enemys[i].SetState(State::Delete);
+			level = 1;
 		}
 
 		if (enemys[i].GetState() == State::Delete) {
@@ -1211,6 +1225,16 @@ void GameScene::UpdateTutorial() {
 	//エフェクト関係
 	//　--爆発円の座標リセット-- //
 	burstCircle = { {0.0f,0.0f}, 0.0f };
+
+	for (int i = burstCircleEffects.size() - 1; i >= 0; i--) {
+		//バーストサークルの色を落とす
+		burstEffectColorParam[i] -= Random(-5, 15);
+		if (burstEffectColorParam[i] <= 0) {
+			burstEffectColorParam.erase(burstEffectColorParam.begin() + i);
+			burstEffectColor.erase(burstEffectColor.begin() + i);
+			burstCircleEffects.erase(burstCircleEffects.begin() + i);
+		}
+	}
 
 	//エフェクト更新処理
 	for (int i = 0; i < breakEffects.size(); i++) {
@@ -1296,6 +1320,11 @@ void GameScene::UpdateTutorial() {
 
 				//サウンド再生
 				sound->PlaySE(HITENEMYSE);
+
+				//チュートリアルを進めて、敵をすべて消す
+				if (tutorialStep == 1) {
+					tutorialStep++;
+				}
 			}
 		}
 	}
@@ -1414,6 +1443,9 @@ void GameScene::DrawTutorial() {
 		levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, brightParam);
+
+	//レベル
+	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
