@@ -1485,10 +1485,10 @@ void GameScene::DrawTutorial() {
 		if (tutorialStep == 0) {
 			c = HexadecimalColor(GREEN);
 			SetDrawBright(c.red, c.green, c.blue);
-			DrawExtendGraph(posx + 48, posy + 20, posx + 84, posy + 56, ButtonGraph[1], true);
+			DrawExtendGraph(posx + 48, posy + 20, posx + 84, posy + 56, ButtonGraph[2], true);
 			c = HexadecimalColor(RED);
 			SetDrawBright(c.red, c.green, c.blue);
-			DrawExtendGraph(posx + 120, posy + 20, posx + 156, posy + 56, ButtonGraph[2], true);
+			DrawExtendGraph(posx + 120, posy + 20, posx + 156, posy + 56, ButtonGraph[1], true);
 			SetDrawBright(255, 255, 255);
 		}
 	}
