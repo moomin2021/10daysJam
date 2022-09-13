@@ -19,8 +19,13 @@ private:
 	// --サウンドクラス-- //
 	Sound* sound;
 
+#pragma region 画像ハンドル宣言
 	// --タイトルロゴ画像ハンドル-- //
 	int titlelogoGraph[4];
+
+	// --背景-- //
+	int backGroundGraph;
+#pragma endregion
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///

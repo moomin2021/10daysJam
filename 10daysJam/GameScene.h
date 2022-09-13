@@ -164,6 +164,9 @@ private:
 
 	// --“G-- //
 	int enemyGraph[2];
+
+	// --”wŒi-- //
+	int backGroundGraph;
 #pragma endregion
 
 	/// --ƒƒ“ƒo•Ï”END-- ///
