@@ -24,6 +24,9 @@ private:
 
 	// --スコアテキスト-- //
 	int scoreGraph;
+
+	// --スコアボード-- //
+	int scoreBoardGraph[2];
 #pragma endregion
 
 	/// --メンバ変数END-- ///
