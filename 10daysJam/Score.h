@@ -17,8 +17,14 @@ private:
 	// --スコア加算する時間-- //
 	int scoreTime;
 
-	// --スコアの画像ハンドル-- //
-	int scoreGraph[10];
+
+#pragma region 画像ハンドル
+	// --数字-- //
+	int numberGraph[10];
+
+	// --スコアテキスト-- //
+	int scoreGraph;
+#pragma endregion
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
