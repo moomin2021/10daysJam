@@ -508,6 +508,9 @@ void GameScene::Update() {
 
 			// --SPACEキーを押すと画面がシェイクする-- //
 			if (input->IsTrigger(KEY_INPUT_SPACE)) { camera.SetShakeCount(5); }
+
+			// --Sキーを押すとスコアが増える-- //
+			if (input->IsTrigger(KEY_INPUT_S)) Score::AddScore(10000);
 		}
 #pragma endregion
 	}

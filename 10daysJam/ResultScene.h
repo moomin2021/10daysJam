@@ -10,6 +10,12 @@
 
 class ResultScene {
 
+	struct BoxAA {
+		Vector2 pos;
+		float width;
+		float height;
+	};
+
 	/// --メンバ変数-- ///
 public:
 
@@ -41,6 +47,9 @@ private:
 
 	// --リザルトテキスト-- //
 	int resultGraph;
+
+	// --スコアゲージ-- //
+	int scoreGaugeGraph;
 #pragma endregion
 
 	// --選択表示の中心座標-- //
@@ -56,6 +65,29 @@ private:
 
 	// --選択中のシーン-- //
 	int selectScene;
+
+	// --スコアゲージ座標-- //
+	BoxAA gaugeMax;
+	BoxAA gaugeS;
+	BoxAA gaugeA;
+	BoxAA gaugeB;
+	BoxAA gaugeC;
+
+	// --各ランクのスコア-- //
+	int scoreValueMax;
+	int scoreValueS;
+	int scoreValueA;
+	int scoreValueB;
+	int scoreValueC;
+
+	// --入力受付-- //
+	bool isActive;
+
+	// --表示するスコア-- //
+	int displayScore;
+
+	// --ランクの添字-- //
+	int rankIndex;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///

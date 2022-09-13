@@ -68,6 +68,9 @@ ResultScene::ResultScene() {
 
 	// --リザルトテキスト-- //
 	resultGraph = LoadGraph("Resources/result.png");
+
+	// --スコアゲージ-- //
+	scoreGaugeGraph = LoadGraph("Resources/scoreGauge.png");
 #pragma endregion
 
 	// --選択表示の中心座標-- //
@@ -75,6 +78,26 @@ ResultScene::ResultScene() {
 
 	// --選択中のシーン-- //
 	selectScene = 10;
+
+	// --スコアゲージ座標-- //
+	gaugeMax = { {1032.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeS = { {882.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeA = { {732.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeB = { {582.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeC = { {150.0f, 250.0f}, 0.0f, 100.0f };
+
+	// --各ランクのスコア-- //
+	scoreValueMax = 120000;
+	scoreValueS = 100000;
+	scoreValueA = 60000;
+	scoreValueB = 30000;
+	scoreValueC = 10000;
+
+	// --入力受付-- //
+	bool isActive = false;
+
+	// --ランクの添字-- //
+	rankIndex = 3;
 }
 
 // --デストラクタ-- //
@@ -84,31 +107,98 @@ ResultScene::~ResultScene() {
 
 // --初期化処理-- //
 void ResultScene::Initialize() {
+	// --選択表示の中心座標-- //
+	selectBox = { {640.0f, -300.0f}, 112.5f, 45.5f };
 
+	// --選択中のシーン-- //
+	selectScene = 10;
+
+	// --スコアゲージ座標-- //
+	gaugeMax = { {1032.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeS = { {882.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeA = { {732.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeB = { {582.0f, 250.0f}, 0.0f, 100.0f };
+	gaugeC = { {150.0f, 250.0f}, 0.0f, 100.0f };
+
+	// --入力受付-- //
+	bool isActive = false;
+
+	// --ランクの添字-- //
+	rankIndex = 3;
 }
 
 // --更新処理-- //
 void ResultScene::Update() {
-	// --パッド上下入力されたら-- //
-	if (pad->GetButtonTrigger(PAD_INPUT_UP) || pad->GetButtonTrigger(PAD_INPUT_DOWN)) {
-		if (selectScene != GAMESCENE) {
-			selectScene = GAMESCENE;
-			selectBox.pos.y = 750.0f;
+	if (isActive == true) {
+		// --パッド上下入力されたら-- //
+		if (pad->GetButtonTrigger(PAD_INPUT_UP) || pad->GetButtonTrigger(PAD_INPUT_DOWN)) {
+			if (selectScene != GAMESCENE) {
+				selectScene = GAMESCENE;
+				selectBox.pos.y = 750.0f;
+			}
+
+			else if (selectScene != TITLESCENE) {
+				selectScene = TITLESCENE;
+				selectBox.pos.y = 850.0f;
+			}
 		}
 
-		else if (selectScene != TITLESCENE) {
-			selectScene = TITLESCENE;
-			selectBox.pos.y = 850.0f;
+		if (selectScene <= GAMESCENE) {
+			if (pad->GetButtonTrigger(PAD_INPUT_1)) {
+				// --シーン設定-- //
+				SceneManager::SetScene(selectScene);
+
+				// --SE再生-- //
+				sound->PlaySE(SELECTSE);
+			}
 		}
 	}
+	else {
+		// --表示するスコアが実際のスコアより小さいとき-- //
+		if (displayScore < Score::GetScore()) {
+			// --実際のスコアと表示するスコアの差分-- //
+			int addScore = Score::GetScore() - displayScore;
 
-	if (selectScene <= GAMESCENE) {
-		if (pad->GetButtonTrigger(PAD_INPUT_1)) {
-			// --シーン設定-- //
-			SceneManager::SetScene(selectScene);
+			// --2つのスコアの差分を時間で割る-- //
+			displayScore += addScore / 400 + 400;
 
-			// --SE再生-- //
-			sound->PlaySE(SELECTSE);
+			// --実際のスコアを超えたら同じ値にする-- //
+			if (displayScore > Score::GetScore()) {
+				displayScore = Score::GetScore();
+				isActive = true;
+			}
+		}
+
+		if (scoreValueC > displayScore) {
+			gaugeC.width = (432.0f / scoreValueC) * displayScore;
+			rankIndex = 3;
+		}
+
+		else if (scoreValueB > displayScore) {
+			gaugeC.width = 432.0f;
+			gaugeB.width = (150.0f / (scoreValueB - scoreValueC)) * (displayScore - scoreValueC);
+			rankIndex = 3;
+		}
+
+		else if (scoreValueA > displayScore) {
+			gaugeB.width = 150.0f;
+			gaugeA.width = (150.0f / (scoreValueA - scoreValueB)) * (displayScore - scoreValueB);
+			rankIndex = 2;
+		}
+
+		else if (scoreValueS > displayScore) {
+			gaugeA.width = 150.0f;
+			gaugeS.width = (150.0f / (scoreValueS - scoreValueA)) * (displayScore - scoreValueA);
+			rankIndex = 1;
+		}
+
+		else if (scoreValueMax > displayScore) {
+			gaugeS.width = 150.0f;
+			gaugeMax.width = (98.0f / (scoreValueMax - scoreValueS)) * (displayScore - scoreValueS);
+			rankIndex = 0;
+		}
+		else if (displayScore > scoreValueMax) {
+			gaugeMax.width = 98.0f;
 		}
 	}
 }
@@ -122,12 +212,6 @@ void ResultScene::Draw() {
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
-	// --スコアゲージ描画-- //
-	DrawLine(150, 250, 1130, 250, 0xFFFFFF, 5);
-	DrawLine(150, 350, 1130, 350, 0xFFFFFF, 5);
-	DrawLine(150, 250, 150, 350, 0xFFFFFF, 5);
-	DrawLine(1130, 250, 1130, 350, 0xFFFFFF, 5);
-
 	// --SABCランクテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	for (int i = 0; i < 3; i++) {
@@ -138,6 +222,29 @@ void ResultScene::Draw() {
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
+	// --スコアゲージの描画-- //
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	for (int i = 0; i < 3; i++) {
+		SetDrawBright(119, 28, 28);
+		DrawExtendGraph(gaugeMax.pos.x, gaugeMax.pos.y, gaugeMax.pos.x + gaugeMax.width, gaugeMax.pos.y + gaugeMax.height, scoreGaugeGraph, true);
+		SetDrawBright(97, 42, 17);
+		DrawExtendGraph(gaugeS.pos.x, gaugeS.pos.y, gaugeS.pos.x + gaugeS.width, gaugeS.pos.y + gaugeS.height, scoreGaugeGraph, true);
+		SetDrawBright(97, 94, 19);
+		DrawExtendGraph(gaugeA.pos.x, gaugeA.pos.y, gaugeA.pos.x + gaugeA.width, gaugeA.pos.y + gaugeA.height, scoreGaugeGraph, true);
+		SetDrawBright(21, 39, 19);
+		DrawExtendGraph(gaugeB.pos.x, gaugeB.pos.y, gaugeB.pos.x + gaugeB.width, gaugeB.pos.y + gaugeB.height, scoreGaugeGraph, true);
+		SetDrawBright(26, 121, 113);
+		DrawExtendGraph(gaugeC.pos.x, gaugeC.pos.y, gaugeC.pos.x + gaugeC.width, gaugeC.pos.y + gaugeC.height, scoreGaugeGraph, true);
+	}
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	// --スコアゲージ描画-- //
+	DrawLine(150, 250, 1130, 250, 0xFFFFFF, 5);
+	DrawLine(150, 350, 1130, 350, 0xFFFFFF, 5);
+	DrawLine(150, 250, 150, 350, 0xFFFFFF, 5);
+	DrawLine(1130, 250, 1130, 350, 0xFFFFFF, 5);
+
 	// --スコアテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	for (int i = 0; i < 3; i++) {
@@ -147,14 +254,12 @@ void ResultScene::Draw() {
 
 	// --スコア表示描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	int num = Score::GetScore();
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 6; j++) {
-			for (int k = 0; k < 1; k++) {
-				DrawGraph(150 + j * 64, 500, numberGraph[num / (int)pow(10, 5 - j)], true);
-			}
-			num = num % (int)pow(10, 5 - j);
+	int num = displayScore;
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < 10; j++) {
+			DrawGraph(150 + i * 64, 500, numberGraph[num / (int)pow(10, 5 - i)], true);
 		}
+		num = num % (int)pow(10, 5 - i);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
@@ -167,9 +272,16 @@ void ResultScene::Draw() {
 
 	// --SABCランクテキスト-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	for (int i = 0; i < 3; i++) {
-		DrawGraph(1000, 500, sabcBigGraph[0], true);
+	Color color;
+	if (rankIndex == 3) color = Util::GetColor16("0x152713");
+	if (rankIndex == 2) color = Util::GetColor16("0x615e13");
+	if (rankIndex == 1) color = Util::GetColor16("0x612a11");
+	if (rankIndex == 0) color = Util::GetColor16("0x771c1c");
+	SetDrawBright(color.red, color.green, color.blue);
+	for (int i = 0; i < 5; i++) {
+		DrawGraph(1000, 500, sabcBigGraph[rankIndex], true);
 	}
+	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	// --リトライテキスト描画-- //
