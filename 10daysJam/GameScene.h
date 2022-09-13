@@ -180,6 +180,16 @@ private:
 
 	// --背景-- //
 	int backGroundGraph;
+
+	//UI
+	int ButtonGraph[3];
+
+	//チュートリアルのテキスト
+	int tutorialTextGraph[3];
+
+	//チュートリアルのスコアボード
+	int tutorialBoardGraph[2];
+
 #pragma endregion
 
 	/// --メンバ変数END-- ///

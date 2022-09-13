@@ -125,6 +125,16 @@ GameScene::GameScene() {
 	// --背景-- //
 	backGroundGraph = LoadGraph("Resources/backillust.png");
 
+	//UI
+	LoadDivGraph("Resources/controller_button.png", 3, 3, 1, 82, 82, ButtonGraph);
+
+	//チュートリアル関係
+	tutorialTextGraph[0] = LoadGraph("Resources/tutorial_move.png");
+	tutorialTextGraph[1] = LoadGraph("Resources/tutorial_enemy.png");
+	tutorialTextGraph[2] = LoadGraph("Resources/tutorial_return.png");
+LoadDivGraph("Resources/tutoeial_scoreBoard.png",2,2,1,382,112,tutorialBoardGraph);
+
+
 #pragma endregion
 }
 
@@ -153,7 +163,7 @@ void GameScene::Initialize() {
 
 	isTutorial = true;
 	isTutorialClear = false;
-	 level = 1;
+	level = 1;
 	tutorialStep = 0;
 	sceneChangeTime = 75;
 	sceneChangeTimer = sceneChangeTime;
@@ -192,7 +202,7 @@ void GameScene::Update() {
 		}
 
 		//逆走の速度は短針の速度 * 速度倍率に
-		hourHandReverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) *reverseVelocityScale;
+		hourHandReverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) * reverseVelocityScale;
 
 		//ステートが通常なら短針は自動回転
 		if (hourHand.state == State::Normal) {
@@ -229,7 +239,7 @@ void GameScene::Update() {
 				LevelReset();
 
 
-				
+
 				//はさんだ瞬間にはさまれている敵を消滅させる
 				for (int i = enemys.size() - 1; i >= 0; i--) {
 					if (enemys[i].GetState() == State::Reverse) {
@@ -320,7 +330,7 @@ void GameScene::Update() {
 
 #pragma endregion
 
-		
+
 
 #pragma region プレイヤー更新処理
 		player->Update(hourHand, clock, levelCircle.radius);
@@ -343,13 +353,13 @@ void GameScene::Update() {
 			}
 		}
 
-		
+
 
 		// --エネミークラス更新処理-- //
 		for (int i = enemys.size() - 1; i >= 0; i--) {
 			Vector2 scorePos = { 1200,60 };
 			//DrawCircle({ scorePos,32 }, 0xffffff, true);
-			enemys[i].Update(hourHand,scorePos);
+			enemys[i].Update(hourHand, scorePos);
 			//短針が反転モードなら判定をとる
 			if (hourHand.state == State::Reverse) {
 				//短針と敵の当たり判定
@@ -453,7 +463,7 @@ void GameScene::Update() {
 			longHandParticle[i].Update();
 		}
 
-		for (int i = levelChangeParticle.size()- 1; i >= 0; i--) {
+		for (int i = levelChangeParticle.size() - 1; i >= 0; i--) {
 			Vector2 pos;
 			float len, rad;
 			len = longHand.length;
@@ -738,7 +748,7 @@ void GameScene::EnemySpawn(float radian) {
 	Enemy newEnemy;
 	//Circle newPos = {enemyPos,8.0f}
 	newEnemy.SetObj({ {enemyPos} , 8.0f });
-	
+
 	if (Random(0, 100) <= enemySpawnRate) {
 		//5%の確率で敵としてスポーン
 		newEnemy.SetState(State::Enemy);
@@ -817,10 +827,10 @@ void GameScene::LevelUpdate() {
 			//敵のスポーン率を100%にして敵を大量にスポーン
 			enemySpawnRate = 100;
 			for (int i = 0; i < 32; i++) {
-				EnemySpawn(Random(longHand.radian - 45,longHand.radian - 40));
+				EnemySpawn(Random(longHand.radian - 45, longHand.radian - 40));
 			}
 		}
-		
+
 	}
 	else {
 
@@ -946,7 +956,7 @@ void GameScene::OpeningUpdate() {
 	player->Update(hourHand, clock, levelCircle.radius);
 
 	for (int i = enemys.size() - 1; i >= 0; i--) {
-		enemys[i].Update(hourHand,{0,0});
+		enemys[i].Update(hourHand, { 0,0 });
 	}
 	if (nowTime == openingTime) {
 		isOpening = false;
@@ -978,8 +988,8 @@ void GameScene::CreateBurstEffect(Circle burstRange, int effectNum) {
 		Box newbox;
 		float rad = Random(0.0f, 360.0f);
 		float len = Random(0.0f, burstCircle.radius);
-		float lenX ;
-		float lenY ;
+		float lenX;
+		float lenY;
 
 		while (true) {
 			lenX = Random(0.0f, burstRange.radius / 3);
@@ -1005,8 +1015,8 @@ void GameScene::CreateBurstEffect(Circle burstRange, int effectNum) {
 		burstEffectColorParam.push_back(newcolor);
 		Color c;
 		c = HexadecimalColor(RED);
-		c.red +=   Random(-16, 16);
-		c.blue +=  Random(-16, 16);
+		c.red += Random(-16, 16);
+		c.blue += Random(-16, 16);
 		c.green += Random(-16, 16);
 		newcolor = ColorHexadecimal(c);
 		burstEffectColor.push_back(newcolor);
@@ -1015,12 +1025,12 @@ void GameScene::CreateBurstEffect(Circle burstRange, int effectNum) {
 }
 
 void GameScene::UpdateTutorial() {
-	
+
 	//チュートリアルがクリアされているなら
 	if (isTutorialClear) {
 		//シーン遷移タイマーを減らす
 		sceneChangeTimer--;
-		if (sceneChangeTimer <24) {
+		if (sceneChangeTimer < 24) {
 			longHand.radian = 0;
 			hourHand.radian = 0;
 			if (sceneChangeTimer <= 0) {
@@ -1029,16 +1039,16 @@ void GameScene::UpdateTutorial() {
 				isTutorial = false;
 			}
 		}
-		
+
 	}
 
 
 	//Lボタンで短針のステートを「反転」に(チュートリアルのステップが最後なら)
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
-		if(tutorialStep == 2)hourHand.state = State::Reverse;
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0){
+		if (tutorialStep == 2)hourHand.state = State::Reverse; 
 	}
 
-	//逆走の速度は短針の速度 * 速度倍率に
+		//逆走の速度は短針の速度 * 速度倍率に
 	hourHandReverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) * reverseVelocityScale;
 
 	//ステートが通常なら短針は自動回転
@@ -1075,50 +1085,52 @@ void GameScene::UpdateTutorial() {
 		}
 	}
 
-	//ステートが通常なら長針は自動回転
-	if (longHand.state == State::Normal) {
-		longHand.radian += longHandSpeed;
-	}//ステートが「反転」かつ、反転する力がまだ残っているなら逆走
-	else if (longHand.state == State::Reverse) {
-		if (reverseTime > 0) {
-			//速度は短針と等速
-			longHand.radian -= longHandReverseSpeed;
-			//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化(長針のみ)
-			if (longHand.radian < hourHandReverseSpeed) {
+	if (tutorialStep == 2) {
+		//ステートが通常なら長針は自動回転
+		if (longHand.state == State::Normal) {
+			longHand.radian += longHandSpeed;
+		}//ステートが「反転」かつ、反転する力がまだ残っているなら逆走
+		else if (longHand.state == State::Reverse) {
+			if (reverseTime > 0) {
+				//速度は短針と等速
+				longHand.radian -= longHandReverseSpeed;
+				//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化(長針のみ)
+				if (longHand.radian < hourHandReverseSpeed) {
+					longHand.state = State::Normal;
+					hourHand.state = State::Normal;
+					longHand.radian = 0;
+					//ステートがデスでない敵は削除、デスはそのまま
+					for (int i = enemys.size() - 1; i >= 0; i--) {
+						if (enemys[i].GetState() != State::Death) {
+							enemys.erase(enemys.begin() + i);
+						}
+					}
+					//レベルリセット
+					LevelReset();
+					//シェイク
+					camera.SetShakeCount(10);
+					//敵のスポーンタイマーもリセット
+					spawnTimer = spawnInterval;
+					//衝撃エフェクトを作成
+					CreateBreakEffect(clock.pos, 128);
+					//レベルアップエフェクトを作成(綺麗なので)
+					LevelUpEfffect(64 * 3);
+					//戻す力をリセット
+					reverseTime = 0;
+					//サウンド再生
+					sound->PlaySE(SANDSE);
+					//チュートリアルをクリアに
+					isTutorialClear = true;
+				}
+				//反転速度の減算
+				reverseTime--;
+			}//戻す力がなくなったらステートをノーマルに戻す
+			else if (reverseTime <= 0) {
 				longHand.state = State::Normal;
 				hourHand.state = State::Normal;
-				longHand.radian = 0;
-				//ステートがデスでない敵は削除、デスはそのまま
-				for (int i = enemys.size() - 1; i >= 0; i--) {
-					if (enemys[i].GetState() != State::Death) {
-						enemys.erase(enemys.begin() + i);
-					}
-				}
-				//レベルリセット
-				LevelReset();
-				//シェイク
-				camera.SetShakeCount(10);
-				//敵のスポーンタイマーもリセット
+				//敵のスポーンタイマーをリセット
 				spawnTimer = spawnInterval;
-				//衝撃エフェクトを作成
-				CreateBreakEffect(clock.pos, 128);
-				//レベルアップエフェクトを作成(綺麗なので)
-				LevelUpEfffect(64 * 3);
-				//戻す力をリセット
-				reverseTime = 0;
-				//サウンド再生
-				sound->PlaySE(SANDSE);
-				//チュートリアルをクリアに
-				isTutorialClear = true;
 			}
-			//反転速度の減算
-			reverseTime--;
-		}//戻す力がなくなったらステートをノーマルに戻す
-		else if (reverseTime <= 0) {
-			longHand.state = State::Normal;
-			hourHand.state = State::Normal;
-			//敵のスポーンタイマーをリセット
-			spawnTimer = spawnInterval;
 		}
 	}
 
@@ -1156,7 +1168,7 @@ void GameScene::UpdateTutorial() {
 	//エネミー更新
 	for (int i = enemys.size() - 1; i >= 0; i--) {
 
-		
+
 
 
 		Vector2 scorePos = { 1200,60 };
@@ -1201,7 +1213,7 @@ void GameScene::UpdateTutorial() {
 
 		}
 
-		
+
 
 		//爆発円との当たり判定
 		if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
@@ -1209,7 +1221,7 @@ void GameScene::UpdateTutorial() {
 			enemys[i].SetState(State::Delete);
 		}
 
-		
+
 
 		//チュートリアルが最終ステップにきてたら敵を全削除
 		if (tutorialStep == 2) {
@@ -1332,7 +1344,7 @@ void GameScene::UpdateTutorial() {
 	//レベル更新処理
 	LevelUpdate();
 
-	
+
 }
 
 void GameScene::DrawTutorial() {
@@ -1428,7 +1440,7 @@ void GameScene::DrawTutorial() {
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, burstEffectColorParam[i]);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-	
+
 	for (int i = 0; i < breakEffects.size(); i++) {
 		int graph;
 		if (Random(0, 100) > 50)graph = itemGraph[0];
@@ -1444,6 +1456,17 @@ void GameScene::DrawTutorial() {
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, brightParam);
 
+	//UI描画
+//	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	//スコアボード
+	int posx = 1280 - 384;
+	int posy = 2;
+	c = HexadecimalColor(RED);
+	for (int i = 0; i < 10; i++) {
+		DrawGraph(posx, posy, tutorialBoardGraph[0], true);
+	}
+
+
 	//レベル
 	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 
@@ -1453,8 +1476,8 @@ void GameScene::DrawTutorial() {
 		DrawFormatString(0, 140, 0xFFFFFF, "ZCキー:短針の速度変更");
 		DrawFormatString(0, 160, 0xFFFFFF, "IPキーで長針の速度を変更");
 		DrawFormatString(0, 180, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
-		DrawFormatString(0, 200, 0xff, "チュートリアルかどうか:%d",isTutorial);
-		DrawFormatString(0, 220, 0xff, "チュートリアルをクリアしたかどうか:%d",isTutorialClear);
+		DrawFormatString(0, 200, 0xff, "チュートリアルかどうか:%d", isTutorial);
+		DrawFormatString(0, 220, 0xff, "チュートリアルをクリアしたかどうか:%d", isTutorialClear);
 		//DrawFormatString(0, 240, 0xFFFFFF, "短針の速度:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
 		//DrawFormatString(0, 260, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
 		//DrawFormatString(0, 280, 0xFFFFFF, "逆走の速度(短針):%f", hourHandReverseSpeed);
