@@ -33,7 +33,7 @@ Sound::Sound() {
 #pragma endregion
 
 	// --ボリューム設定-- //
-	ChangeVolumeSoundMem(10, gameSceneBGM);
+	ChangeVolumeSoundMem(50, gameSceneBGM);
 }
 
 // --デストラクタ-- //
