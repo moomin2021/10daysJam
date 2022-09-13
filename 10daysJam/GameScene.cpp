@@ -825,7 +825,7 @@ void GameScene::LevelUpdate() {
 			tutorialStep++;
 			//敵のスポーン率を100%にして敵を大量にスポーン
 			enemySpawnRate = 100;
-			for (int i = 0; i < 32; i++) {
+			for (int i = 0; i < 16; i++) {
 				EnemySpawn(Random(205, 215));
 			}
 		}
@@ -1486,11 +1486,34 @@ void GameScene::DrawTutorial() {
 			SetDrawBright(255, 255, 255);
 		}
 	}
-	SetDrawBright(255,255,255);
+	
+
+
+	Vector2 pos;
+	float len = 48;
+	pos = player->GetPlayer().pos;
+	float rad = hourHand.radian - 90;
+	pos.x -=len  * cosf(rad / 180 * PI);
+	pos.y -=len  * sinf(rad / 180 * PI);
+	float radius = 16;
+
+	c = HexadecimalColor(GREEN);
+	SetDrawBright(c.red, c.green, c.blue);
+	for (int i = 0; i < 10; i++) {
+		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[1], true);
+	}
+
+	pos = player->GetPlayer().pos;
+	pos.x += len* cosf(rad / 180 * PI);
+	pos.y += len* sinf(rad / 180 * PI);
+	c = HexadecimalColor(RED);
+	SetDrawBright(c.red, c.green, c.blue);
+	for (int i = 0; i < 10; i++) {
+		DrawExtendGraph(pos.x- radius, pos.y- radius, pos.x+ radius, pos.y+ radius, ButtonGraph[2], true);
+	}
+
+	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-
-
 	//レベル
 	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 
