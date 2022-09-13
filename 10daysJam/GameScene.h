@@ -50,6 +50,15 @@ private:
 	int animationTime = 250; //5秒
 	int nowTime;
 
+	//チュートリアルの変数
+	bool isTutorial;
+	int tutorialEnemyMax;
+	std::vector<Enemy> tutorialEnemy;
+	bool isTutorialClear;
+	int sceneChangeTime = 50;
+	int sceneChangeTimer;
+
+
 #pragma region エネミーのスポーン関係変数の宣言
 	
 	// --次に敵が発生するまでの間隔-- //
@@ -212,6 +221,10 @@ public:
 	void LevelUpEfffect(int effectNum);
 
 	void CreateBurstEffect(Circle burstRange , int effectNum);
+
+	void UpdateTutorial();
+
+	void DrawTutorial();
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数

@@ -158,10 +158,13 @@ void GameScene::Initialize() {
 		longHandParticle.push_back(newParticle);
 	}
 
-	//オープニングを始める
-	isOpening = true;
-	nowTime = 0;
-	//オープニング用変数の初期化
+	isTutorial = true;
+	isTutorialClear = false;
+	sceneChangeTime = 75;
+	sceneChangeTimer = sceneChangeTime;
+	for (int i = 0; i < 3; i++) {
+		EnemySpawn(Random(0.0f, 36.0f) + 36.0f + 108.0f * i);
+	}
 
 	//敵のスポーン時間のブレ
 
@@ -179,8 +182,12 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 #pragma region 針の座標計算
 
+	//チュートリアル処理
+	if (isTutorial) {
+		UpdateTutorial();
+	}
 	//オープニング処理
-	if (isOpening) {
+	else if (isOpening) {
 		OpeningUpdate();
 	}
 	else {
@@ -206,27 +213,27 @@ void GameScene::Update() {
 				longHand.state = State::Reverse;
 				//短針のステートをとめる
 				hourHand.state = State::Stop;
-
 				//はさんだオブジェクトの数で戻す力を増やす
 				reverseTime += level * 1.5;
 				reverseTime += itemSandwichCount / 2 * level;
 				reverseTime += enemySandwichCount * 2 * level;
-
 				//スコアを加算、はさんだ数をリセット
 				Score::AddScore(300 * itemSandwichCount);
 				Score::AddScore(500 * enemySandwichCount);
 				itemSandwichCount = 0;
 				enemySandwichCount = 0;
 
+				//長針の逆走速度を計算
+				longHandReverseSpeed = hourHandReverseSpeed * reverseVelocityScaleLong;
+				//レベルリセット
 				LevelReset();
 
 
-				longHandReverseSpeed = hourHandReverseSpeed * reverseVelocityScaleLong;
+				
 				//はさんだ瞬間にはさまれている敵を消滅させる
 				for (int i = enemys.size() - 1; i >= 0; i--) {
 					if (enemys[i].GetState() == State::Reverse) {
 						enemys[i].Death();
-						//enemys.erase(enemys.begin() + i);
 					}
 				}
 			}
@@ -240,18 +247,18 @@ void GameScene::Update() {
 			if (reverseTime > 0) {
 				//速度は短針と等速
 				longHand.radian -= longHandReverseSpeed;
-				//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化
+				//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化(長針のみ)
 				if (longHand.radian < hourHandReverseSpeed) {
 					longHand.state = State::Normal;
 					hourHand.state = State::Normal;
 					longHand.radian = 0;
-					//	hourHand.radian = 0;
 					//ステートがデスでない敵は削除、デスはそのまま
 					for (int i = enemys.size() - 1; i >= 0; i--) {
 						if (enemys[i].GetState() != State::Death) {
 							enemys.erase(enemys.begin() + i);
 						}
 					}
+					//レベルリセット
 					LevelReset();
 					// --スコア加算-- //
 					Score::AddScore(1000);
@@ -261,16 +268,13 @@ void GameScene::Update() {
 					spawnTimer = spawnInterval;
 					//衝撃エフェクトを作成
 					CreateBreakEffect(clock.pos, 128);
-					//レベル変動エフェクトを作成
+					//レベルアップエフェクトを作成(綺麗なので)
 					LevelUpEfffect(64 * 3);
-					
 					//戻す力をリセット
 					reverseTime = 0;
-
-
+					//サウンド再生
 					//サウンド再生
 					sound->PlaySE(SANDSE);
-
 					//敵を5体スポーンさせる
 					for (int i = 0; i < 5; i++) {
 						EnemySpawn(Random(0.0f, 72.0f) + 72.0f * i);
@@ -381,16 +385,13 @@ void GameScene::Update() {
 						}
 						enemys[i].StateChange();
 					}
-
 				}
-
 			}
 
 			//爆発円との当たり判定
 			if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
 				//当たったアイテムを消す
 				enemys[i].SetState(State::Delete);
-				
 			}
 
 			for (int i = burstCircleEffects.size() - 1; i >= 0; i--) {
@@ -450,7 +451,6 @@ void GameScene::Update() {
 			hourHandParticle[i].SetRadius(Random(1.0f, 3.0f));
 			longHandParticle[i].SetRadian(Random(rad - 135, rad - 45));
 			longHandParticle[i].Update();
-
 		}
 
 		for (int i = levelChangeParticle.size()- 1; i >= 0; i--) {
@@ -509,105 +509,104 @@ void GameScene::Update() {
 
 // --描画処理-- //
 void GameScene::Draw() {
-	// --背景描画-- //
-	DrawGraph(0, 0, backGroundGraph, true);
+	if (isTutorial) {
+		DrawTutorial();
+	}
+	else {
 
-	//現在時間を参照してライトアップ
-	int brightLongHand = 0;
-	brightLongHand = (256.0f / 25.0f) * (nowTime - 175) + 16.0f;
-	int brightClock = 0;
-	brightClock = (256.0f / 25.0f) * (nowTime - 125) + 16.0f;
-	int brightHourHand = 0;
-	brightHourHand = (256.0f / 25.0f) * (nowTime - 75) + 16.0f;
+		// --背景描画-- //
+		DrawGraph(0, 0, backGroundGraph, true);
+
+		//現在時間を参照してライトアップ
+		int brightLongHand = 0;
+		brightLongHand = (256.0f / 25.0f) * (nowTime - 175) + 16.0f;
+		int brightClock = 0;
+		brightClock = (256.0f / 25.0f) * (nowTime - 125) + 16.0f;
+		int brightHourHand = 0;
+		brightHourHand = (256.0f / 25.0f) * (nowTime - 75) + 16.0f;
 
 #pragma region プレイヤー描画
-	player->Draw(camera, brightHourHand);
+		player->Draw(camera, brightHourHand);
 #pragma endregion
 
 #pragma region エネミー描画
-	for (int i = 0; i < enemys.size(); i++) {
-		enemys[i].Draw(camera, particleGraph);
-	}
+		for (int i = 0; i < enemys.size(); i++) {
+			enemys[i].Draw(camera, particleGraph);
+		}
 
 #pragma endregion
 
 #pragma region 時計の外枠の描画
-	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
-	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
+		// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
+		Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 
-
-
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightClock);
-	SetDrawBright(255, 255, 255);
-
-	// --時計の外枠の描画-- //
-	for (int i = 0; i < 1440; i++) {
-		DrawGraphF(
-			clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-			clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-			whiteCircleGraph, true);
-	}
-
-	SetDrawBright(255, 255, 255);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightClock);
+		SetDrawBright(255, 255, 255);
+		// --時計の外枠の描画-- //
+		for (int i = 0; i < 1440; i++) {
+			DrawGraphF(
+				clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+				clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+				whiteCircleGraph, true);
+		}
+		SetDrawBright(255, 255, 255);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
-	//針のパーティクルの描画
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
-	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
-		longHandParticle[i].Draw(camera, EFFECT_GREEN, particleGraph);
-	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+		//針のパーティクルの描画
+		SetDrawBlendMode(DX_BLENDMODE_ADD, (256) * (!isOpening));
+		for (int i = 0; i < lineParticleMax; i++) {
+			hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
+			longHandParticle[i].Draw(camera, EFFECT_GREEN, particleGraph);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
 
 #pragma region 長針の描画
-	// --長針の座標とカメラシェイクの座標足したLine変数-- //
-	Line longHandLine;
-	longHandLine.start = { longHand.start + camera.GetPos() };
-	longHandLine.end = { longHand.end + camera.GetPos() };
-	longHandLine.color = longHand.color;
+		// --長針の座標とカメラシェイクの座標足したLine変数-- //
+		Line longHandLine;
+		longHandLine.start = { longHand.start + camera.GetPos() };
+		longHandLine.end = { longHand.end + camera.GetPos() };
+		longHandLine.color = longHand.color;
 
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
+		//etDrawBright(119, 28, 28);
+		Color c;
+		c = HexadecimalColor(GREEN);
+		SetDrawBright(c.red, c.green, c.blue);
+		// --長針の描画-- //
+		for (int i = 0; i < longHand.length * 1.3f; i++) {
+			DrawRotaGraph(
+				longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
+				longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
+				0.5f, 0.0f, whiteCircleGraph, true);
+		}
 
-
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
-	//etDrawBright(119, 28, 28);
-	Color c;
-	c = HexadecimalColor(GREEN);
-	SetDrawBright(c.red, c.green, c.blue);
-	// --長針の描画-- //
-	for (int i = 0; i < longHand.length * 1.3f; i++) {
-		DrawRotaGraph(
-			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
-			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
-			0.5f, 0.0f, whiteCircleGraph, true);
-	}
-
-	SetDrawBright(255, 255, 255);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetDrawBright(255, 255, 255);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
 #pragma region 短針の描画
-	// --短針の座標とカメラシェイクの座標足したLine変数-- //
-	Line hourHandLine;
-	hourHandLine.start = { hourHand.start + camera.GetPos() };
-	hourHandLine.end = { hourHand.end + camera.GetPos() };
-	hourHandLine.color = hourHand.color;
+		// --短針の座標とカメラシェイクの座標足したLine変数-- //
+		Line hourHandLine;
+		hourHandLine.start = { hourHand.start + camera.GetPos() };
+		hourHandLine.end = { hourHand.end + camera.GetPos() };
+		hourHandLine.color = hourHand.color;
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightHourHand);
-	SetDrawBright(39, 32, 225);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightHourHand);
+		SetDrawBright(39, 32, 225);
 
-	// --短針の描画-- //
-	for (int i = 0; i < longHand.length; i++) {
-		DrawRotaGraph(
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
-			0.5f, 0.0f, whiteCircleGraph, true);
-	}
+		// --短針の描画-- //
+		for (int i = 0; i < longHand.length; i++) {
+			DrawRotaGraph(
+				hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+				hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+				0.5f, 0.0f, whiteCircleGraph, true);
+		}
 
 
 
-	SetDrawBright(255, 255, 255);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetDrawBright(255, 255, 255);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
 
@@ -615,113 +614,116 @@ void GameScene::Draw() {
 
 
 #pragma region レベルサークルの描画
-	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
-	Circle circle;
-	circle = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
+		// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
+		Circle circle;
+		circle = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
 
-	// --レベルサークルの描画-- //
-	DrawCircle(circle, 0xFFFFFF, false);
+		// --レベルサークルの描画-- //
+		DrawCircle(circle, 0xFFFFFF, false);
 #pragma endregion
 
 #pragma region 目印用0時の針の描画
-	// --0時の針の座標とカメラシェイクの座標足したCircle変数-- //
-	Line line;
-	line.start = { clock.pos + camera.GetPos() };
-	line.end = { clock.pos.x + camera.GetPos().x, clock.pos.y - clock.radius + 16 + camera.GetPos().y };
-	line.color = 0x60FFBF;
+		// --0時の針の座標とカメラシェイクの座標足したCircle変数-- //
+		Line line;
+		line.start = { clock.pos + camera.GetPos() };
+		line.end = { clock.pos.x + camera.GetPos().x, clock.pos.y - clock.radius + 16 + camera.GetPos().y };
+		line.color = 0x60FFBF;
 
-	// --0時の針描画-- //
-	//DrawLine(line, 6);
+		// --0時の針描画-- //
+		//DrawLine(line, 6);
 #pragma endregion
 
 #pragma region 敵の爆発円描画
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	//DrawCircle(burstCircle, 0xff0000, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+		//DrawCircle(burstCircle, 0xff0000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
 
-	for (int i = 0; i < burstCircleEffects.size(); i++) {
-		SetDrawBlendMode(DX_BLENDMODE_ADD, burstEffectColorParam[i]);
-		int X1 = burstCircleEffects[i].pos.x;
-		int Y1 = burstCircleEffects[i].pos.y;
-		int X2 = burstCircleEffects[i].pos.x + burstCircleEffects[i].radiusX;
-		int Y2 = burstCircleEffects[i].pos.y + burstCircleEffects[i].radiusY;
-		DrawBox(X1, Y1, X2, Y2, burstEffectColor[i], true);
+		for (int i = 0; i < burstCircleEffects.size(); i++) {
+			SetDrawBlendMode(DX_BLENDMODE_ADD, burstEffectColorParam[i]);
+			int X1 = burstCircleEffects[i].pos.x;
+			int Y1 = burstCircleEffects[i].pos.y;
+			int X2 = burstCircleEffects[i].pos.x + burstCircleEffects[i].radiusX;
+			int Y2 = burstCircleEffects[i].pos.y + burstCircleEffects[i].radiusY;
+			DrawBox(X1, Y1, X2, Y2, burstEffectColor[i], true);
 
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, burstEffectColorParam[i]);
-	}
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, burstEffectColorParam[i]);
+		}
 #pragma endregion
 
 #pragma region エフェクト描画
-	for (int i = 0; i < breakEffects.size(); i++) {
-		int graph;
-		if (Random(0, 100) > 50)graph = itemGraph[0];
-		else graph = enemyGraph[0];
-		breakEffects[i].Draw(camera,graph);
-	}
-
-	//パーティクルスターの描画
-	/*for (int i = 0; i < 5; i++) {
-		if (!isOpening) {
-			star[i].Draw(camera, PURPLE, particleGraph);
-			star2[i].Draw(camera, ORANGE, particleGraph);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		for (int i = 0; i < breakEffects.size(); i++) {
+			int graph;
+			if (Random(0, 100) > 50)graph = itemGraph[0];
+			else graph = enemyGraph[0];
+			breakEffects[i].Draw(camera, graph);
 		}
-	}*/
 
-	//レベル変動エフェクト
-	for (int i = 0; i < levelChangeParticle.size(); i++) {
-		int graph;
-		if (Random(0, 100) > 50)graph = itemGraph[0];
-		else graph = enemyGraph[0];
-		levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
-	}
+		//パーティクルスターの描画
+		/*for (int i = 0; i < 5; i++) {
+			if (!isOpening) {
+				star[i].Draw(camera, PURPLE, particleGraph);
+				star2[i].Draw(camera, ORANGE, particleGraph);
+			}
+		}*/
+
+		//レベル変動エフェクト
+		for (int i = 0; i < levelChangeParticle.size(); i++) {
+			int graph;
+			if (Random(0, 100) > 50)graph = itemGraph[0];
+			else graph = enemyGraph[0];
+			levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
-	//カウントダウンの描画
-	//数字
-	int countDownBright;
-	int graphNum = (nowTime - animationTime) / 50 * (nowTime >= animationTime);	//画像配列の順番が321ならこっち
-	if (graphNum > 2)graphNum = 2;					//1,2,3ならこっち
-	int graphNumR = 2 - graphNum;
+		//カウントダウンの描画
+		//数字
+		int countDownBright;
+		int graphNum = (nowTime - animationTime) / 50 * (nowTime >= animationTime);	//画像配列の順番が321ならこっち
+		if (graphNum > 2)graphNum = 2;					//1,2,3ならこっち
+		int graphNumR = 2 - graphNum;
 
-	countDownBright = (256 - ((256.0f / 50.0f) * (nowTime - (animationTime + (graphNum * 50))))) * (nowTime >= animationTime);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, countDownBright);
-	// --画像描画をここに-- //
-	DrawGraphF(589.0f, 412.5f, countNumGraph[graphNum], true);
+		countDownBright = (256 - ((256.0f / 50.0f) * (nowTime - (animationTime + (graphNum * 50))))) * (nowTime >= animationTime);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, countDownBright);
+		// --画像描画をここに-- //
+		DrawGraphF(589.0f, 412.5f, countNumGraph[graphNum], true);
 
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
 
-	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
+		DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 
 #pragma region デバッグ描画
-	if (SceneManager::GetDebugMode() == true) {
-		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
-		DrawFormatString(0, 120, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
-		DrawFormatString(0, 140, 0xFFFFFF, "ZCキー:短針の速度変更");
-		DrawFormatString(0, 160, 0xFFFFFF, "IPキーで長針の速度を変更");
-		DrawFormatString(0, 180, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
-		DrawFormatString(0, 200, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
-		DrawFormatString(0, 220, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
-		DrawFormatString(0, 240, 0xFFFFFF, "短針の速度:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
-		DrawFormatString(0, 260, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
-		DrawFormatString(0, 280, 0xFFFFFF, "逆走の速度(短針):%f", hourHandReverseSpeed);
-		DrawFormatString(0, 300, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
-		DrawFormatString(0, 340, 0xFFFFFF, "敵の総数:%d", enemys.size());
-		DrawFormatString(0, 320, 0xFFFFFF, "FPS");
-		DrawFormatString(0, 360, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
-	
-		DrawFormatString(0, 400, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
-		DrawFormatString(0, 420, 0xFFFFFF, "point:%d", point);
+		if (SceneManager::GetDebugMode() == true) {
+			DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
+			DrawFormatString(0, 120, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
+			DrawFormatString(0, 140, 0xFFFFFF, "ZCキー:短針の速度変更");
+			DrawFormatString(0, 160, 0xFFFFFF, "IPキーで長針の速度を変更");
+			DrawFormatString(0, 180, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
+			DrawFormatString(0, 200, longHand.color, "longHand(長針)の情報 x:%f,y:%f,radian:%f", longHand.end.x, longHand.end.y, longHand.radian);
+			DrawFormatString(0, 220, hourHand.color, "hourHand(短針)の情報 x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
+			DrawFormatString(0, 240, 0xFFFFFF, "短針の速度:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
+			DrawFormatString(0, 260, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
+			DrawFormatString(0, 280, 0xFFFFFF, "逆走の速度(短針):%f", hourHandReverseSpeed);
+			DrawFormatString(0, 300, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
+			DrawFormatString(0, 340, 0xFFFFFF, "敵の総数:%d", enemys.size());
+			DrawFormatString(0, 320, 0xFFFFFF, "FPS");
+			DrawFormatString(0, 360, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
 
-		/*SetFontSize(80);*/
-		/*SetFontSize(16);*/
-	}
+			DrawFormatString(0, 400, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+			DrawFormatString(0, 420, 0xFFFFFF, "point:%d", point);
+
+			/*SetFontSize(80);*/
+			/*SetFontSize(16);*/
+		}
 #pragma endregion
 
-	//SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	//for (int i = 0; i < 3; i++) {
-	//	DrawGraph(0, 800, enemyGraph[0], true);
-	//}
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		//SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		//for (int i = 0; i < 3; i++) {
+		//	DrawGraph(0, 800, enemyGraph[0], true);
+		//}
+		//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	}
 }
 
 // --敵のスポーン処理-- //
@@ -985,4 +987,441 @@ void GameScene::CreateBurstEffect(Circle burstRange, int effectNum) {
 		burstEffectColor.push_back(newcolor);
 	}
 
+}
+
+void GameScene::UpdateTutorial() {
+	
+	//チュートリアルがクリアされているなら
+	if (isTutorialClear) {
+		//シーン遷移タイマーを減らす
+		sceneChangeTimer--;
+		if (sceneChangeTimer <24) {
+			longHand.radian = 0;
+			hourHand.radian = 0;
+			if (sceneChangeTimer <= 0) {
+				isOpening = true;
+				nowTime = 0;
+				isTutorial = false;
+			}
+		}
+		
+	}
+
+
+	//Lボタンで短針のステートを「反転」に
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
+		hourHand.state = State::Reverse;
+	}
+
+	//逆走の速度は短針の速度 * 速度倍率に
+	hourHandReverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) * reverseVelocityScale;
+
+	//ステートが通常なら短針は自動回転
+	if (hourHand.state == State::Normal) {
+		hourHand.radian += hourHandSpeed + hourHandlevelSpeed * (level - 1);
+
+		//任意のキーで短針を動かす(デバッグ用)
+		//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
+	}//ステートが反転しているなら短針を逆走させる
+	else if (hourHand.state == State::Reverse) {
+		hourHand.radian -= hourHandReverseSpeed;
+		//短針が長針に追いついたら長針のステートを「反転」に
+		if (hourHand.radian < longHand.radian + hourHandReverseSpeed && hourHand.radian > longHand.radian - hourHandReverseSpeed) {
+			longHand.state = State::Reverse;
+			//短針のステートをとめる
+			hourHand.state = State::Stop;
+			//はさんだオブジェクトの数で戻す力を増やす
+			reverseTime = 200;
+
+			itemSandwichCount = 0;
+			enemySandwichCount = 0;
+
+			//長針の逆走速度を計算
+			longHandReverseSpeed = hourHandReverseSpeed * reverseVelocityScaleLong;
+			//レベルリセット
+			LevelReset();
+
+			//はさんだ瞬間にはさまれている敵を消滅させる
+			for (int i = enemys.size() - 1; i >= 0; i--) {
+				if (enemys[i].GetState() == State::Reverse) {
+					enemys[i].Death();
+				}
+			}
+		}
+	}
+
+	//ステートが通常なら長針は自動回転
+	if (longHand.state == State::Normal) {
+		longHand.radian += longHandSpeed;
+	}//ステートが「反転」かつ、反転する力がまだ残っているなら逆走
+	else if (longHand.state == State::Reverse) {
+		if (reverseTime > 0) {
+			//速度は短針と等速
+			longHand.radian -= longHandReverseSpeed;
+			//長針の角度が0になったら長針と短針のステートを戻し、角度も初期化(長針のみ)
+			if (longHand.radian < hourHandReverseSpeed) {
+				longHand.state = State::Normal;
+				hourHand.state = State::Normal;
+				longHand.radian = 0;
+				//ステートがデスでない敵は削除、デスはそのまま
+				for (int i = enemys.size() - 1; i >= 0; i--) {
+					if (enemys[i].GetState() != State::Death) {
+						enemys.erase(enemys.begin() + i);
+					}
+				}
+				//レベルリセット
+				LevelReset();
+				//シェイク
+				camera.SetShakeCount(10);
+				//敵のスポーンタイマーもリセット
+				spawnTimer = spawnInterval;
+				//衝撃エフェクトを作成
+				CreateBreakEffect(clock.pos, 128);
+				//レベルアップエフェクトを作成(綺麗なので)
+				LevelUpEfffect(64 * 3);
+				//戻す力をリセット
+				reverseTime = 0;
+				//サウンド再生
+				sound->PlaySE(SANDSE);
+				//チュートリアルをクリアに
+				isTutorialClear = true;
+			}
+			//反転速度の減算
+			reverseTime--;
+		}//戻す力がなくなったらステートをノーマルに戻す
+		else if (reverseTime <= 0) {
+			longHand.state = State::Normal;
+			hourHand.state = State::Normal;
+			//敵のスポーンタイマーをリセット
+			spawnTimer = spawnInterval;
+		}
+	}
+
+	//360度超えたら0に戻し、0を下回ったら360加算する
+	hourHand.radian = fmodf(hourHand.radian, 360.0f);
+	if (hourHand.radian <= 0)hourHand.radian += 360.0f;
+
+	//位置調整件描画用のラジアン宣言
+	float radL = longHand.radian - 90;
+	float radH = hourHand.radian - 90;
+
+	//針の角度で終点座標を計算
+	longHand.end.x = (longHand.length * cosf(radL / 180 * PI)) + clock.pos.x;
+	longHand.end.y = (longHand.length * sinf(radL / 180 * PI)) + clock.pos.y;
+	//針の角度で終点座標を計算
+	hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
+	hourHand.end.y = (hourHand.length * sinf(radH / 180 * PI)) + clock.pos.y;
+
+	// --長針が一周したら敵を3体スポーンさせる
+	if (longHand.radian >= 360.0f) {
+		longHand.radian -= 360.0f;
+		//前にいた敵はすべて消す
+		enemys.clear();
+		//自機レベルリセット
+		LevelReset();
+		for (int i = 0; i < 3; i++) {
+			EnemySpawn(Random(0.0f, 36.0f) + 36.0f + 108.0f * i);
+		}
+	}
+
+	//自機更新
+	player->Update(hourHand, clock, levelCircle.radius);
+
+	//エネミー関係
+	//エネミー更新
+	for (int i = enemys.size() - 1; i >= 0; i--) {
+		Vector2 scorePos = { 1200,60 };
+		enemys[i].Update(hourHand, scorePos);
+		//短針が反転モードなら判定をとる
+		if (hourHand.state == State::Reverse) {
+			//短針と敵の当たり判定
+			if (CollisionCtoL(enemys[i].GetCircle(), hourHand, hourHandReverseSpeed)) {
+				//オブジェクトのステートがまだ「反転」でなく、死んでもいないなら当たり判定のコールバック関数を呼び出し、挟んだ数をカウントする
+				if (enemys[i].GetState() != State::Reverse && enemys[i].GetState() != State::Death) {
+					if (enemys[i].GetState() == State::Item) {
+						itemSandwichCount++;
+					}
+					else if (enemys[i].GetState() == State::Enemy) {
+						enemySandwichCount++;
+					}
+
+					enemys[i].OnCollison();
+				}
+			}
+		}
+
+		//長針がノーマルモードなら判定をとる
+		if (longHand.state == State::Normal) {
+			//長針と敵の当たり判定
+			if (CollisionCtoL(enemys[i].GetCircle(), longHand, longHandSpeed)) {
+				//一度もステート変更が行われていないなら
+				if (!enemys[i].GetIsChange()) {
+					//敵の状態がアイテムなら敵に
+					if (enemys[i].GetState() == State::Item) {
+						enemys[i].SetState(State::Enemy);
+						enemys[i].SetHandle(enemyGraph);
+					}//敵ならアイテムに
+					else if (enemys[i].GetState() == State::Enemy) {
+						enemys[i].SetState(State::Item);
+						enemys[i].SetHandle(itemGraph);
+					}
+					enemys[i].StateChange();
+				}
+
+			}
+
+		}
+
+		
+
+		//爆発円との当たり判定
+		if (CollisionCtoC(enemys[i].GetCircle(), burstCircle)) {
+			//当たったアイテムを消す
+			enemys[i].SetState(State::Delete);
+		}
+
+		for (int i = burstCircleEffects.size() - 1; i >= 0; i--) {
+			//バーストサークルの色を落とす
+			burstEffectColorParam[i] -= Random(-5, 15);
+			if (burstEffectColorParam[i] <= 0) {
+				burstEffectColorParam.erase(burstEffectColorParam.begin() + i);
+				burstEffectColor.erase(burstEffectColor.begin() + i);
+				burstCircleEffects.erase(burstCircleEffects.begin() + i);
+			}
+		}
+
+		if (enemys[i].GetState() == State::Delete) {
+			enemys.erase(enemys.begin() + i);
+		}
+	}
+
+	//エフェクト関係
+	//　--爆発円の座標リセット-- //
+	burstCircle = { {0.0f,0.0f}, 0.0f };
+
+	//エフェクト更新処理
+	for (int i = 0; i < breakEffects.size(); i++) {
+		breakEffects[i].Update();
+		//生存フラグがfalseなら該当要素を消す
+		if (!breakEffects[i].GetAllive()) {
+			breakEffects.erase(breakEffects.begin() + i);
+		}
+	}
+
+	for (int i = 0; i < lineParticleMax; i++) {
+		Vector2 pos;
+		float len, rad;
+		len = Random(levelCircle.radius, hourHand.length);
+		rad = hourHand.radian - 90.0f;
+		pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+		pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+		hourHandParticle[i].SetParent(pos);
+		hourHandParticle[i].SetSpeed(Random(0.0f, 0.2f));
+		hourHandParticle[i].SetRadius(Random(3.0f, 6.0f));
+		hourHandParticle[i].Update();
+
+		len = Random(levelCircle.radius, longHand.length);
+		rad = longHand.radian - 90.0f;
+		pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+		pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+		longHandParticle[i].SetParent(pos);
+		longHandParticle[i].SetSpeed(Random(0.5f, 2.0f));
+		hourHandParticle[i].SetRadius(Random(1.0f, 3.0f));
+		longHandParticle[i].SetRadian(Random(rad - 135, rad - 45));
+		longHandParticle[i].Update();
+	}
+
+	for (int i = levelChangeParticle.size() - 1; i >= 0; i--) {
+		Vector2 pos;
+		float len, rad;
+		len = longHand.length;
+		rad = Random(0.0f, 360.0f);
+		pos.x = (len * cosf(rad / 180 * PI)) + clock.pos.x;
+		pos.y = (len * sinf(rad / 180 * PI)) + clock.pos.y;
+		levelChangeParticle[i].SetParent(pos);
+		levelChangeParticle[i].SetSpeed(Random(3.0f, 8.0f));
+		levelChangeParticle[i].SetRadius(Random(6.0f, 10.0f));
+		//levelChangeParticle[i].SetRadian(Random(rad - 60, rad + 60));
+		//levelChangeParticle[i].SetRadian(rad);
+		levelChangeParticle[i].Update();
+		//アクティブじゃなくなったら消す
+		if (!levelChangeParticle[i].GetActive()) {
+			levelChangeParticle.erase(levelChangeParticle.begin() + i);
+		}
+	}
+
+	//カメラ処理
+	camera.CameraShake();
+
+	//当たり判定(本編のゲームからスコア加算をなくしたりしたver)
+	for (int i = enemys.size() - 1; i >= 0; i--) {
+		if (CollisionCtoC(player->player, enemys[i].obj)) {
+			//敵のステートがItemなら消滅
+			if (enemys[i].GetState() == State::Item) {
+				enemys[i].Death();
+				//enemys.erase(enemys.begin() + i);
+				point++;
+				AddReversePower(1);
+
+				//サウンド再生
+				sound->PlaySE(GETITEMSE);
+
+			}//敵のステートがenemyならレベルを減らして消滅させる
+			else if (enemys[i].GetState() == State::Enemy) {
+				//レベルを下げて、爆発サークルを出現
+				if (level > 0) {
+					level--;
+					point = 0;
+				}
+				burstCircle.pos = enemys[i].GetCircle().pos + camera.GetPos();
+				burstCircle.radius = 96.0f;
+				CreateBurstEffect(burstCircle, 128);
+				//敵を消滅
+				enemys.erase(enemys.begin() + i);
+				//逆走する力をリセット
+				reverseTime = 0;
+
+				//サウンド再生
+				sound->PlaySE(HITENEMYSE);
+			}
+		}
+	}
+
+	//レベル更新処理
+	LevelUpdate();
+
+	
+}
+
+void GameScene::DrawTutorial() {
+	// --背景描画-- //
+	DrawGraph(0, 0, backGroundGraph, true);
+	//画像の加算値はチュートリアル終了時に暗くする
+	int brightParam = (256.0f / 25.0f) * (sceneChangeTimer - 25);
+
+	player->Draw(camera, brightParam);
+
+	for (int i = 0; i < enemys.size(); i++) {
+		enemys[i].Draw(camera, particleGraph);
+	}
+
+	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
+	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	SetDrawBright(255, 255, 255);
+	// --時計の外枠の描画-- //
+	for (int i = 0; i < 1440; i++) {
+		DrawGraphF(
+			clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+			clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+			whiteCircleGraph, true);
+	}
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	//針のパーティクルの描画
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	for (int i = 0; i < lineParticleMax; i++) {
+		hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
+		longHandParticle[i].Draw(camera, EFFECT_GREEN, particleGraph);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+	// --長針の座標とカメラシェイクの座標足したLine変数-- //
+	Line longHandLine;
+	longHandLine.start = { longHand.start + camera.GetPos() };
+	longHandLine.end = { longHand.end + camera.GetPos() };
+	longHandLine.color = longHand.color;
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	//etDrawBright(119, 28, 28);
+	Color c;
+	c = HexadecimalColor(GREEN);
+	SetDrawBright(c.red, c.green, c.blue);
+	// --長針の描画-- //
+	for (int i = 0; i < longHand.length * 1.3f; i++) {
+		DrawRotaGraph(
+			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
+			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
+			0.5f, 0.0f, whiteCircleGraph, true);
+	}
+
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	// --短針の座標とカメラシェイクの座標足したLine変数-- //
+	Line hourHandLine;
+	hourHandLine.start = { hourHand.start + camera.GetPos() };
+	hourHandLine.end = { hourHand.end + camera.GetPos() };
+	hourHandLine.color = hourHand.color;
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	SetDrawBright(39, 32, 225);
+
+	// --短針の描画-- //
+	for (int i = 0; i < longHand.length; i++) {
+		DrawRotaGraph(
+			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+			0.5f, 0.0f, whiteCircleGraph, true);
+	}
+
+	SetDrawBright(255, 255, 255);
+
+
+	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
+	Circle circle;
+	circle = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
+
+	// --レベルサークルの描画-- //
+	DrawCircle(circle, 0xFFFFFF, false);
+
+	for (int i = 0; i < burstCircleEffects.size(); i++) {
+		SetDrawBlendMode(DX_BLENDMODE_ADD, burstEffectColorParam[i]);
+		int X1 = burstCircleEffects[i].pos.x;
+		int Y1 = burstCircleEffects[i].pos.y;
+		int X2 = burstCircleEffects[i].pos.x + burstCircleEffects[i].radiusX;
+		int Y2 = burstCircleEffects[i].pos.y + burstCircleEffects[i].radiusY;
+		DrawBox(X1, Y1, X2, Y2, burstEffectColor[i], true);
+
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, burstEffectColorParam[i]);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	
+	for (int i = 0; i < breakEffects.size(); i++) {
+		int graph;
+		if (Random(0, 100) > 50)graph = itemGraph[0];
+		else graph = enemyGraph[0];
+		breakEffects[i].Draw(camera, graph);
+	}
+
+	for (int i = 0; i < levelChangeParticle.size(); i++) {
+		int graph;
+		if (Random(0, 100) > 50)graph = itemGraph[0];
+		else graph = enemyGraph[0];
+		levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, brightParam);
+
+	if (SceneManager::GetDebugMode() == true) {
+		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
+		DrawFormatString(0, 120, 0xFFFFFF, "レベルサークルの半径:%f", levelCircle.radius);
+		DrawFormatString(0, 140, 0xFFFFFF, "ZCキー:短針の速度変更");
+		DrawFormatString(0, 160, 0xFFFFFF, "IPキーで長針の速度を変更");
+		DrawFormatString(0, 180, 0xFFFFFF, "カメラシェイク:スペースキー(振動量の調整は未実装)");
+		DrawFormatString(0, 200, 0xff, "チュートリアルかどうか:%d",isTutorial);
+		DrawFormatString(0, 220, 0xff, "チュートリアルをクリアしたかどうか:%d",isTutorialClear);
+		//DrawFormatString(0, 240, 0xFFFFFF, "短針の速度:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
+		//DrawFormatString(0, 260, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
+		//DrawFormatString(0, 280, 0xFFFFFF, "逆走の速度(短針):%f", hourHandReverseSpeed);
+		//DrawFormatString(0, 300, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
+		//DrawFormatString(0, 340, 0xFFFFFF, "敵の総数:%d", enemys.size());
+		//DrawFormatString(0, 320, 0xFFFFFF, "FPS");
+		//DrawFormatString(0, 360, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
+		//
+		//DrawFormatString(0, 400, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
+		//DrawFormatString(0, 420, 0xFFFFFF, "point:%d", point);
+
+		/*SetFontSize(80);*/
+		/*SetFontSize(16);*/
+	}
 }
