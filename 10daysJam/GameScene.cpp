@@ -218,7 +218,7 @@ void GameScene::Update() {
 				LevelReset();
 
 
-				longHandReverseSpeed = hourHandReverseSpeed * reverseVelocityScale;
+				longHandReverseSpeed = hourHandReverseSpeed * reverseVelocityScaleLong;
 				//はさんだ瞬間にはさまれている敵を消滅させる
 				for (int i = enemys.size() - 1; i >= 0; i--) {
 					if (enemys[i].GetState() == State::Reverse) {
@@ -263,6 +263,10 @@ void GameScene::Update() {
 					
 					//戻す力をリセット
 					reverseTime = 0;
+
+
+					//サウンド再生
+					sound->PlaySE(SANDSE);
 
 					//敵を5体スポーンさせる
 					for (int i = 0; i < 5; i++) {
@@ -729,6 +733,10 @@ void GameScene::Collision() {
 				point++;
 				Score::AddScore(100);
 				AddReversePower(1);
+
+				//サウンド再生
+				sound->PlaySE(GETITEMSE);
+
 			}//敵のステートがenemyならレベルを減らして消滅させる
 			else if (enemys[i].GetState() == State::Enemy) {
 				//レベルを下げて、爆発サークルを出現
@@ -742,6 +750,9 @@ void GameScene::Collision() {
 				enemys.erase(enemys.begin() + i);
 				//逆走する力をリセット
 				reverseTime = 0;
+
+				//サウンド再生
+				sound->PlaySE(HITENEMYSE);
 			}
 		}
 	}
@@ -765,10 +776,14 @@ void GameScene::LevelUpdate() {
 		level++;
 		point = 0;
 		LevelUpEfffect(96);
+
+		//サウンド再生
+		sound->PlaySE(LEVELUPSE);
 	}
 
 	//逆走速度の速度倍率
-	reverseVelocityScale = 2.0f;
+	reverseVelocityScale = 2.0f;		//短針	
+	reverseVelocityScaleLong = 2.0f;	//長針
 
 
 	//レベルで敵の出現率を調整
