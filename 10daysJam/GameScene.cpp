@@ -74,7 +74,7 @@ GameScene::GameScene() {
 	hourHandlevelSpeed = 0.5f;
 
 	// --’Zj‚ª‹t‰ñ‚è‚·‚é‚Æ‚«‚Ì‘¬“x-- //
-	reverseSpeed = 4.0f;
+	hourHandReverseSpeed = 4.0f;
 #pragma endregion
 
 #pragma region ƒŒƒxƒ‹ŠÖŒW•Ï”‚Ì‰Šú‰»
@@ -184,7 +184,7 @@ void GameScene::Update() {
 		}
 
 		//‹t‘–‚Ì‘¬“x‚Í’Zj‚Ì‘¬“x * ‘¬“x”{—¦‚É
-		reverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) *reverseVelocityScale;
+		hourHandReverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) *reverseVelocityScale;
 
 		//ƒXƒe[ƒg‚ª’Êí‚È‚ç’Zj‚Í©“®‰ñ“]
 		if (hourHand.state == State::Normal) {
@@ -194,9 +194,9 @@ void GameScene::Update() {
 			//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
 		}//ƒXƒe[ƒg‚ª”½“]‚µ‚Ä‚¢‚é‚È‚ç’Zj‚ğ‹t‘–‚³‚¹‚é
 		else if (hourHand.state == State::Reverse) {
-			hourHand.radian -= reverseSpeed;
+			hourHand.radian -= hourHandReverseSpeed;
 			//’Zj‚ª’·j‚É’Ç‚¢‚Â‚¢‚½‚ç’·j‚ÌƒXƒe[ƒg‚ğu”½“]v‚É
-			if (hourHand.radian < longHand.radian + reverseSpeed && hourHand.radian > longHand.radian - reverseSpeed) {
+			if (hourHand.radian < longHand.radian + hourHandReverseSpeed && hourHand.radian > longHand.radian - hourHandReverseSpeed) {
 				longHand.state = State::Reverse;
 				//’Zj‚ÌƒXƒe[ƒg‚ğ‚Æ‚ß‚é
 				hourHand.state = State::Stop;
@@ -214,6 +214,8 @@ void GameScene::Update() {
 
 				LevelReset();
 
+
+				longHandReverseSpeed = hourHandReverseSpeed * reverseVelocityScale;
 				//‚Í‚³‚ñ‚¾uŠÔ‚É‚Í‚³‚Ü‚ê‚Ä‚¢‚é“G‚ğÁ–Å‚³‚¹‚é
 				for (int i = enemys.size() - 1; i >= 0; i--) {
 					if (enemys[i].GetState() == State::Reverse) {
@@ -231,9 +233,9 @@ void GameScene::Update() {
 		else if (longHand.state == State::Reverse) {
 			if (reverseTime > 0) {
 				//‘¬“x‚Í’Zj‚Æ“™‘¬
-				longHand.radian -= reverseSpeed * 3.0f;
+				longHand.radian -= longHandReverseSpeed;
 				//’·j‚ÌŠp“x‚ª0‚É‚È‚Á‚½‚ç’·j‚Æ’Zj‚ÌƒXƒe[ƒg‚ğ–ß‚µAŠp“x‚à‰Šú‰»
-				if (longHand.radian < reverseSpeed) {
+				if (longHand.radian < hourHandReverseSpeed) {
 					longHand.state = State::Normal;
 					hourHand.state = State::Normal;
 					longHand.radian = 0;
@@ -337,7 +339,7 @@ void GameScene::Update() {
 			//’Zj‚ª”½“]ƒ‚[ƒh‚È‚ç”»’è‚ğ‚Æ‚é
 			if (hourHand.state == State::Reverse) {
 				//’Zj‚Æ“G‚Ì“–‚½‚è”»’è
-				if (CollisionCtoL(enemys[i].GetCircle(), hourHand, reverseSpeed)) {
+				if (CollisionCtoL(enemys[i].GetCircle(), hourHand, hourHandReverseSpeed)) {
 					//ƒIƒuƒWƒFƒNƒg‚ÌƒXƒe[ƒg‚ª‚Ü‚¾u”½“]v‚Å‚È‚­A€‚ñ‚Å‚à‚¢‚È‚¢‚È‚ç“–‚½‚è”»’è‚ÌƒR[ƒ‹ƒoƒbƒNŠÖ”‚ğŒÄ‚Ño‚µA‹²‚ñ‚¾”‚ğƒJƒEƒ“ƒg‚·‚é
 					if (enemys[i].GetState() != State::Reverse && enemys[i].GetState() != State::Death) {
 						if (enemys[i].GetState() == State::Item) {
@@ -666,7 +668,7 @@ void GameScene::Draw() {
 		DrawFormatString(0, 220, hourHand.color, "hourHand(’Zj)‚Ìî•ñ x:%f,y:%f,radian:%f", hourHand.end.x, hourHand.end.y, hourHand.radian);
 		DrawFormatString(0, 240, 0xFFFFFF, "’Zj‚Ì‘¬“x:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
 		DrawFormatString(0, 260, 0xFFFFFF, "’·j‚Ì‘¬“x:%f", longHandSpeed);
-		DrawFormatString(0, 280, 0xFFFFFF, "‹t‘–‚Ì‘¬“x(’Zj):%f", reverseSpeed);
+		DrawFormatString(0, 280, 0xFFFFFF, "‹t‘–‚Ì‘¬“x(’Zj):%f", hourHandReverseSpeed);
 		DrawFormatString(0, 300, 0xFFFFFF, "ƒGƒlƒ~[‚ÌƒXƒ|[ƒ“‚Ü‚Å‚Ìc‚èŠÔ:%d", spawnTimer);
 		DrawFormatString(0, 340, 0xFFFFFF, "“G‚Ì‘”:%d", enemys.size());
 		DrawFormatString(0, 320, 0xFFFFFF, "FPS");
@@ -814,6 +816,9 @@ void GameScene::LevelUpdate() {
 		enemySpawnRate = 33.5f;
 		break;
 	}
+
+
+
 #pragma endregion
 }
 
@@ -848,9 +853,9 @@ void GameScene::OpeningUpdate() {
 	if (nowTime <= animationTime) {
 
 		//1•b‚Åˆê‰ñ“]‚·‚é‚æ‚¤‚É‰ñ“]‘¬“x‚ğ•ÏX
-		reverseSpeed = 360.0f / 250.0f;
+		hourHandReverseSpeed = 360.0f / 250.0f;
 
-		hourHand.radian -= reverseSpeed;
+		hourHand.radian -= hourHandReverseSpeed;
 		float radH = hourHand.radian - 90;
 		//j‚ÌŠp“x‚ÅI“_À•W‚ğŒvZ
 		hourHand.end.x = (hourHand.length * cosf(radH / 180 * PI)) + clock.pos.x;
