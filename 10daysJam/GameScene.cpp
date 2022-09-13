@@ -67,6 +67,9 @@ GameScene::GameScene() {
 	// --長針の速度-- //
 	longHandSpeed = 0.1f;
 
+	// --長針の速度の追加値-- //
+	addLongHandSpeed = 0.05f;
+
 	// --短針-- //
 	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
 
@@ -206,6 +209,9 @@ void GameScene::Update() {
 				longHand.state = State::Reverse;
 				//短針のステートをとめる
 				hourHand.state = State::Stop;
+
+				// --長針の速度を変更-- //
+				longHandSpeed += addLongHandSpeed;
 
 				//はさんだオブジェクトの数で戻す力を増やす
 				reverseTime += level * 1.5;
