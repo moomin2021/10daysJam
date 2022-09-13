@@ -141,6 +141,9 @@ private:
 #pragma region エフェクト関係変数の宣言
 	// --敵の爆発したときの円の大きさ用-- //
 	Circle burstCircle;
+	std::vector<Box> burstCircleEffects;
+	std::vector<int> burstEffectColorParam;
+	std::vector<int> burstEffectColor;
 
 	// --レベルが変動した時のエフェクト--
 	std::vector<Particle> levelChangeParticle;
@@ -205,6 +208,7 @@ public:
 
 	void LevelUpEfffect(int effectNum);
 
+	void CreateBurstEffect(Circle burstRange , int effectNum);
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数
