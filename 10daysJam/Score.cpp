@@ -42,6 +42,9 @@ Score::Score() : displayScore(0), scoreTime(10) {
 
 	// --スコアテキスト-- //
 	scoreGraph = LoadGraph("Resources/score_small.png");
+
+	// --スコアボード-- //
+	LoadDivGraph("Resources/scoreBoard.png", 2, 2, 1, 248, 150, scoreBoardGraph);
 #pragma endregion
 }
 
@@ -82,20 +85,32 @@ void Score::Update() {
 // --描画処理-- //
 void Score::Draw() {
 	int num = displayScore;
+	// --スコアボード描画-- //
+
+	DrawGraph(1032, 0, scoreBoardGraph[1], true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	Color color = GetColor16("9720e1");
+	SetDrawBright(color.red, color.green, color.blue);
+	for (int i = 0; i < 10; i++) {
+		DrawGraph(1032, 0, scoreBoardGraph[0], true);
+	}
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	SetDrawBright(119, 28, 28);
 
 	// --スコア描画-- //
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 15; j++) {
-			DrawGraph(1088 + i * 32, 0, numberGraph[num / (int)pow(10, 5 - i)], true);
+			DrawGraph(1060 + i * 32, 64, numberGraph[num / (int)pow(10, 5 - i)], true);
 		}
 		num = num % (int)pow(10, 5 - i);
 	}
 
 	// --スコアテキスト描画-- //
 	for (int i = 0; i < 15; i++) {
-		DrawGraph(1149, 58, scoreGraph, true);
+		DrawGraph(1121, 28, scoreGraph, true);
 	}
 
 	SetDrawBright(255, 255, 255);

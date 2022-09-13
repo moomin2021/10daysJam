@@ -135,15 +135,15 @@ GameScene::~GameScene() {
 // --初期化処理-- //
 void GameScene::Initialize() {
 	//パーティクルの数とか
-	Circle starC;
-	starLen = hourHand.length + 72;
-	starC.pos = clock.pos;
-	starC.radius = 6;
+	//Circle starC;
+	//starLen = hourHand.length + 72;
+	//starC.pos = clock.pos;
+	//starC.radius = 6;
 
-	for (int i = 0; i < 5; i++) {
-		star[i].Initialize(starC, 72 * i, starLen, 32);
-		star2[i].Initialize(starC, 72 * i + 36, starLen + 108, 32);
-	}
+	//for (int i = 0; i < 5; i++) {
+	//	star[i].Initialize(starC, 72 * i, starLen, 32);
+	//	star2[i].Initialize(starC, 72 * i + 36, starLen + 108, 32);
+	//}
 
 	lineParticleMax = 64;
 	for (int i = 0; i < lineParticleMax; i++) {
