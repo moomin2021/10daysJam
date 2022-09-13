@@ -68,7 +68,7 @@ GameScene::GameScene() {
 	longHandSpeed = 0.1f;
 
 	// --長針の速度の追加値-- //
-	addLongHandSpeed = 0.02f;
+	addLongHandSpeed = 0.01f;
 
 	// --短針-- //
 	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
@@ -223,8 +223,8 @@ void GameScene::Update() {
 				longHandSpeed += addLongHandSpeed;
 
 				//はさんだオブジェクトの数で戻す力を増やす
-				reverseTime += level * 2;
-				reverseTime += ((enemySandwichCount + itemSandwichCount) / 4);
+				reverseTime += level * 2.5;
+				reverseTime += ((enemySandwichCount + itemSandwichCount) / 3);
 
 				//スコアを加算、はさんだ数をリセット
 				Score::AddScore(300 * itemSandwichCount);
@@ -854,7 +854,10 @@ void GameScene::LevelUpdate() {
 		spawnInterval = 100;
 		break;
 	case 1:
-		enemySpawnRate = 15.0f;
+		//チュートリアル中は敵が湧かないように
+		if(isTutorial)enemySpawnRate = 0.0f;
+		else enemySpawnRate = 15.0f;
+
 		spawnInterval = 45;
 		reverseVelocityScale = 3.5f;
 		reverseVelocityScaleLong = 1.5f;
