@@ -530,7 +530,7 @@ void GameScene::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 256);
 	for (int i = 0; i < lineParticleMax; i++) {
 		hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
-		longHandParticle[i].Draw(camera, GREEN, particleGraph);
+		longHandParticle[i].Draw(camera, EFFECT_GREEN, particleGraph);
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
 
