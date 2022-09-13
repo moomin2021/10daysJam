@@ -36,8 +36,13 @@ Score::Score() : displayScore(0), scoreTime(10) {
 	// --スコア加算する時間-- //
 	scoreTime = 10;
 
-	// --画像読み込み-- //
-	LoadDivGraph("Resources/numbers_small.png", 10, 10, 1, 32, 58, scoreGraph);
+#pragma region 画像読み込み
+	// --数字-- //
+	LoadDivGraph("Resources/numbers_small.png", 10, 10, 1, 32, 58, numberGraph);
+
+	// --スコアテキスト-- //
+	scoreGraph = LoadGraph("Resources/score_small.png");
+#pragma endregion
 }
 
 // --デストラクタ-- //
@@ -80,11 +85,17 @@ void Score::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	SetDrawBright(119, 28, 28);
 
+	// --スコア描画-- //
 	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 10; j++) {
-			DrawGraph(1088 + i * 29, 0, scoreGraph[num / (int)pow(10, 5 - i)], true);
+		for (int j = 0; j < 15; j++) {
+			DrawGraph(1088 + i * 32, 0, numberGraph[num / (int)pow(10, 5 - i)], true);
 		}
 		num = num % (int)pow(10, 5 - i);
+	}
+
+	// --スコアテキスト描画-- //
+	for (int i = 0; i < 15; i++) {
+		DrawGraph(1149, 58, scoreGraph, true);
 	}
 
 	SetDrawBright(255, 255, 255);
