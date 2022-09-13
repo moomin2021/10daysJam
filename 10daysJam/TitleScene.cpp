@@ -41,6 +41,9 @@ TitleScene::TitleScene() {
 #pragma region ‰æ‘œ“Ç‚İ‚İ
 	// --ƒ^ƒCƒgƒ‹ƒƒS-- //
 	LoadDivGraph("Resources/titleRogo.png", 4, 4, 1, 572, 572, titlelogoGraph);
+
+	// --”wŒi-- //
+	backGroundGraph = LoadGraph("Resources/backillust.png");
 #pragma endregion
 }
 
@@ -68,30 +71,33 @@ void TitleScene::Update() {
 
 // --•`‰æˆ—-- //
 void TitleScene::Draw() {
+	// --”wŒi‰æ‘œ‚Ì•`‰æ-- //
+	DrawGraph(0, 0, backGroundGraph, true);
+
 #pragma region ƒ^ƒCƒgƒ‹ƒƒS•`‰æˆ—
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	
 	// --0”Ô-- //
 	SetDrawBright(39, 32, 225);
-	for (int i = 0; i < 14; i++) {
+	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 194, titlelogoGraph[0], true);
 	}
 
 	// --1”Ô-- //
 	SetDrawBright(39, 32, 225);
-	for (int i = 0; i < 14; i++) {
+	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 194, titlelogoGraph[1], true);
 	}
 
 	// --2”Ô-- //
 	SetDrawBright(39, 32, 225);
-	for (int i = 0; i < 14; i++) {
+	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 194, titlelogoGraph[2], true);
 	}
 
 	// --3”Ô-- //
 	SetDrawBright(39, 32, 225);
-	for (int i = 0; i < 14; i++) {
+	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 194, titlelogoGraph[3], true);
 	}
 

@@ -119,6 +119,9 @@ GameScene::GameScene() {
 	// --“G-- //
 	LoadDivGraph("Resources/Enemy.png", 2, 2, 1, 48, 48, enemyGraph);
 
+	// --”wŒi-- //
+	backGroundGraph = LoadGraph("Resources/backillust.png");
+
 #pragma endregion
 }
 
@@ -491,6 +494,9 @@ void GameScene::Update() {
 
 // --•`‰æˆ—-- //
 void GameScene::Draw() {
+	// --”wŒi•`‰æ-- //
+	DrawGraph(0, 0, backGroundGraph, true);
+
 	//Œ»İŠÔ‚ğQÆ‚µ‚Äƒ‰ƒCƒgƒAƒbƒv
 	int brightLongHand = 0;
 	brightLongHand = (256.0f / 25.0f) * (nowTime - 175) + 16.0f;
