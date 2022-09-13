@@ -8,7 +8,7 @@
 #include "Sound.h"
 
 // ウィンドウのタイトルに表示する文字列
-const char TITLE[] = "LE2A_14_タムラ_フミヤ: タイトル";
+const char TITLE[] = "2005_Retuck";
 
 // ウィンドウ横幅
 const int WIN_WIDTH = 1280;
