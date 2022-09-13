@@ -132,7 +132,7 @@ GameScene::GameScene() {
 	tutorialTextGraph[0] = LoadGraph("Resources/tutorial_move.png");
 	tutorialTextGraph[1] = LoadGraph("Resources/tutorial_enemy.png");
 	tutorialTextGraph[2] = LoadGraph("Resources/tutorial_return.png");
-LoadDivGraph("Resources/tutoeial_scoreBoard.png",2,2,1,382,112,tutorialBoardGraph);
+LoadDivGraph("Resources/tutorialBoard.png",2,2,1,382,112,tutorialBoardGraph);
 
 
 #pragma endregion
@@ -826,7 +826,7 @@ void GameScene::LevelUpdate() {
 			//敵のスポーン率を100%にして敵を大量にスポーン
 			enemySpawnRate = 100;
 			for (int i = 0; i < 32; i++) {
-				EnemySpawn(Random(longHand.radian - 45, longHand.radian - 40));
+				EnemySpawn(Random(205, 215));
 			}
 		}
 
@@ -1461,9 +1461,34 @@ void GameScene::DrawTutorial() {
 	int posx = 1280 - 384;
 	int posy = 2;
 	c = HexadecimalColor(RED);
-	for (int i = 0; i < 10; i++) {
+	DrawGraph(posx, posy, tutorialBoardGraph[1], true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBright(c.red, c.green, c.blue);
+	for (int i = 0; i <10; i++) {
 		DrawGraph(posx, posy, tutorialBoardGraph[0], true);
 	}
+
+	//チュートリアルステップで画像を描画
+	c = HexadecimalColor(LIGHTBLUE);
+	SetDrawBright(c.red, c.green, c.blue);
+	for (int i = 0; i < 10; i++) {
+		c = HexadecimalColor(LIGHTBLUE);
+		SetDrawBright(c.red, c.green, c.blue);
+		DrawGraph(posx + 16, posy + 16, tutorialTextGraph[tutorialStep], true);
+		//ステップ1でボタン描画
+		if (tutorialStep == 0) {
+			c = HexadecimalColor(GREEN);
+			SetDrawBright(c.red, c.green, c.blue);
+			DrawExtendGraph(posx + 48, posy + 20, posx + 84, posy + 56, ButtonGraph[1], true);
+			c = HexadecimalColor(RED);
+			SetDrawBright(c.red, c.green, c.blue);
+			DrawExtendGraph(posx + 120, posy + 20, posx + 156, posy + 56, ButtonGraph[2], true);
+			SetDrawBright(255, 255, 255);
+		}
+	}
+	SetDrawBright(255,255,255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 
 
 	//レベル
