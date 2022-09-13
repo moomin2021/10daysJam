@@ -1485,10 +1485,10 @@ void GameScene::DrawTutorial() {
 		if (tutorialStep == 0) {
 			c = HexadecimalColor(GREEN);
 			SetDrawBright(c.red, c.green, c.blue);
-			DrawExtendGraph(posx + 48, posy + 20, posx + 84, posy + 56, ButtonGraph[2], true);
+			DrawExtendGraph(posx + 48, posy + 20, posx + 84, posy + 56, ButtonGraph[1], true);
 			c = HexadecimalColor(RED);
 			SetDrawBright(c.red, c.green, c.blue);
-			DrawExtendGraph(posx + 120, posy + 20, posx + 156, posy + 56, ButtonGraph[1], true);
+			DrawExtendGraph(posx + 120, posy + 20, posx + 156, posy + 56, ButtonGraph[2], true);
 			SetDrawBright(255, 255, 255);
 		}
 	}
@@ -1503,19 +1503,19 @@ void GameScene::DrawTutorial() {
 	pos.y -=len  * sinf(rad / 180 * PI);
 	float radius = 16;
 
-	c = HexadecimalColor(GREEN);
+	c = HexadecimalColor(RED);
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
-		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[1], true);
+		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[2], true);
 	}
 
 	pos = player->GetPlayer().pos;
 	pos.x += len* cosf(rad / 180 * PI);
 	pos.y += len* sinf(rad / 180 * PI);
-	c = HexadecimalColor(RED);
+	c = HexadecimalColor(GREEN);
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
-		DrawExtendGraph(pos.x- radius, pos.y- radius, pos.x+ radius, pos.y+ radius, ButtonGraph[2], true);
+		DrawExtendGraph(pos.x- radius, pos.y- radius, pos.x+ radius, pos.y+ radius, ButtonGraph[1], true);
 	}
 
 	SetDrawBright(255, 255, 255);
