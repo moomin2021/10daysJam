@@ -94,6 +94,9 @@ private:
 	// --’·j‚Ì‘¬“x-- //
 	float longHandSpeed;
 
+	// --’·j‚Ì‘¬“x‚Ì’Ç‰Á’l-- //
+	float addLongHandSpeed;
+
 	// --’Zj-- //
 	Line hourHand;
 
