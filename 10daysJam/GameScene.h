@@ -184,11 +184,17 @@ private:
 	//UI
 	int ButtonGraph[3];
 
+	//プレイ中のUI
+	int gameUIGraph[4];
+
 	//チュートリアルのテキスト
 	int tutorialTextGraph[3];
 
 	//チュートリアルのスコアボード
 	int tutorialBoardGraph[2];
+
+	//チュートリアル終了時の画像
+	int successGraph;
 
 	// --レベルサークル-- //
 	int levelCircleGraph[2];
