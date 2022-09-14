@@ -233,9 +233,11 @@ void ResultScene::Draw() {
 
 	// --SABCランクテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 20; i++) {
 		SetDrawBright(21, 39, 19);
 		DrawGraph(550, 350, sabcSmallGraph[3], true);
+	}
+	for (int i = 0; i < 10; i++) {
 		SetDrawBright(97, 94, 19);
 		DrawGraph(700, 350, sabcSmallGraph[2], true);
 		SetDrawBright(97, 42, 17);
