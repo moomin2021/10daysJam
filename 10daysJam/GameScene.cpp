@@ -283,6 +283,7 @@ void GameScene::Initialize() {
 		sceneChangeTime = 75;
 		sceneChangeTimer = sceneChangeTime;
 		for (int i = 0; i < 3; i++) {
+			enemySpawnRate = 0;
 			EnemySpawn(Random(0.0f, 36.0f) + 36.0f + 108.0f * i);
 		}
 	}
@@ -1324,7 +1325,7 @@ void GameScene::UpdateTutorial() {
 	}
 
 	//画像用ラジアン処理
-	graphRad+= 4;
+	graphRad += 4;
 	if (graphRad >= 360.0f) {
 		graphRad -= 360.0f;
 	}
@@ -1696,12 +1697,12 @@ void GameScene::DrawTutorial() {
 		SetDrawBright(39, 32, 225);
 
 		// --短針の描画-- //
-			for (int i = 0; i < longHand.length; i++) {
-				DrawRotaGraph(
-					hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
-					hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
-					0.5f, 0.0f, whiteCircleGraph, true);
-			}
+		for (int i = 0; i < longHand.length; i++) {
+			DrawRotaGraph(
+				hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+				hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+				0.5f, 0.0f, whiteCircleGraph, true);
+		}
 
 		SetDrawBright(255, 255, 255);
 
@@ -1841,6 +1842,15 @@ void GameScene::DrawTutorial() {
 
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+		//チュートリアルのフォント描画
+		SetDrawBright2(YELLOW);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * PI) * 255);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(0, 0, tutorialFontGraph, true);
+		}
+		SetDrawBright(255, 255, 255);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	}
 
 	// -- レベルサークル描画-- //
@@ -1855,23 +1865,6 @@ void GameScene::DrawTutorial() {
 			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 		}
 	}
-		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
-	}
-
-
-	//チュートリアルのフォント描画
-	SetDrawBright2(YELLOW);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * PI) * 255);
-	for (int i = 0; i < 10; i++) {
-		DrawGraph(0, 0, tutorialFontGraph, true);
-	}
-	
-
-	SetDrawBright(255, 255, 255);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-
-
-
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
