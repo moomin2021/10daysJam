@@ -7,6 +7,8 @@ using namespace std;
 // --インスタンスにNULLを代入-- //
 GameScene* GameScene::myInstance = nullptr;
 
+bool GameScene::isTutorialSkip = false;
+
 // --インスタンス読み込み-- //
 GameScene* GameScene::GetInstance() {
 	// --インスタンスが無かったら生成する-- //
@@ -168,6 +170,23 @@ GameScene::~GameScene() {
 
 // --初期化処理-- //
 void GameScene::Initialize() {
+	// --アイテム・敵削除-- //
+	enemys.clear();
+
+	// --エフェクト削除-- //
+	breakEffects.clear();
+
+	// --短針、長針からでるパーティクル削除-- //
+	hourHandParticle.clear();
+	longHandParticle.clear();
+
+	// --敵の爆発したときの円の大きさ用削除-- //
+	burstCircleEffects.clear();
+	burstEffectColorParam.clear();
+	burstEffectColor.clear();
+
+	// --プレイヤー-- //
+	player->Initialize();
 
 #pragma region エネミーのスポーン関係変数の初期化
 
@@ -183,8 +202,6 @@ void GameScene::Initialize() {
 	// --確定した敵のスポーン位置を保存する用変数-- //
 	enemyPos = { 0.0f, 0.0f };
 #pragma endregion
-
-	enemys.clear();
 
 #pragma region 時計関係変数の初期化
 	// --時計-- //
@@ -248,14 +265,23 @@ void GameScene::Initialize() {
 		longHandParticle.push_back(newParticle);
 	}
 
-	isTutorial = true;
-	isTutorialClear = false;
-	level = 1;
-	tutorialStep = 0;
-	sceneChangeTime = 75;
-	sceneChangeTimer = sceneChangeTime;
-	for (int i = 0; i < 3; i++) {
-		EnemySpawn(Random(0.0f, 36.0f) + 36.0f + 108.0f * i);
+	if (isTutorialSkip == true) {
+		isTutorial = true;
+		isTutorialClear = true;
+		level = 0;
+		sceneChangeTime = 75;
+		sceneChangeTimer = sceneChangeTime;
+	}
+	else {
+		isTutorial = true;
+		isTutorialClear = false;
+		level = 1;
+		tutorialStep = 0;
+		sceneChangeTime = 75;
+		sceneChangeTimer = sceneChangeTime;
+		for (int i = 0; i < 3; i++) {
+			EnemySpawn(Random(0.0f, 36.0f) + 36.0f + 108.0f * i);
+		}
 	}
 
 	//敵のスポーン時間のブレ
@@ -270,51 +296,12 @@ void GameScene::Initialize() {
 
 }
 
-// --変数リセット-- //
-void GameScene::Reset() {
-	// --アイテム・敵削除-- //
-	enemys.clear();
-
-	// --エフェクト削除-- //
-	breakEffects.clear();
-
-	// --短針、長針からでるパーティクル削除-- //
-	hourHandParticle.clear();
-	longHandParticle.clear();
-
-	// --敵の爆発したときの円の大きさ用削除-- //
-	burstCircleEffects.clear();
-	burstEffectColorParam.clear();
-	burstEffectColor.clear();
-
-	// --レベルが変動した時のエフェクト削除-- //
-	levelChangeParticle.clear();
-
-	// --時計-- //
-	clock = { {640.0f, 480.0f}, 416.0f };
-
-	// --長針-- //
-	longHand = { {640.0f, 480.0f}, {640.0f, 0.0f}, clock.radius, 0.0f, 0xFF0000 };
-
-	// --短針-- //
-	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
-
-	// --レベル-- //
-	level = 0;
-
-	// --経験値-- //
-	point = 0;
-
-	// --プレイヤー-- //
-	player->Initialize();
-}
-
 // --更新処理-- //
 void GameScene::Update() {
 #pragma region 針の座標計算
 
 	//チュートリアル処理
-	if (isTutorial && !isTutorialSkip) {
+	if (isTutorial) {
 		UpdateTutorial();
 	}
 	//オープニング処理
@@ -496,8 +483,6 @@ void GameScene::Update() {
 		}
 
 #pragma endregion
-
-
 
 #pragma region プレイヤー更新処理
 		player->Update(hourHand, clock, levelCircle.radius);
@@ -1465,9 +1450,6 @@ void GameScene::UpdateTutorial() {
 	//エネミー更新
 	for (int i = enemys.size() - 1; i >= 0; i--) {
 
-
-
-
 		Vector2 scorePos = { 1200,60 };
 		enemys[i].Update(hourHand, scorePos);
 		//短針が反転モードなら判定をとる
@@ -1650,216 +1632,219 @@ void GameScene::DrawTutorial() {
 	//画像の加算値はチュートリアル終了時に暗くする
 	int brightParam = (256.0f / 25.0f) * (sceneChangeTimer - 25);
 
-	player->Draw(camera, brightParam);
+	if (!isTutorialSkip) {
+		player->Draw(camera, brightParam);
 
-	for (int i = 0; i < enemys.size(); i++) {
-		enemys[i].Draw(camera, particleGraph);
-	}
-
-	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
-	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-	Color color = HexadecimalColor(LIGHTBLUE);
-	SetDrawBright(color.red, color.green, color.blue);
-
-	// --時計の外枠の描画-- //
-	for (int i = 0; i < 20; i++) {
-		DrawRotaGraph(640 + camera.GetPos().x, 480 + camera.GetPos().y, 1.0f, 0.0f, clockGraph, true);
-	}
-	SetDrawBright(255, 255, 255);
-
-	//針のパーティクルの描画
-	for (int i = 0; i < lineParticleMax; i++) {
-		hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
-		longHandParticle[i].Draw(camera, EFFECT_GREEN, particleGraph);
-	}
-
-	// --長針の座標とカメラシェイクの座標足したLine変数-- //
-	Line longHandLine;
-	longHandLine.start = { longHand.start + camera.GetPos() };
-	longHandLine.end = { longHand.end + camera.GetPos() };
-	longHandLine.color = longHand.color;
-
-	//etDrawBright(119, 28, 28);
-	Color c;
-	c = HexadecimalColor(GREEN);
-	SetDrawBright(c.red, c.green, c.blue);
-	// --長針の描画-- //
-	for (int i = 0; i < longHand.length * 1.3f; i++) {
-		DrawRotaGraph(
-			longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
-			longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
-			0.5f, 0.0f, whiteCircleGraph, true);
-	}
-
-	SetDrawBright(255, 255, 255);
-
-	// --短針の座標とカメラシェイクの座標足したLine変数-- //
-	Line hourHandLine;
-	hourHandLine.start = { hourHand.start + camera.GetPos() };
-	hourHandLine.end = { hourHand.end + camera.GetPos() };
-	hourHandLine.color = hourHand.color;
-
-	SetDrawBright(39, 32, 225);
-
-	// --短針の描画-- //
-	for (int i = 0; i < longHand.length; i++) {
-		DrawRotaGraph(
-			hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
-			hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
-			0.5f, 0.0f, whiteCircleGraph, true);
-	}
-
-	SetDrawBright(255, 255, 255);
-
-	for (int i = 0; i < burstCircleEffects.size(); i++) {
-		SetDrawBlendMode(DX_BLENDMODE_ADD, burstEffectColorParam[i]);
-		int X1 = burstCircleEffects[i].pos.x;
-		int Y1 = burstCircleEffects[i].pos.y;
-		int X2 = burstCircleEffects[i].pos.x + burstCircleEffects[i].radiusX;
-		int Y2 = burstCircleEffects[i].pos.y + burstCircleEffects[i].radiusY;
-		DrawBox(X1, Y1, X2, Y2, burstEffectColor[i], true);
-
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, burstEffectColorParam[i]);
-	}
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-
-	for (int i = 0; i < breakEffects.size(); i++) {
-		int graph;
-		if (Random(0, 100) > 50)graph = itemGraph[0];
-		else graph = enemyGraph[0];
-		breakEffects[i].Draw(camera, graph);
-	}
-
-	for (int i = 0; i < levelChangeParticle.size(); i++) {
-		int graph;
-		if (Random(0, 100) > 50)graph = itemGraph[0];
-		else graph = enemyGraph[0];
-		levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
-	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, brightParam);
-
-	//UI描画
-//	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-	//スコアボード
-	int posx = 1280 - 384;
-	int posy = 2;
-	c = HexadecimalColor(RED);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightParam);
-	DrawGraph(posx, posy, tutorialBoardGraph[1], true);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-	SetDrawBright(c.red, c.green, c.blue);
-	for (int i = 0; i < 10; i++) {
-		DrawGraph(posx, posy, tutorialBoardGraph[0], true);
-	}
-
-	//チュートリアルステップで画像を描画
-	c = HexadecimalColor(LIGHTBLUE);
-	SetDrawBright(c.red, c.green, c.blue);
-	for (int i = 0; i < 10; i++) {
-		c = HexadecimalColor(LIGHTBLUE);
-		SetDrawBright(c.red, c.green, c.blue);
-		DrawGraph(posx + 16, posy + 16, tutorialTextGraph[tutorialStep], true);
-		//ステップ1でボタン描画
-		if (tutorialStep == 0) {
-			c = HexadecimalColor(GREEN);
-			SetDrawBright(c.red, c.green, c.blue);
-			DrawExtendGraph(posx + 48, posy + 20, posx + 84, posy + 56, ButtonGraph[1], true);
-			c = HexadecimalColor(RED);
-			SetDrawBright(c.red, c.green, c.blue);
-			DrawExtendGraph(posx + 120, posy + 20, posx + 156, posy + 56, ButtonGraph[2], true);
-			SetDrawBright(255, 255, 255);
+		for (int i = 0; i < enemys.size(); i++) {
+			enemys[i].Draw(camera, particleGraph);
 		}
-	}
 
+		// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
+		Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+		Color color = HexadecimalColor(LIGHTBLUE);
+		SetDrawBright(color.red, color.green, color.blue);
 
+		// --時計の外枠の描画-- //
+		for (int i = 0; i < 20; i++) {
+			DrawRotaGraph(640 + camera.GetPos().x, 480 + camera.GetPos().y, 1.0f, 0.0f, clockGraph, true);
+		}
+		SetDrawBright(255, 255, 255);
 
-	Vector2 pos;
-	float len = 48;
-	pos = player->GetPlayer().pos;
-	float rad = hourHand.radian - 90;
-	pos.x -= len * cosf(rad / 180 * PI);
-	pos.y -= len * sinf(rad / 180 * PI);
-	float radius = 16;
+		//針のパーティクルの描画
+		for (int i = 0; i < lineParticleMax; i++) {
+			hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
+			longHandParticle[i].Draw(camera, EFFECT_GREEN, particleGraph);
+		}
 
-	c = HexadecimalColor(RED);
-	SetDrawBright(c.red, c.green, c.blue);
-	for (int i = 0; i < 10; i++) {
-		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[2], true);
-	}
+		// --長針の座標とカメラシェイクの座標足したLine変数-- //
+		Line longHandLine;
+		longHandLine.start = { longHand.start + camera.GetPos() };
+		longHandLine.end = { longHand.end + camera.GetPos() };
+		longHandLine.color = longHand.color;
 
-	pos = player->GetPlayer().pos;
-	pos.x += len * cosf(rad / 180 * PI);
-	pos.y += len * sinf(rad / 180 * PI);
-	c = HexadecimalColor(GREEN);
-	SetDrawBright(c.red, c.green, c.blue);
-	for (int i = 0; i < 10; i++) {
-		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[1], true);
-	}
+		//etDrawBright(119, 28, 28);
+		Color c;
+		c = HexadecimalColor(GREEN);
+		SetDrawBright(c.red, c.green, c.blue);
+		// --長針の描画-- //
 
-	//Xボタンは最後のチュートリアルのみ描画
-	if (tutorialStep == 2) {
-		rad = hourHand.radian - 90 - 5;
-		len = hourHand.length - 16;
-		//pos = player->GetPlayer().pos;
-		pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
-		pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
+		for (int i = 0; i < longHand.length * 1.3f; i++) {
+			DrawRotaGraph(
+				longHandLine.start.x + cosf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
+				longHandLine.start.y + sinf(Degree2Radian(longHand.radian - 90)) * (levelCircle.radius + i * 0.8f / 1.3f),
+				0.5f, 0.0f, whiteCircleGraph, true);
+		}
+
+		SetDrawBright(255, 255, 255);
+
+		// --短針の座標とカメラシェイクの座標足したLine変数-- //
+		Line hourHandLine;
+		hourHandLine.start = { hourHand.start + camera.GetPos() };
+		hourHandLine.end = { hourHand.end + camera.GetPos() };
+		hourHandLine.color = hourHand.color;
+
+		SetDrawBright(39, 32, 225);
+
+		// --短針の描画-- //
+			for (int i = 0; i < longHand.length; i++) {
+				DrawRotaGraph(
+					hourHandLine.start.x + cosf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+					hourHandLine.start.y + sinf(Degree2Radian(hourHand.radian - 90)) * (levelCircle.radius + i * 0.8f),
+					0.5f, 0.0f, whiteCircleGraph, true);
+			}
+
+		SetDrawBright(255, 255, 255);
+
+		for (int i = 0; i < burstCircleEffects.size(); i++) {
+			SetDrawBlendMode(DX_BLENDMODE_ADD, burstEffectColorParam[i]);
+			int X1 = burstCircleEffects[i].pos.x;
+			int Y1 = burstCircleEffects[i].pos.y;
+			int X2 = burstCircleEffects[i].pos.x + burstCircleEffects[i].radiusX;
+			int Y2 = burstCircleEffects[i].pos.y + burstCircleEffects[i].radiusY;
+			DrawBox(X1, Y1, X2, Y2, burstEffectColor[i], true);
+
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, burstEffectColorParam[i]);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+
+		for (int i = 0; i < breakEffects.size(); i++) {
+			int graph;
+			if (Random(0, 100) > 50)graph = itemGraph[0];
+			else graph = enemyGraph[0];
+			breakEffects[i].Draw(camera, graph);
+		}
+
+		for (int i = 0; i < levelChangeParticle.size(); i++) {
+			int graph;
+			if (Random(0, 100) > 50)graph = itemGraph[0];
+			else graph = enemyGraph[0];
+			levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
+		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, brightParam);
+
+		//UI描画
+	//	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+		//スコアボード
+		int posx = 1280 - 384;
+		int posy = 2;
+		c = HexadecimalColor(RED);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightParam);
+		DrawGraph(posx, posy, tutorialBoardGraph[1], true);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+		SetDrawBright(c.red, c.green, c.blue);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(posx, posy, tutorialBoardGraph[0], true);
+		}
+
+		//チュートリアルステップで画像を描画
 		c = HexadecimalColor(LIGHTBLUE);
 		SetDrawBright(c.red, c.green, c.blue);
 		for (int i = 0; i < 10; i++) {
-			DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, returnButton[0], true);
+			c = HexadecimalColor(LIGHTBLUE);
+			SetDrawBright(c.red, c.green, c.blue);
+			DrawGraph(posx + 16, posy + 16, tutorialTextGraph[tutorialStep], true);
+			//ステップ1でボタン描画
+			if (tutorialStep == 0) {
+				c = HexadecimalColor(GREEN);
+				SetDrawBright(c.red, c.green, c.blue);
+				DrawExtendGraph(posx + 48, posy + 20, posx + 84, posy + 56, ButtonGraph[1], true);
+				c = HexadecimalColor(RED);
+				SetDrawBright(c.red, c.green, c.blue);
+				DrawExtendGraph(posx + 120, posy + 20, posx + 156, posy + 56, ButtonGraph[2], true);
+				SetDrawBright(255, 255, 255);
+			}
 		}
-		//pos = player->GetPlayer().pos;
 
-		len = hourHand.length - 44;
-		pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
-		pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
-		for (int i = 0; i < 10; i++) {
-			DrawRotaGraph(pos.x, pos.y, (32.0f / 58.0f), (hourHand.radian - 90) / 180 * PI, returnButton[1], true);
-		}
-	}
 
-	//チュートリアルクリア時の描画
-	if (isTutorialClear) {
-		SetDrawBright2(YELLOW);
+
 		Vector2 pos;
-		pos = clock.pos + camera.GetPos();
-		pos.y -= 200;
+		float len = 48;
+		pos = player->GetPlayer().pos;
+		float rad = hourHand.radian - 90;
+		pos.x -= len * cosf(rad / 180 * PI);
+		pos.y -= len * sinf(rad / 180 * PI);
+		float radius = 16;
+
+		c = HexadecimalColor(RED);
+		SetDrawBright(c.red, c.green, c.blue);
 		for (int i = 0; i < 10; i++) {
-			DrawRotaGraph(pos.x, pos.y, 1, 0, successGraph, true);
+			DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[2], true);
 		}
+
+		pos = player->GetPlayer().pos;
+		pos.x += len * cosf(rad / 180 * PI);
+		pos.y += len * sinf(rad / 180 * PI);
+		c = HexadecimalColor(GREEN);
+		SetDrawBright(c.red, c.green, c.blue);
+		for (int i = 0; i < 10; i++) {
+			DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[1], true);
+		}
+
+		//Xボタンは最後のチュートリアルのみ描画
+		if (tutorialStep == 2) {
+			rad = hourHand.radian - 90 - 5;
+			len = hourHand.length - 16;
+			//pos = player->GetPlayer().pos;
+			pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
+			pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
+			c = HexadecimalColor(LIGHTBLUE);
+			SetDrawBright(c.red, c.green, c.blue);
+			for (int i = 0; i < 10; i++) {
+				DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, returnButton[0], true);
+			}
+			//pos = player->GetPlayer().pos;
+
+			len = hourHand.length - 44;
+			pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
+			pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
+			for (int i = 0; i < 10; i++) {
+				DrawRotaGraph(pos.x, pos.y, (32.0f / 58.0f), (hourHand.radian - 90) / 180 * PI, returnButton[1], true);
+			}
+		}
+
+		//チュートリアルクリア時の描画
+		if (isTutorialClear) {
+			SetDrawBright2(YELLOW);
+			Vector2 pos;
+			pos = clock.pos + camera.GetPos();
+			pos.y -= 200;
+			for (int i = 0; i < 10; i++) {
+				DrawRotaGraph(pos.x, pos.y, 1, 0, successGraph, true);
+			}
+		}
+
+		//スキップボタンUIの追加
+		//Vector2 pos;
+		pos.x = 1280 - 227;
+		pos.y = 960 - 54;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightParam);
+		DrawGraph(pos.x, pos.y, skipGraph[2], true);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+		SetDrawBright2(LIGHTBLUE);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(pos.x, pos.y, skipGraph[0], true);
+		}
+		SetDrawBright2(RED);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(pos.x, pos.y, skipGraph[1], true);
+		}
+
+		SetDrawBright(255, 255, 255);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
-
-	//スキップボタンUIの追加
-	//Vector2 pos;
-	pos.x = 1280 - 227;
-	pos.y = 960 - 54;
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightParam);
-	DrawGraph(pos.x, pos.y, skipGraph[2], true);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-	SetDrawBright2(LIGHTBLUE);
-	for (int i = 0; i < 10; i++) {
-		DrawGraph(pos.x, pos.y, skipGraph[0], true);
-	}
-	SetDrawBright2(RED);
-	for (int i = 0; i < 10; i++) {
-		DrawGraph(pos.x, pos.y, skipGraph[1], true);
-	}
-
-	SetDrawBright(255, 255, 255);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-
 
 	// -- レベルサークル描画-- //
 	DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	color = HexadecimalColor(LIGHTBLUE);
+	Color color = HexadecimalColor(LIGHTBLUE);
 	SetDrawBright(color.red, color.green, color.blue);
 	for (int i = 0; i < 10; i++) {
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
 		// --レベルの描画-- //
-		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
+		if (!isTutorialSkip) {
+			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
+		}
 	}
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -1888,9 +1873,7 @@ void GameScene::DrawTutorial() {
 	}
 }
 
-void GameScene::TutorialSkip()
+void GameScene::TutorialSkip(bool flag)
 {
-	isTutorialSkip = true;
-	enemys.clear();
-	enemySpawnRate = 0;
+	isTutorialSkip = flag;
 }

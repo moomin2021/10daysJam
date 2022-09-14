@@ -12,6 +12,9 @@
 // --スコアクラス-- //
 #include "Score.h"
 
+// --ゲームシーン-- //
+#include "GameScene.h"
+
 // --インスタンスにNULLを代入-- //
 ResultScene* ResultScene::myInstance = nullptr;
 
@@ -163,6 +166,13 @@ void ResultScene::Update() {
 			if (pad->GetButtonTrigger(PAD_INPUT_1)) {
 				// --シーン設定-- //
 				SceneManager::SetScene(selectScene);
+
+				if (selectScene == GAMESCENE) {
+					GameScene::TutorialSkip(true);
+				}
+				else if (selectScene == TITLESCENE) {
+					GameScene::TutorialSkip(false);
+				}
 
 				// --SE再生-- //
 				sound->PlaySE(SELECTSE);

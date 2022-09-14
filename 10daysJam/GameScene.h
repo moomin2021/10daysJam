@@ -64,7 +64,7 @@ private:
 	int sceneChangeTime = 50;
 	int sceneChangeTimer;
 	int tutorialStep;
-	bool isTutorialSkip = false;
+	static bool isTutorialSkip;
 
 	int retuckEffectTimer = 0;
 
@@ -248,9 +248,6 @@ public:
 
 	// --初期化処理-- //
 	void Initialize();
-	
-	// --変数リセット-- //
-	void Reset();
 
 	// --更新処理-- //
 	void Update();
@@ -286,7 +283,7 @@ public:
 
 	bool GetIsMainGame()const { return (!isOpening && !isTutorial); }
 
-	void TutorialSkip();
+	static void TutorialSkip(bool flag);
 
 /// <summary>
 /// 長針の衝撃エフェクト作成関数
