@@ -176,7 +176,7 @@ void GameScene::Initialize() {
 	longHandSpeed = 0.1f;
 
 	// --’·j‚Ì‘¬“x‚Ì’Ç‰Á’l-- //
-	addLongHandSpeed = 0.01f;
+	addLongHandSpeed = 0.03f;
 
 	// --’Zj-- //
 	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
