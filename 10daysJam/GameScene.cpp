@@ -249,6 +249,45 @@ void GameScene::Initialize() {
 
 }
 
+// --変数リセット-- //
+void GameScene::Reset() {
+	// --アイテム・敵削除-- //
+	enemys.clear();
+
+	// --エフェクト削除-- //
+	breakEffects.clear();
+
+	// --短針、長針からでるパーティクル削除-- //
+	hourHandParticle.clear();
+	longHandParticle.clear();
+
+	// --敵の爆発したときの円の大きさ用削除-- //
+	burstCircleEffects.clear();
+	burstEffectColorParam.clear();
+	burstEffectColor.clear();
+
+	// --レベルが変動した時のエフェクト削除-- //
+	levelChangeParticle.clear();
+
+	// --時計-- //
+	clock = { {640.0f, 480.0f}, 416.0f };
+
+	// --長針-- //
+	longHand = { {640.0f, 480.0f}, {640.0f, 0.0f}, clock.radius, 0.0f, 0xFF0000 };
+
+	// --短針-- //
+	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
+
+	// --レベル-- //
+	level = 0;
+
+	// --経験値-- //
+	point = 0;
+
+	// --プレイヤー-- //
+	player->Initialize();
+}
+
 // --更新処理-- //
 void GameScene::Update() {
 #pragma region 針の座標計算
@@ -272,7 +311,7 @@ void GameScene::Update() {
 
 		//ステートが通常なら短針は自動回転
 		if (hourHand.state == State::Normal) {
-			hourHand.radian += hourHandSpeed + hourHandlevelSpeed * (level - 1);
+			hourHand.radian += addLongHandSpeed + hourHandSpeed + hourHandlevelSpeed * (level - 1);
 
 			//任意のキーで短針を動かす(デバッグ用)
 			//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;

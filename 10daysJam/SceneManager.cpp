@@ -194,6 +194,11 @@ void SceneManager::UpdateChangeScene() {
 					sound->StopBGM(scene);
 					isFadeOut = false;
 					isFadeIn = true;
+					// --ゲームシーンのリセット-- //
+					if (scene == GAMESCENE) {
+						gameScene->Reset();
+					}
+
 					// --シーンの初期化-- //
 					if (changeScene == TITLESCENE) {
 						titleScene->Initialize();

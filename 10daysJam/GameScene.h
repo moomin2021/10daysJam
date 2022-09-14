@@ -207,6 +207,9 @@ public:
 
 	// --初期化処理-- //
 	void Initialize();
+	
+	// --変数リセット-- //
+	void Reset();
 
 	// --更新処理-- //
 	void Update();

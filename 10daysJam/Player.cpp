@@ -72,7 +72,8 @@ Player::~Player() {
 
 // --初期化処理-- //
 void Player::Initialize() {
-	
+	// --プレイヤー-- //
+	player = { {-100, 100}, 16 };
 }
 
 // --更新処理-- //
