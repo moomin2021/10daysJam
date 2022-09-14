@@ -85,7 +85,7 @@ public:
 	void StateChange();
 
 	//スポーンした時のエフェクト
-	void EffectInitialize(int color);
+	void EffectInitialize(int color,float particleRad = 0);
 
 	//オブジェクトの情報のセッター
 	void SetObj(Circle obj_);
