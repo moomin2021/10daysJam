@@ -128,12 +128,14 @@ GameScene::GameScene() {
 	//UI
 	LoadDivGraph("Resources/controller_button.png", 3, 3, 1, 82, 82, ButtonGraph);
 	LoadDivGraph("Resources/playUI.png", 4, 4, 1, 190, 190, gameUIGraph);
+	LoadDivGraph("Resources/playUIBoard.png", 2, 2, 1, 234, 234, gameUIBoardGraph);
 
 	//チュートリアル関係
 	tutorialTextGraph[0] = LoadGraph("Resources/tutorial_move.png");
 	tutorialTextGraph[1] = LoadGraph("Resources/tutorial_enemy.png");
 	tutorialTextGraph[2] = LoadGraph("Resources/tutorial_return.png");
 	LoadDivGraph("Resources/tutorialBoard.png", 2, 2, 1, 382, 112, tutorialBoardGraph);
+	LoadDivGraph("Resources/skipUI.png", 3, 3, 1, 227, 54, skipGraph);
 	successGraph = LoadGraph("Resources/success.png");
 
 	//反転ボタン
@@ -370,7 +372,7 @@ void GameScene::Update() {
 				{
 					multiSand = 8;
 				}
-				
+
 				Score::AddScore(100 * itemSandwichCount * multiSand);
 				Score::AddScore(500 * enemySandwichCount * multiSand);
 				itemSandwichCount = 0;
@@ -853,7 +855,7 @@ void GameScene::Draw() {
 		//Xボタンはレベルが１以上の時のみ描画
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 		if (level > 0) {
-			float rad, len,radius;
+			float rad, len, radius;
 			Vector2 pos;
 			radius = 16;
 			rad = hourHand.radian - 90 - 5;
@@ -878,8 +880,18 @@ void GameScene::Draw() {
 
 		if (!isOpening) {
 			//右下の操作UI描画
-			int posx = 1280 - 200;
-			int posy = 960 - 200;
+
+			int posx = 1280 - 234;
+			int posy = 960 - 234;
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+			DrawGraph(posx, posy, gameUIBoardGraph[1], true);
+			SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+			SetDrawBright2(RED);
+			for (int i = 0; i < 10; i++){
+				DrawGraph(posx, posy, gameUIBoardGraph[0], true);
+			}
+			 posx = 1280 - 190 -22;
+			 posy = 960 - 190 - 22;
 			SetDrawBright2(LIGHTBLUE);
 			for (int i = 0; i < 10; i++) {
 				DrawGraph(posx, posy, gameUIGraph[0], true);
@@ -897,6 +909,8 @@ void GameScene::Draw() {
 				DrawGraph(posx, posy, gameUIGraph[3], true);
 			}
 
+			posx = 1280 - 234;
+			posy = 960 - 234;
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
@@ -1650,9 +1664,9 @@ void GameScene::DrawTutorial() {
 	int posx = 1280 - 384;
 	int posy = 2;
 	c = HexadecimalColor(RED);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightParam);
 	DrawGraph(posx, posy, tutorialBoardGraph[1], true);
-	
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
 		DrawGraph(posx, posy, tutorialBoardGraph[0], true);
@@ -1735,10 +1749,26 @@ void GameScene::DrawTutorial() {
 		}
 	}
 
+	//スキップボタンUIの追加
+	//Vector2 pos;
+	pos.x = 1280 - 227;
+	pos.y = 960 - 54;
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightParam);
+	DrawGraph(pos.x, pos.y, skipGraph[2], true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+	SetDrawBright2(LIGHTBLUE);
+	for (int i = 0; i < 10; i++) {
+		DrawGraph(pos.x, pos.y, skipGraph[0], true);
+	}
+	SetDrawBright2(RED);
+	for (int i = 0; i < 10; i++) {
+		DrawGraph(pos.x, pos.y, skipGraph[1], true);
+	}
+
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	
+
 
 	// -- レベルサークル描画-- //
 	DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);

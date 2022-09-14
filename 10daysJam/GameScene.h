@@ -186,6 +186,7 @@ private:
 
 	//プレイ中のUI
 	int gameUIGraph[4];
+	int gameUIBoardGraph[2];
 
 	//チュートリアルのテキスト
 	int tutorialTextGraph[3];
@@ -195,6 +196,9 @@ private:
 
 	//チュートリアル終了時の画像
 	int successGraph;
+
+	//チュートリアルスキップの画像
+	int skipGraph[3];
 
 	// --レベルサークル-- //
 	int levelCircleGraph[2];

@@ -16,6 +16,9 @@ bool SceneManager::isChangeScene = false;
 
 bool SceneManager::isDebugMode = false;
 
+// --ゲームエンドフラグ-- //
+bool SceneManager::isEnd = false;
+
 // --インスタンス読み込み-- //
 SceneManager* SceneManager::GetInstance() {
 	// --インスタンスが無かったら生成する-- //
@@ -293,3 +296,9 @@ void SceneManager::DrawChangeScene() {
 bool SceneManager::GetDebugMode() {
 	return isDebugMode;
 }
+
+// --ゲームエンドフラグをtrueにする-- //
+void SceneManager::EndTrue() { isEnd = true; }
+
+// --ゲームエンドフラグ変数の結果を返す-- //
+bool SceneManager::GetEndFlag() { return isEnd; }
