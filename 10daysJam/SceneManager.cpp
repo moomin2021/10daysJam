@@ -97,14 +97,14 @@ SceneManager::~SceneManager() {
 void SceneManager::Initialize() {
 	// --ゲームシーン初期化処理-- //
 #pragma region クラス初期化
-	// --タイトルシーン-- //
-	titleScene->Initialize();
+	//// --タイトルシーン-- //
+	//titleScene->Initialize();
 
-	// --ゲームシーン-- //
-	gameScene->Initialize();
+	//// --ゲームシーン-- //
+	//gameScene->Initialize();
 
-	// --リザルトシーン-- //
-	resultScene->Initialize();
+	//// --リザルトシーン-- //
+	//resultScene->Initialize();
 #pragma endregion
 
 	// --最初にタイトルシーンのBGMを再生-- //
@@ -195,15 +195,15 @@ void SceneManager::UpdateChangeScene() {
 					isFadeOut = false;
 					isFadeIn = true;
 					// --シーンの初期化-- //
-					if (scene == TITLESCENE) {
+					if (changeScene == TITLESCENE) {
 						titleScene->Initialize();
 					}
-					else if (scene == GAMESCENE) {
+					else if (changeScene == GAMESCENE) {
 						gameScene->Initialize();
-					}
-					else if (scene == RESULTSCENE) {
-						resultScene->Initialize();
 						score->Initialize();
+					}
+					else if (changeScene == RESULTSCENE) {
+						resultScene->Initialize();
 					}
 					scene = changeScene;
 					timer = 0;

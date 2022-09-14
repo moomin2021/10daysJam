@@ -98,6 +98,9 @@ ResultScene::ResultScene() {
 
 	// --ランクの添字-- //
 	rankIndex = 3;
+
+	// --表示するスコア-- //
+	displayScore = 0;
 }
 
 // --デストラクタ-- //
@@ -125,6 +128,9 @@ void ResultScene::Initialize() {
 
 	// --ランクの添字-- //
 	rankIndex = 3;
+
+	// --表示するスコア-- //
+	displayScore = 0;
 }
 
 // --更新処理-- //
