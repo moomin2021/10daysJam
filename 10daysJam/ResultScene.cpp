@@ -138,6 +138,10 @@ void ResultScene::Update() {
 	if (isActive == true) {
 		// --ƒpƒbƒhã‰º“ü—Í‚³‚ê‚½‚ç-- //
 		if (pad->GetButtonTrigger(PAD_INPUT_UP) || pad->GetButtonTrigger(PAD_INPUT_DOWN)) {
+
+			// --SE‚ð—¬‚·-- //
+			sound->PlaySE(BUTTONSE);
+
 			if (selectScene != GAMESCENE) {
 				selectScene = GAMESCENE;
 				selectBox.pos.y = 750.0f;
