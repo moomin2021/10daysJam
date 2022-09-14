@@ -241,9 +241,11 @@ void Player::Draw(Camera camera_,int bright) {
 	};
 
 	// --描画-- //
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
-	DrawCircle(pos2, 0xFFFFFF, false);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 125);
+	if (bright > 255) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
+		DrawCircle(pos2, 0xFFFFFF, false);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 125);
+	}
 #pragma endregion
 
 #pragma region デバッグ用処理

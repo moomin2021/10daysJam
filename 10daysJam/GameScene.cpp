@@ -297,7 +297,7 @@ void GameScene::Initialize() {
 		opSpawnFrame.push_back(spawnFrame);
 	}
 
-
+	graphRad = 0;
 }
 
 // --更新処理-- //
@@ -662,6 +662,12 @@ void GameScene::Update() {
 		LevelUpdate();
 #pragma endregion
 
+		graphRad += 4.0f;
+		if (graphRad > 360.0f) {
+			graphRad -= 360.0f;
+		}
+
+
 #pragma region デバッグ用処理
 		if (SceneManager::GetDebugMode() == true) {
 			// --レベルサークルの半径変更-- //
@@ -898,7 +904,7 @@ void GameScene::Draw() {
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
 
 		//Xボタンはレベルが１以上の時のみ描画
-		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad/180 * PI) * 64 + 128);
 		if (level > 0) {
 			float rad, len, radius;
 			Vector2 pos;
@@ -1793,6 +1799,12 @@ void GameScene::DrawTutorial() {
 
 		//Xボタンは最後のチュートリアルのみ描画
 		if (tutorialStep == 2) {
+			if (!isTutorialClear) {
+				SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * PI) * 64 + 128);
+			}
+			else {
+				SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+			}
 			rad = hourHand.radian - 90 - 5;
 			len = hourHand.length - 16;
 			//pos = player->GetPlayer().pos;
@@ -1812,7 +1824,7 @@ void GameScene::DrawTutorial() {
 				DrawRotaGraph(pos.x, pos.y, (32.0f / 58.0f), (hourHand.radian - 90) / 180 * PI, returnButton[1], true);
 			}
 		}
-
+		SetDrawBlendMode(DX_BLENDMODE_ADD,255);
 		//チュートリアルクリア時の描画
 		if (isTutorialClear) {
 			SetDrawBright2(YELLOW);
