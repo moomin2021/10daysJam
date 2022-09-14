@@ -1969,7 +1969,7 @@ void GameScene::DrawTutorial() {
 		SetDrawBright2(YELLOW);
 		SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * PI) * 255);
 		for (int i = 0; i < 10; i++) {
-			DrawGraph(0, 80, tutorialFontGraph, true);
+			DrawGraph(0, 120, tutorialFontGraph, true);
 		}
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
