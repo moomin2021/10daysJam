@@ -71,10 +71,13 @@ ResultScene::ResultScene() {
 
 	// --スコアゲージ-- //
 	scoreGaugeGraph = LoadGraph("Resources/scoreGauge.png");
+
+	// --スコアゲージの枠-- //
+	scoreGaugeLineGraph = LoadGraph("Resources/scoreGauge_outline.png");
 #pragma endregion
 
 	// --選択表示の中心座標-- //
-	selectBox = {{640.0f, -300.0f}, 112.5f, 45.5f};
+	selectBox = { {640.0f, -300.0f}, 112.5f, 45.5f };
 
 	// --選択中のシーン-- //
 	selectScene = 10;
@@ -165,7 +168,7 @@ void ResultScene::Update() {
 	}
 	else {
 		// --表示するスコアが実際のスコアより小さいとき-- //
-		if (displayScore < Score::GetScore()) {
+		if (displayScore <= Score::GetScore()) {
 			// --実際のスコアと表示するスコアの差分-- //
 			int addScore = Score::GetScore() - displayScore;
 
@@ -224,17 +227,22 @@ void ResultScene::Draw() {
 
 	// --SABCランクテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 10; i++) {
+		SetDrawBright(21, 39, 19);
 		DrawGraph(550, 350, sabcSmallGraph[3], true);
+		SetDrawBright(97, 94, 19);
 		DrawGraph(700, 350, sabcSmallGraph[2], true);
+		SetDrawBright(97, 42, 17);
 		DrawGraph(850, 350, sabcSmallGraph[1], true);
+		SetDrawBright(119, 28, 28);
 		DrawGraph(1000, 350, sabcSmallGraph[0], true);
 	}
+	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	// --スコアゲージの描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 8; i++) {
 		SetDrawBright(119, 28, 28);
 		DrawExtendGraph(gaugeMax.pos.x, gaugeMax.pos.y, gaugeMax.pos.x + gaugeMax.width, gaugeMax.pos.y + gaugeMax.height, scoreGaugeGraph, true);
 		SetDrawBright(97, 42, 17);
@@ -250,10 +258,11 @@ void ResultScene::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	// --スコアゲージ描画-- //
-	DrawLine(150, 250, 1130, 250, 0xFFFFFF, 5);
-	DrawLine(150, 350, 1130, 350, 0xFFFFFF, 5);
-	DrawLine(150, 250, 150, 350, 0xFFFFFF, 5);
-	DrawLine(1130, 250, 1130, 350, 0xFFFFFF, 5);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	for (int i = 0; i < 5; i++) {
+		DrawRotaGraph(640, 300, 1.0f, 0.0f, scoreGaugeLineGraph, true);
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	// --スコアテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
@@ -288,7 +297,7 @@ void ResultScene::Draw() {
 	if (rankIndex == 1) color = Util::GetColor16("0x612a11");
 	if (rankIndex == 0) color = Util::GetColor16("0x771c1c");
 	SetDrawBright(color.red, color.green, color.blue);
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 16; i++) {
 		DrawGraph(1000, 500, sabcBigGraph[rankIndex], true);
 	}
 	SetDrawBright(255, 255, 255);

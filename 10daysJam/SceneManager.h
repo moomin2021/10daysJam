@@ -96,6 +96,9 @@ private:
 	// --デバッグモードフラグ-- //
 	static bool isDebugMode;
 
+	// --ゲームを終わるか-- //
+	static bool isEnd;
+
 	/// --メンバ変数END-- ///
 	/// --------------- ///
 	/// --メンバ関数-- ///
@@ -129,6 +132,12 @@ public:
 
 	// --デバッグモードか取得-- //
 	static bool GetDebugMode();
+
+	// --ゲームエンドフラグをtrueにする-- //
+	static void EndTrue();
+
+	// --ゲームエンドフラグ変数の結果を返す-- //
+	bool GetEndFlag();
 
 private:
 	// --コンストラクタ-- //

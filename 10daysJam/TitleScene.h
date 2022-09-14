@@ -5,6 +5,9 @@
 // --サウンドクラス-- //
 #include "Sound.h"
 
+// --便利系クラス-- //
+#include "Util.h"
+
 class TitleScene {
 	/// --メンバ変数-- ///
 public:
@@ -25,7 +28,13 @@ private:
 
 	// --背景-- //
 	int backGroundGraph;
+
+	// --タイトルのUI-- //
+	int titleUIGraph[2];
 #pragma endregion
+
+	// --選択表示の中心座標-- //
+	Box selectBox;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
