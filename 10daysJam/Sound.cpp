@@ -86,7 +86,7 @@ Sound::Sound() {
 	ChangeVolumeSoundMem(volumeSE, getItemSE);
 
 	// --“G‚É“–‚½‚Á‚½SE-- //
-	ChangeVolumeSoundMem(volumeSE, hitEnemySE);
+	ChangeVolumeSoundMem(100, hitEnemySE);
 
 	// --Œˆ’èSE-- //
 	ChangeVolumeSoundMem(volumeSE, selectSE);
