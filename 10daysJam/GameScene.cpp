@@ -336,15 +336,38 @@ void GameScene::Update() {
 				longHandSpeed += addHandSpeed;
 
 				// --短針の速度を変更-- //
-				hourHandSpeed += addHandSpeed;
+				hourHandSpeed += addHandSpeed * 2;
 
 				//はさんだオブジェクトの数で戻す力を増やす
 				reverseTime += level * 3;
 				reverseTime += ((enemySandwichCount + itemSandwichCount) / 2);
 
 				//スコアを加算、はさんだ数をリセット
-				Score::AddScore(100 * itemSandwichCount * level);
-				Score::AddScore(500 * enemySandwichCount * level);
+				int sandwichCount = itemSandwichCount + enemySandwichCount;
+				int multiSand = 0;
+				if (sandwichCount <= 10)
+				{
+					multiSand = 1;
+				}
+				if (sandwichCount >= 11 && sandwichCount <= 20)
+				{
+					multiSand = 2;
+				}
+				if (sandwichCount >= 21 && sandwichCount <= 30)
+				{
+					multiSand = 4;
+				}
+				if (sandwichCount >= 31 && sandwichCount <= 40)
+				{
+					multiSand = 6;
+				}
+				if (sandwichCount >= 50)
+				{
+					multiSand = 8;
+				}
+				
+				Score::AddScore(100 * itemSandwichCount * multiSand);
+				Score::AddScore(500 * enemySandwichCount * multiSand);
 				itemSandwichCount = 0;
 				enemySandwichCount = 0;
 
