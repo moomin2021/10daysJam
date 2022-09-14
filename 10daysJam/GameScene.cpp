@@ -1866,6 +1866,8 @@ void GameScene::DrawTutorial() {
 		}
 	}
 	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
