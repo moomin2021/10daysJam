@@ -80,6 +80,12 @@ ResultScene::ResultScene() {
 
 	// --背景-- //
 	backGroundGraph = LoadGraph("Resources/backillust.png");
+
+	// --十字キー-- //
+	LoadDivGraph("Resources/selectUI.png", 4, 4, 1, 385, 205, selectUIGraph);
+
+	// --ボタン-- //
+	LoadDivGraph("Resources/controller_button.png", 3, 3, 1, 82, 82, buttonGraph);
 #pragma endregion
 
 	// --選択表示の中心座標-- //
@@ -110,6 +116,8 @@ ResultScene::ResultScene() {
 
 	// --表示するスコア-- //
 	displayScore = 0;
+
+	pos = { 1180, 857.5f };
 }
 
 // --デストラクタ-- //
@@ -351,4 +359,31 @@ void ResultScene::Draw() {
 		selectBox.pos.x - selectBox.radiusX, selectBox.pos.y - selectBox.radiusY,
 		selectBox.pos.x + selectBox.radiusX, selectBox.pos.y + selectBox.radiusY,
 		0xFFFFFF, false, 3);
+
+	// --十字キー描画-- //
+	DrawRotaGraphF(1087.5f, 857.5f, 1.0f, 0.0f, selectUIGraph[3], true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	Util::SetDrawBright2(RED);
+	for (int i = 0; i < 5; i++) {
+		DrawRotaGraphF(1087.5f, 857.5f, 1.0f, 0.0f, selectUIGraph[2], true);
+	}
+	SetDrawBright(255, 255, 255);
+	Util::SetDrawBright2(GREEN);
+	for (int i = 0; i < 20; i++) {
+		DrawRotaGraphF(1087.5f, 857.5f, 1.0f, 0.0f, selectUIGraph[0], true);
+	}
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	DrawRotaGraphF(1087.5f, 857.5f, 1.0f, 0.0f, selectUIGraph[1], true);
+
+	DrawRotaGraphF(pos.x, pos.y - 55, 0.8f, 0.0f, buttonGraph[0], true);
+	DrawRotaGraphF(pos.x - 55, pos.y, 0.8f, 0.0f, buttonGraph[0], true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	Util::SetDrawBright2(GREEN);
+	for (int i = 0; i < 20; i++) {
+		DrawRotaGraphF(pos.x, pos.y + 55, 0.8f, 0.0f, buttonGraph[1], true);
+	}
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	DrawRotaGraphF(pos.x + 55, pos.y, 0.8f, 0.0f, buttonGraph[2], true);
 }

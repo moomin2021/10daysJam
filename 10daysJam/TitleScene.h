@@ -31,6 +31,12 @@ private:
 
 	// --タイトルのUI-- //
 	int titleUIGraph[2];
+
+	// --十字キー-- //
+	int selectUIGraph[4];
+
+	// --ボタン-- //
+	int buttonGraph[3];
 #pragma endregion
 
 	// --選択表示の中心座標-- //
@@ -38,6 +44,8 @@ private:
 
 	//画像明暗用ラジアン
 	float graphRad = 0;
+
+	Vector2 pos;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
