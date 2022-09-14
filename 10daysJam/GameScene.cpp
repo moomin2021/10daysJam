@@ -156,6 +156,8 @@ GameScene::GameScene() {
 	//挟んだ演出
 	LoadDivGraph("Resources/value.png", 3, 3, 1, 212, 46, sandwichEffectGraph);
 
+	tutorialFontGraph = LoadGraph("Resources/tutorial.png");
+
 #pragma endregion
 }
 
@@ -1336,6 +1338,12 @@ void GameScene::UpdateTutorial() {
 
 	}
 
+	//画像用ラジアン処理
+	graphRad+= 4;
+	if (graphRad >= 360.0f) {
+		graphRad -= 360.0f;
+	}
+
 	//スタートボタンでチュートリアルクリア
 	if (pad->GetButton(PAD_INPUT_8)) {
 		isTutorialClear = true;
@@ -1862,8 +1870,21 @@ void GameScene::DrawTutorial() {
 		// --レベルの描画-- //
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 	}
+
+
+	//チュートリアルのフォント描画
+	SetDrawBright2(YELLOW);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * PI) * 255);
+	for (int i = 0; i < 10; i++) {
+		DrawGraph(0, 0, tutorialFontGraph, true);
+	}
+	
+
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+
+
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
