@@ -698,7 +698,7 @@ void GameScene::Draw() {
 		Color color = HexadecimalColor(LIGHTBLUE);
 		SetDrawBright(color.red, color.green, color.blue);
 		for (int i = 0; i < 20; i++) {
-			DrawRotaGraph(640, 480, 1.0f, 0.0f, clockGraph, true);
+			DrawRotaGraph(640 + camera.GetPos().x, 480 + camera.GetPos().y, 1.0f, 0.0f, clockGraph, true);
 		}
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -773,7 +773,7 @@ void GameScene::Draw() {
 		for (int i = 0; i < 5; i++) {
 			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
 			// --ƒŒƒxƒ‹‚Ì•`‰æ-- //
-			DrawGraph(560, 400, levelGraph[level], true);
+			if (isOpening == false) DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 		}
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -1544,7 +1544,7 @@ void GameScene::DrawTutorial() {
 	SetDrawBright(color.red, color.green, color.blue);
 	// --ŽžŒv‚ÌŠO˜g‚Ì•`‰æ-- //
 	for (int i = 0; i < 20; i++) {
-		DrawRotaGraph(640, 480, 1.0f, 0.0f, clockGraph, true);
+		DrawRotaGraph(640 + camera.GetPos().x, 480 + camera.GetPos().y, 1.0f, 0.0f, clockGraph, true);
 	}
 	SetDrawBright(255, 255, 255);
 
@@ -1710,13 +1710,10 @@ void GameScene::DrawTutorial() {
 	for (int i = 0; i < 5; i++) {
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
 		// --ƒŒƒxƒ‹‚Ì•`‰æ-- //
-		DrawGraph(560, 400, levelGraph[level], true);
+		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 	}
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-
-	// --ƒŒƒxƒ‹‚Ì•`‰æ-- //
-	DrawGraph(560, 400, levelGraph[level], true);
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADƒL[:ƒŒƒxƒ‹ƒT[ƒNƒ‹‚Ì”¼Œa•ÏX");
