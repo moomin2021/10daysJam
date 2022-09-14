@@ -697,13 +697,6 @@ void GameScene::Draw() {
 		SetDrawBlendMode(DX_BLENDMODE_ADD, brightClock);
 		Color color = HexadecimalColor(LIGHTBLUE);
 		SetDrawBright(color.red, color.green, color.blue);
-		// --ŽžŒv‚ÌŠO˜g‚Ì•`‰æ-- //
-		//for (int i = 0; i < 1440; i++) {
-		//	DrawGraphF(
-		//		clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-		//		clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-		//		whiteCircleGraph, true);
-		//}
 		for (int i = 0; i < 20; i++) {
 			DrawRotaGraph(640, 480, 1.0f, 0.0f, clockGraph, true);
 		}
@@ -1550,12 +1543,6 @@ void GameScene::DrawTutorial() {
 	Color color = HexadecimalColor(LIGHTBLUE);
 	SetDrawBright(color.red, color.green, color.blue);
 	// --ŽžŒv‚ÌŠO˜g‚Ì•`‰æ-- //
-	//for (int i = 0; i < 1440; i++) {
-	//	DrawGraphF(
-	//		clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-	//		clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-	//		whiteCircleGraph, true);
-	//}
 	for (int i = 0; i < 20; i++) {
 		DrawRotaGraph(640, 480, 1.0f, 0.0f, clockGraph, true);
 	}
