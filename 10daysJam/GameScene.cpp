@@ -140,6 +140,7 @@ GameScene::GameScene() {
 
 	//反転ボタン
 	LoadDivGraph("Resources/returnUI.png", 2, 2, 1, 58, 58, returnButton);
+	returnButton[0] = LoadGraph("Resources/LB.png");
 
 	// --レベルサークル-- //
 	LoadDivGraph("Resources/levelCircle.png", 2, 2, 1, 160, 160, levelCircleGraph);
