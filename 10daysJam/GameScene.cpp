@@ -153,6 +153,9 @@ GameScene::GameScene() {
 	//リタック演出
 	LoadDivGraph("Resources/titleRogo.png", 2, 2, 1, 572, 572, retuckGraph);
 
+	//挟んだ演出
+	LoadDivGraph("Resources/value.png", 3, 3, 1, 212, 46, sandwichEffectGraph);
+
 #pragma endregion
 }
 
@@ -358,6 +361,7 @@ void GameScene::Update() {
 				if (sandwichCount <= 10)
 				{
 					multiSand = 1;
+
 				}
 				if (sandwichCount >= 11 && sandwichCount <= 20)
 				{
@@ -366,14 +370,27 @@ void GameScene::Update() {
 				if (sandwichCount >= 21 && sandwichCount <= 30)
 				{
 					multiSand = 4;
+					sandwichValue = GOOD;
+					sandwichEffectTimer = 25;
+					//座標計算
+					sandwichEffectPos.x = (hourHand.length / 2.0f) * cosf((hourHand.radian - 45) / 180 * PI) + clock.pos.x;
+					sandwichEffectPos.y = (hourHand.length / 2.0f) * sinf((hourHand.radian - 45) / 180 * PI) + clock.pos.y;
 				}
 				if (sandwichCount >= 31 && sandwichCount <= 40)
 				{
 					multiSand = 6;
+					sandwichValue = GREAT;
+					sandwichEffectTimer = 25;
+					sandwichEffectPos.x = (hourHand.length / 2.0f) * cosf((hourHand.radian - 45) / 180 * PI) + clock.pos.x;
+					sandwichEffectPos.y = (hourHand.length / 2.0f) * sinf((hourHand.radian - 45) / 180 * PI) + clock.pos.y;
 				}
 				if (sandwichCount >= 50)
 				{
 					multiSand = 8;
+					sandwichValue = EXCELLENT;
+					sandwichEffectTimer = 25;
+					sandwichEffectPos.x = (hourHand.length / 2.0f) * cosf((hourHand.radian - 45) / 180 * PI) + clock.pos.x;
+					sandwichEffectPos.y = (hourHand.length / 2.0f) * sinf((hourHand.radian - 45) / 180 * PI) + clock.pos.y;
 				}
 
 				Score::AddScore(100 * itemSandwichCount * multiSand);
@@ -386,7 +403,7 @@ void GameScene::Update() {
 				//レベルリセット
 				LevelReset();
 
-				
+
 
 				//はさんだ瞬間にはさまれている敵を消滅させる
 				for (int i = enemys.size() - 1; i >= 0; i--) {
@@ -637,6 +654,11 @@ void GameScene::Update() {
 			retuckEffectTimer--;
 		}
 
+		//挟んだエフェクトの時間を減らす
+		if (sandwichEffectTimer > 0) {
+			sandwichEffectTimer--;
+		}
+
 #pragma endregion
 
 #pragma region カメラシェイク処理
@@ -846,6 +868,30 @@ void GameScene::Draw() {
 			levelChangeParticle[i].Draw(camera, Random(0, 0xffffff), graph);
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+		//挟んだ時のエフェクト
+		if (sandwichEffectTimer > 0) {
+			SetDrawBlendMode(DX_BLENDMODE_ADD, (256.0f / 25.0f) * sandwichEffectTimer);
+			if (sandwichValue == GOOD) {
+				SetDrawBright2(GREEN);
+				for (int i = 0; i < 10; i++) {
+					DrawRotaGraph(sandwichEffectPos.x, sandwichEffectPos.y, 1, 0, sandwichEffectGraph[2], true);
+				}
+			}//緑
+			else if (sandwichValue == GREAT) {
+				SetDrawBright2(ORANGE);
+				for (int i = 0; i < 10; i++) {
+					DrawRotaGraph(sandwichEffectPos.x, sandwichEffectPos.y, 1, 0, sandwichEffectGraph[1], true);
+				}//橙
+			}
+			else if (sandwichValue == EXCELLENT) {
+				SetDrawBright2(YELLOW);
+				for (int i = 0; i < 10; i++) {
+					DrawRotaGraph(sandwichEffectPos.x, sandwichEffectPos.y, 1, 0, sandwichEffectGraph[0], true);
+				}	//黄色
+			}
+		}
+
 #pragma endregion
 
 		//カウントダウンの描画
@@ -897,11 +943,11 @@ void GameScene::Draw() {
 			DrawGraph(posx, posy, gameUIBoardGraph[1], true);
 			SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 			SetDrawBright2(RED);
-			for (int i = 0; i < 10; i++){
+			for (int i = 0; i < 10; i++) {
 				DrawGraph(posx, posy, gameUIBoardGraph[0], true);
 			}
-			 posx = 1280 - 190 -22;
-			 posy = 960 - 190 - 22;
+			posx = 1280 - 190 - 22;
+			posy = 960 - 190 - 22;
 			SetDrawBright2(LIGHTBLUE);
 			for (int i = 0; i < 10; i++) {
 				DrawGraph(posx, posy, gameUIGraph[0], true);
@@ -925,10 +971,10 @@ void GameScene::Draw() {
 
 		//針が0になった時の演出
 		if (retuckEffectTimer > 0) {
-			SetDrawBlendMode(DX_BLENDMODE_ADD, (256.0f / 25.0f)* retuckEffectTimer);
+			SetDrawBlendMode(DX_BLENDMODE_ADD, (256.0f / 25.0f) * retuckEffectTimer);
 			SetDrawBright2(PURPLE);
 			for (int i = 0; i < 10; i++) {
-				DrawRotaGraph(clock.pos.x, clock.pos.y, 1.0f, 0, retuckGraph[0],true);
+				DrawRotaGraph(clock.pos.x, clock.pos.y, 1.0f, 0, retuckGraph[0], true);
 			}
 			SetDrawBright2(GREEN);
 			for (int i = 0; i < 10; i++) {
@@ -958,7 +1004,7 @@ void GameScene::Draw() {
 
 			DrawFormatString(0, 400, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
 			DrawFormatString(0, 420, 0xFFFFFF, "point:%d", point);
-			DrawFormatString(0, 440, 0xFFFFFF, "敵のスポーン率:%d", enemySpawnRate);
+			DrawFormatString(0, 440, 0xFFFFFF, "挟んだ時間:%d", sandwichEffectTimer);
 
 			/*SetFontSize(80);*/
 			/*SetFontSize(16);*/

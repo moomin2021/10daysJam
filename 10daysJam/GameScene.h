@@ -124,6 +124,12 @@ private:
 	float reverseVelocityScale;
 	float reverseVelocityScaleLong;
 
+	//挟んだ時の評価
+	int sandwichValue;
+	//挟んだ時のエフェクトの時間
+	int sandwichEffectTimer = 0;
+	Vector2 sandwichEffectPos;
+
 	// --逆回りの力-- //
 	float reverseTime;
 
@@ -221,6 +227,9 @@ private:
 
 	//演出で使うようタイトル画像
 	int retuckGraph[2];
+
+	//挟んだ時のエフェクト画像
+	int sandwichEffectGraph[3];
 
 #pragma endregion
 
