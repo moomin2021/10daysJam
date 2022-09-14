@@ -190,6 +190,12 @@ private:
 	//チュートリアルのスコアボード
 	int tutorialBoardGraph[2];
 
+	// --レベルサークル-- //
+	int levelCircleGraph[2];
+
+	// --レベル表記-- //
+	int levelGraph[6];
+
 #pragma endregion
 
 	/// --メンバ変数END-- ///
