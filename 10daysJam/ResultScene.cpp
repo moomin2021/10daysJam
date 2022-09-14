@@ -234,7 +234,7 @@ void ResultScene::Draw() {
 
 	// --スコアゲージの描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 8; i++) {
 		SetDrawBright(119, 28, 28);
 		DrawExtendGraph(gaugeMax.pos.x, gaugeMax.pos.y, gaugeMax.pos.x + gaugeMax.width, gaugeMax.pos.y + gaugeMax.height, scoreGaugeGraph, true);
 		SetDrawBright(97, 42, 17);
@@ -288,7 +288,7 @@ void ResultScene::Draw() {
 	if (rankIndex == 1) color = Util::GetColor16("0x612a11");
 	if (rankIndex == 0) color = Util::GetColor16("0x771c1c");
 	SetDrawBright(color.red, color.green, color.blue);
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 16; i++) {
 		DrawGraph(1000, 500, sabcBigGraph[rankIndex], true);
 	}
 	SetDrawBright(255, 255, 255);
