@@ -74,6 +74,9 @@ ResultScene::ResultScene() {
 
 	// --スコアゲージの枠-- //
 	scoreGaugeLineGraph = LoadGraph("Resources/scoreGauge_outline.png");
+
+	// --背景-- //
+	backGroundGraph = LoadGraph("Resources/backillust.png");
 #pragma endregion
 
 	// --選択表示の中心座標-- //
@@ -218,6 +221,9 @@ void ResultScene::Update() {
 
 // --描画処理-- //
 void ResultScene::Draw() {
+	// --背景画像の描画-- //
+	DrawGraph(0, 0, backGroundGraph, true);
+
 	// --リザルトテキスト描画-- //
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	for (int i = 0; i < 3; i++) {

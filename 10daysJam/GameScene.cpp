@@ -957,7 +957,7 @@ void GameScene::Draw() {
 				DrawGraph(posx, posy, gameUIGraph[1], true);
 			}
 			SetDrawBright2(GREEN);
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 14; i++) {
 				DrawGraph(posx, posy, gameUIGraph[2], true);
 			}
 			SetDrawBright2(RED);
