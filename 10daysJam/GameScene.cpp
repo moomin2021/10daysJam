@@ -134,6 +134,7 @@ GameScene::GameScene() {
 	tutorialTextGraph[1] = LoadGraph("Resources/tutorial_enemy.png");
 	tutorialTextGraph[2] = LoadGraph("Resources/tutorial_return.png");
 	LoadDivGraph("Resources/tutorialBoard.png", 2, 2, 1, 382, 112, tutorialBoardGraph);
+	successGraph = LoadGraph("Resources/success.png");
 
 	//反転ボタン
 	LoadDivGraph("Resources/returnUI.png", 2, 2, 1, 58, 58, returnButton);
@@ -1723,8 +1724,21 @@ void GameScene::DrawTutorial() {
 		}
 	}
 
+	//チュートリアルクリア時の描画
+	if (isTutorialClear) {
+		SetDrawBright2(YELLOW);
+		Vector2 pos;
+		pos = clock.pos + camera.GetPos();
+		pos.y -= 200;
+		for (int i = 0; i < 10; i++) {
+			DrawRotaGraph(pos.x, pos.y, 1, 0, successGraph, true);
+		}
+	}
+
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	
 
 	// -- レベルサークル描画-- //
 	DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);

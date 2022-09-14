@@ -193,6 +193,9 @@ private:
 	//チュートリアルのスコアボード
 	int tutorialBoardGraph[2];
 
+	//チュートリアル終了時の画像
+	int successGraph;
+
 	// --レベルサークル-- //
 	int levelCircleGraph[2];
 
