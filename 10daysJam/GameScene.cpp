@@ -328,7 +328,7 @@ void GameScene::Update() {
 				longHandSpeed += addHandSpeed;
 
 				// --短針の速度を変更-- //
-				hourHandSpeed += addHandSpeed;
+				hourHandSpeed += addHandSpeed * 2;
 
 				//はさんだオブジェクトの数で戻す力を増やす
 				reverseTime += level * 3;
