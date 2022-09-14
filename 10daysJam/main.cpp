@@ -37,8 +37,6 @@ void FpsTimeFanction() {
 	else
 		FpsTime_i++;//現在何周目かカウント
 	if (Fps != 0) {
-		if (SceneManager::GetDebugMode() == true)
-		DrawFormatString(0, 380, 0xFFFFFF, "FPS %.1f", Fps); //fpsを表示
 	}
 	return;
 }

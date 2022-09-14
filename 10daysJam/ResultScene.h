@@ -50,12 +50,20 @@ private:
 	// --背景-- //
 	int backGroundGraph;
 
+	// --十字キー-- //
+	int selectUIGraph[4];
+
+	// --ボタン-- //
+	int buttonGraph[3];
+
 	float graphRad = 0;
 
 #pragma endregion
 
 	// --選択表示の中心座標-- //
 	Box selectBox;
+
+	Vector2 pos;
 
 #pragma region クラス宣言
 	// --コントローラークラス-- //

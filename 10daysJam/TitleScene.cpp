@@ -170,10 +170,11 @@ void TitleScene::Draw() {
 		DrawRotaGraphF(1087.5f, 857.5f, 1.0f, 0.0f, selectUIGraph[2], true);
 	}
 	SetDrawBright(255, 255, 255);
-
+	Util::SetDrawBright2(GREEN);
 	for (int i = 0; i < 20; i++) {
 		DrawRotaGraphF(1087.5f, 857.5f, 1.0f, 0.0f, selectUIGraph[0], true);
 	}
+	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 	DrawRotaGraphF(1087.5f, 857.5f, 1.0f, 0.0f, selectUIGraph[1], true);
 
