@@ -133,11 +133,17 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			break;
 		}
 
+		// --ゲームエンドフラグがtrueだったらループを抜ける-- //
+		if (sceneM->GetEndFlag() == true) {
+			break;
+		}
+
 		// ESCキーが押されたらループから抜ける
 		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1) {
 			break;
 		}
 	}
+
 	// Dxライブラリ終了処理
 	DxLib_End();
 

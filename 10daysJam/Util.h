@@ -44,6 +44,12 @@ struct Box {
 	float radiusY;
 };
 
+struct BoxAA {
+	Vector2 pos;
+	float width;
+	float height;
+};
+
 typedef struct Color
 {
 	uint8_t red;

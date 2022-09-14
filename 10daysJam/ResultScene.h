@@ -9,13 +9,6 @@
 #include "Util.h"
 
 class ResultScene {
-
-	struct BoxAA {
-		Vector2 pos;
-		float width;
-		float height;
-	};
-
 	/// --ƒƒ“ƒo•Ï”-- ///
 public:
 
