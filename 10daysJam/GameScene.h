@@ -201,6 +201,9 @@ private:
 
 	int returnButton[2];
 
+	// --Œv‚Ì˜g-- //
+	int clockGraph;
+
 #pragma endregion
 
 	/// --ƒƒ“ƒo•Ï”END-- ///
