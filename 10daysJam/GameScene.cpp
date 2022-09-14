@@ -748,7 +748,7 @@ void GameScene::EnemySpawn(float radian) {
 	//Circle newPos = {enemyPos,8.0f}
 	newEnemy.SetObj({ {enemyPos} , 8.0f });
 
-	if (Random(0, 100) <= enemySpawnRate) {
+	if (Random(0, 100) < enemySpawnRate) {
 		//5%の確率で敵としてスポーン
 		newEnemy.SetState(State::Enemy);
 		newEnemy.SetHandle(enemyGraph);
