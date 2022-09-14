@@ -1020,11 +1020,12 @@ void GameScene::Draw() {
 			}
 		}
 
-		SetDrawBright2(RED);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+	
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightLongHand);
 		DrawGraph(0, 0, tutorialBoardGraph[1], true);
-		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-		SetDrawBright(c.red, c.green, c.blue);
+		SetDrawBright2(RED);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
+		//SetDrawBright(c.red, c.green, c.blue);
 		for (int i = 0; i < 10; i++) {
 			DrawGraph(0, 0, tutorialBoardGraph[0], true);
 		}
@@ -1864,7 +1865,7 @@ void GameScene::DrawTutorial() {
 		}
 
 		
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, brightParam);
 		DrawGraph(0, 0, tutorialBoardGraph[1], true);
 		SetDrawBright2(RED);
 		SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
