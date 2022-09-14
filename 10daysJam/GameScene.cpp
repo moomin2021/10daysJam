@@ -1709,6 +1709,25 @@ void GameScene::DrawTutorial() {
 
 		SetDrawBright(255, 255, 255);
 
+#pragma region 12‚Éj‚ğ•`‰æ
+		color = HexadecimalColor(GREEN);
+		SetDrawBright(color.red, color.green, color.blue);
+		Line line;
+		line.start = { Vector2(640.0f, 480.0f) + camera.GetPos() };
+		line.end = { Vector2(640.0f, 480.0f + longHand.length) + camera.GetPos() };
+		line.color = hourHand.color;
+
+		// --j‚Ì•`‰æ-- //
+		for (int i = 0; i < longHand.length * 0.5f; i++) {
+			DrawRotaGraph(
+				line.start.x + cosf(Degree2Radian(-90)) * (levelCircle.radius + i * 1.6f),
+				line.start.y + sinf(Degree2Radian(-90)) * (levelCircle.radius + i * 1.6f),
+				0.5f, 0.0f, whiteCircleGraph, true);
+		}
+
+		SetDrawBright(255, 255, 255);
+#pragma endregion
+
 		// --’Zj‚ÌÀ•W‚ÆƒJƒƒ‰ƒVƒFƒCƒN‚ÌÀ•W‘«‚µ‚½Line•Ï”-- //
 		Line hourHandLine;
 		hourHandLine.start = { hourHand.start + camera.GetPos() };
