@@ -1615,6 +1615,7 @@ void GameScene::DrawTutorial() {
 	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
 	Color color = HexadecimalColor(LIGHTBLUE);
 	SetDrawBright(color.red, color.green, color.blue);
+
 	// --ŽžŒv‚ÌŠO˜g‚Ì•`‰æ-- //
 	for (int i = 0; i < 20; i++) {
 		DrawRotaGraph(640 + camera.GetPos().x, 480 + camera.GetPos().y, 1.0f, 0.0f, clockGraph, true);
@@ -1809,7 +1810,7 @@ void GameScene::DrawTutorial() {
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	color = HexadecimalColor(LIGHTBLUE);
 	SetDrawBright(color.red, color.green, color.blue);
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 10; i++) {
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
 		// --ƒŒƒxƒ‹‚Ì•`‰æ-- //
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
