@@ -223,9 +223,6 @@ private:
 	int returnButton[2];
 
 	int tutorialFontGraph;
-
-	float graphRad;
-
 	// --時計の枠-- //
 	int clockGraph;
 
@@ -234,6 +231,8 @@ private:
 
 	//挟んだ時のエフェクト画像
 	int sandwichEffectGraph[3];
+
+	float graphRad = 0;
 
 	// --ゲーム終了-- //
 	int finishGraph;
