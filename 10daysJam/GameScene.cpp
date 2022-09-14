@@ -323,7 +323,7 @@ void GameScene::Update() {
 	}
 	else {
 		//Lボタンで短針のステートを「反転」に
-		if (pad->GetButton(PAD_INPUT_3) && hourHand.state == State::Normal && level > 0) {
+		if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
 			hourHand.state = State::Reverse;
 		}
 
@@ -1341,7 +1341,7 @@ void GameScene::UpdateTutorial() {
 	}
 
 	//Lボタンで短針のステートを「反転」に(チュートリアルのステップが最後なら)
-	if (pad->GetButton(PAD_INPUT_3) && hourHand.state == State::Normal && level > 0) {
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
 		if (tutorialStep == 2)hourHand.state = State::Reverse;
 	}
 
