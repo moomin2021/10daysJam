@@ -49,7 +49,7 @@ Sound::Sound() {
 	getItemSE = LoadSoundMem("Sounds/getItem.mp3");
 
 	// --“G‚É“–‚½‚Á‚½SE-- //
-	hitEnemySE = LoadSoundMem("Sounds/getItem.mp3");
+	hitEnemySE = LoadSoundMem("Sounds/hitEnemy.mp3");
 
 	// --Œˆ’èSE-- //
 	selectSE = LoadSoundMem("Sounds/select.mp3");
