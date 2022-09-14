@@ -136,8 +136,10 @@ GameScene::GameScene() {
 	tutorialTextGraph[0] = LoadGraph("Resources/tutorial_move.png");
 	tutorialTextGraph[1] = LoadGraph("Resources/tutorial_enemy.png");
 	tutorialTextGraph[2] = LoadGraph("Resources/tutorial_return.png");
+	LoadDivGraph("Resources/gamerule.png", 2, 2, 1, 344, 72, gameRuleGraph);
 	LoadDivGraph("Resources/tutorialBoard.png", 2, 2, 1, 382, 112, tutorialBoardGraph);
 	LoadDivGraph("Resources/skipUI.png", 3, 3, 1, 227, 54, skipGraph);
+
 	successGraph = LoadGraph("Resources/success.png");
 
 	//”½“]ƒ{ƒ^ƒ“
@@ -1018,6 +1020,25 @@ void GameScene::Draw() {
 			}
 		}
 
+		SetDrawBright2(RED);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		DrawGraph(0, 0, tutorialBoardGraph[1], true);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		SetDrawBright(c.red, c.green, c.blue);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(0, 0, tutorialBoardGraph[0], true);
+		}
+
+		SetDrawBright2(GREEN);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(16, 16, gameRuleGraph[0], true);
+		}
+
+		SetDrawBright2(LIGHTBLUE);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(16, 16, gameRuleGraph[1], true);
+		}
+
 		SetDrawBright2(0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
@@ -1842,6 +1863,25 @@ void GameScene::DrawTutorial() {
 			}
 		}
 
+		
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+		DrawGraph(0, 0, tutorialBoardGraph[1], true);
+		SetDrawBright2(RED);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
+		SetDrawBright(c.red, c.green, c.blue);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(0, 0, tutorialBoardGraph[0], true);
+		}
+
+		SetDrawBright2(EFFECT_GREEN);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(16, 16, gameRuleGraph[0], true);
+		}
+
+		SetDrawBright2(LIGHTBLUE);
+		for (int i = 0; i < 10; i++) {
+			DrawGraph(16, 16, gameRuleGraph[1], true);
+		}
 
 
 		Vector2 pos;
@@ -1929,7 +1969,7 @@ void GameScene::DrawTutorial() {
 		SetDrawBright2(YELLOW);
 		SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * PI) * 255);
 		for (int i = 0; i < 10; i++) {
-			DrawGraph(0, 0, tutorialFontGraph, true);
+			DrawGraph(0, 80, tutorialFontGraph, true);
 		}
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
