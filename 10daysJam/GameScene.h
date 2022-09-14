@@ -196,6 +196,8 @@ private:
 	// --レベル表記-- //
 	int levelGraph[6];
 
+	int returnButton[2];
+
 	// --時計の枠-- //
 	int clockGraph;
 

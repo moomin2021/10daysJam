@@ -134,6 +134,9 @@ GameScene::GameScene() {
 	tutorialTextGraph[2] = LoadGraph("Resources/tutorial_return.png");
 	LoadDivGraph("Resources/tutorialBoard.png", 2, 2, 1, 382, 112, tutorialBoardGraph);
 
+	//反転ボタン
+	LoadDivGraph("Resources/returnUI.png", 2, 2, 1, 58, 58, returnButton);
+
 	// --レベルサークル-- //
 	LoadDivGraph("Resources/levelCircle.png", 2, 2, 1, 160, 160, levelCircleGraph);
 
@@ -310,7 +313,7 @@ void GameScene::Update() {
 	}
 	else {
 		//Lボタンで短針のステートを「反転」に
-		if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
+		if (pad->GetButton(PAD_INPUT_3) && hourHand.state == State::Normal && level > 0) {
 			hourHand.state = State::Reverse;
 		}
 
@@ -336,15 +339,38 @@ void GameScene::Update() {
 				longHandSpeed += addHandSpeed;
 
 				// --短針の速度を変更-- //
-				hourHandSpeed += addHandSpeed;
+				hourHandSpeed += addHandSpeed * 2;
 
 				//はさんだオブジェクトの数で戻す力を増やす
 				reverseTime += level * 3;
 				reverseTime += ((enemySandwichCount + itemSandwichCount) / 2);
 
 				//スコアを加算、はさんだ数をリセット
-				Score::AddScore(100 * itemSandwichCount * level);
-				Score::AddScore(500 * enemySandwichCount * level);
+				int sandwichCount = itemSandwichCount + enemySandwichCount;
+				int multiSand = 0;
+				if (sandwichCount <= 10)
+				{
+					multiSand = 1;
+				}
+				if (sandwichCount >= 11 && sandwichCount <= 20)
+				{
+					multiSand = 2;
+				}
+				if (sandwichCount >= 21 && sandwichCount <= 30)
+				{
+					multiSand = 4;
+				}
+				if (sandwichCount >= 31 && sandwichCount <= 40)
+				{
+					multiSand = 6;
+				}
+				if (sandwichCount >= 50)
+				{
+					multiSand = 8;
+				}
+				
+				Score::AddScore(100 * itemSandwichCount * multiSand);
+				Score::AddScore(500 * enemySandwichCount * multiSand);
 				itemSandwichCount = 0;
 				enemySandwichCount = 0;
 
@@ -829,6 +855,33 @@ void GameScene::Draw() {
 
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
 
+		//Xボタンはレベルが１以上の時のみ描画
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		if (level > 0) {
+			float rad, len,radius;
+			Vector2 pos;
+			radius = 16;
+			rad = hourHand.radian - 90 - 5;
+			len = hourHand.length - 16;
+			//pos = player->GetPlayer().pos;
+			pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
+			pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
+			c = HexadecimalColor(LIGHTBLUE);
+			SetDrawBright(c.red, c.green, c.blue);
+			for (int i = 0; i < 10; i++) {
+				DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, returnButton[0], true);
+			}
+			//pos = player->GetPlayer().pos;
+
+			len = hourHand.length - 44;
+			pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
+			pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
+			for (int i = 0; i < 10; i++) {
+				DrawRotaGraph(pos.x, pos.y, (32.0f / 58.0f), (hourHand.radian - 90) / 180 * PI, returnButton[1], true);
+			}
+		}
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
 #pragma region デバッグ描画
 		if (SceneManager::GetDebugMode() == true) {
 			DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
@@ -1176,7 +1229,7 @@ void GameScene::UpdateTutorial() {
 
 
 	//Lボタンで短針のステートを「反転」に(チュートリアルのステップが最後なら)
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
+	if (pad->GetButton(PAD_INPUT_3) && hourHand.state == State::Normal && level > 0) {
 		if (tutorialStep == 2)hourHand.state = State::Reverse;
 	}
 
@@ -1507,22 +1560,19 @@ void GameScene::DrawTutorial() {
 		DrawRotaGraph(640, 480, 1.0f, 0.0f, clockGraph, true);
 	}
 	SetDrawBright(255, 255, 255);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	//針のパーティクルの描画
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
 	for (int i = 0; i < lineParticleMax; i++) {
 		hourHandParticle[i].Draw(camera, PURPLE, particleGraph);
 		longHandParticle[i].Draw(camera, EFFECT_GREEN, particleGraph);
 	}
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 128);
+
 	// --長針の座標とカメラシェイクの座標足したLine変数-- //
 	Line longHandLine;
 	longHandLine.start = { longHand.start + camera.GetPos() };
 	longHandLine.end = { longHand.end + camera.GetPos() };
 	longHandLine.color = longHand.color;
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
 	//etDrawBright(119, 28, 28);
 	Color c;
 	c = HexadecimalColor(GREEN);
@@ -1536,7 +1586,6 @@ void GameScene::DrawTutorial() {
 	}
 
 	SetDrawBright(255, 255, 255);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	// --短針の座標とカメラシェイクの座標足したLine変数-- //
 	Line hourHandLine;
@@ -1544,7 +1593,6 @@ void GameScene::DrawTutorial() {
 	hourHandLine.end = { hourHand.end + camera.GetPos() };
 	hourHandLine.color = hourHand.color;
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
 	SetDrawBright(39, 32, 225);
 
 	// --短針の描画-- //
@@ -1590,8 +1638,9 @@ void GameScene::DrawTutorial() {
 	int posx = 1280 - 384;
 	int posy = 2;
 	c = HexadecimalColor(RED);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
 	DrawGraph(posx, posy, tutorialBoardGraph[1], true);
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
 		DrawGraph(posx, posy, tutorialBoardGraph[0], true);
@@ -1639,6 +1688,28 @@ void GameScene::DrawTutorial() {
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
 		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[1], true);
+	}
+
+	//Xボタンは最後のチュートリアルのみ描画
+	if (tutorialStep == 2) {
+		rad = hourHand.radian - 90 - 5;
+		len = hourHand.length - 16;
+		//pos = player->GetPlayer().pos;
+		pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
+		pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
+		c = HexadecimalColor(LIGHTBLUE);
+		SetDrawBright(c.red, c.green, c.blue);
+		for (int i = 0; i < 10; i++) {
+			DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, returnButton[0], true);
+		}
+		//pos = player->GetPlayer().pos;
+
+		len = hourHand.length - 44;
+		pos.x = len * cosf(rad / 180 * PI) + clock.pos.x;
+		pos.y = len * sinf(rad / 180 * PI) + clock.pos.y;
+		for (int i = 0; i < 10; i++) {
+			DrawRotaGraph(pos.x, pos.y, (32.0f / 58.0f), (hourHand.radian - 90) / 180 * PI, returnButton[1], true);
+		}
 	}
 
 	SetDrawBright(255, 255, 255);
