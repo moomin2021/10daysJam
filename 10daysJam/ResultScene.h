@@ -49,6 +49,9 @@ private:
 
 	// --背景-- //
 	int backGroundGraph;
+
+	float graphRad = 0;
+
 #pragma endregion
 
 	// --選択表示の中心座標-- //

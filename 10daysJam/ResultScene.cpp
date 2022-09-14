@@ -140,6 +140,8 @@ void ResultScene::Initialize() {
 
 	// --表示するスコア-- //
 	displayScore = 0;
+
+	graphRad = 0;
 }
 
 // --更新処理-- //
@@ -227,11 +229,19 @@ void ResultScene::Update() {
 			gaugeMax.width = 98.0f;
 		}
 	}
+
+	graphRad += 3.0f;
+	if (graphRad > 360.0f) {
+		graphRad -= 360.0f;
+	}
 }
 
 // --描画処理-- //
 void ResultScene::Draw() {
 	// --背景画像の描画-- //
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA,sinf(graphRad / 180 *Util::PI) * 64 + 192 );
+	
 	DrawGraph(0, 0, backGroundGraph, true);
 
 	// --リザルトテキスト描画-- //
@@ -308,7 +318,8 @@ void ResultScene::Draw() {
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 	// --SABCランクテキスト-- //
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+
+	SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * Util::PI) * 64 + 192);
 	Color color;
 	if (rankIndex == 3) color = Util::GetColor16("0x152713");
 	if (rankIndex == 2) color = Util::GetColor16("0x615e13");
