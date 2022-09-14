@@ -884,6 +884,9 @@ void GameScene::LevelUpdate() {
 	// --現在のレベルの必要経験値が手に入ったらレベルを上げる-- //
 	//チュートリアル中は必要経験値固定
 	if (isTutorial) {
+		if (tutorialStep == 0) {
+			enemySpawnRate = 0;
+		}
 		if (point == 3) {
 			level++;
 			point = 0;
