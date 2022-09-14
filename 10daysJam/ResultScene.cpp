@@ -309,7 +309,4 @@ void ResultScene::Draw() {
 		selectBox.pos.x - selectBox.radiusX, selectBox.pos.y - selectBox.radiusY,
 		selectBox.pos.x + selectBox.radiusX, selectBox.pos.y + selectBox.radiusY,
 		0xFFFFFF, false, 3);
-
-	DrawFormatString(0, 0, 0xFFFFFF, "score:%d", Score::GetScore());
-	DrawFormatString(0, 20, 0xFFFFFF, "displayScore:%d", displayScore);
 }
