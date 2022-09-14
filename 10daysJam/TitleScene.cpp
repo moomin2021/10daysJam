@@ -108,7 +108,7 @@ void TitleScene::Update() {
 // --•`‰æˆ—-- //
 void TitleScene::Draw() {
 	// --”wŒi‰æ‘œ‚Ì•`‰æ-- //
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, sinf(graphRad / 180 * Util::PI) * 64 + 192);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, sinf(graphRad / 180 * Util::PI) * 64 + 128);
 	DrawGraph(0, 0, backGroundGraph, true);
 
 #pragma region ƒ^ƒCƒgƒ‹ƒƒS•`‰æˆ—
