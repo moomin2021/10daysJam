@@ -205,6 +205,8 @@ private:
 	//チュートリアルのテキスト
 	int tutorialTextGraph[3];
 
+	int gameRuleGraph[2];
+
 	//チュートリアルのスコアボード
 	int tutorialBoardGraph[2];
 
