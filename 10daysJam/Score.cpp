@@ -102,7 +102,7 @@ void Score::Draw() {
 
 	// --ÉXÉRÉAï`âÊ-- //
 	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 15; j++) {
+		for (int j = 0; j < 20; j++) {
 			DrawGraph(1060 + i * 32, 64, numberGraph[num / (int)pow(10, 5 - i)], true);
 		}
 		num = num % (int)pow(10, 5 - i);
