@@ -63,7 +63,6 @@ void TitleScene::Update() {
 	if (pad->GetButtonTrigger(PAD_INPUT_1)) {
 		// --ƒV[ƒ“•ÏX-- //
 		SceneManager::SetScene(GAMESCENE);
-
 		// --SE‚ðÄ¶-- //
 		sound->PlaySE(SELECTSE);
 	}
