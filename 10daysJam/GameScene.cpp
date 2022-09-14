@@ -127,6 +127,7 @@ GameScene::GameScene() {
 
 	//UI
 	LoadDivGraph("Resources/controller_button.png", 3, 3, 1, 82, 82, ButtonGraph);
+	LoadDivGraph("Resources/playUI.png", 4, 4, 1, 190, 190, gameUIGraph);
 
 	//チュートリアル関係
 	tutorialTextGraph[0] = LoadGraph("Resources/tutorial_move.png");
@@ -872,6 +873,29 @@ void GameScene::Draw() {
 			for (int i = 0; i < 10; i++) {
 				DrawRotaGraph(pos.x, pos.y, (32.0f / 58.0f), (hourHand.radian - 90) / 180 * PI, returnButton[1], true);
 			}
+		}
+
+		if (!isOpening) {
+			//右下の操作UI描画
+			int posx = 1280 - 200;
+			int posy = 960 - 200;
+			SetDrawBright2(LIGHTBLUE);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[0], true);
+			}
+			SetDrawBright2(0xffffff);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[1], true);
+			}
+			SetDrawBright2(GREEN);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[2], true);
+			}
+			SetDrawBright2(RED);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[3], true);
+			}
+
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
