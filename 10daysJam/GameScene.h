@@ -222,6 +222,10 @@ private:
 
 	int returnButton[2];
 
+	int tutorialFontGraph;
+
+	float graphRad;
+
 	// --ŽžŒv‚Ì˜g-- //
 	int clockGraph;
 

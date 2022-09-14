@@ -62,6 +62,8 @@ TitleScene::~TitleScene() {
 void TitleScene::Initialize() {
 	// --選択表示の中心座標-- //
 	selectBox = { {640.0f, -300.0f}, 174.0f, 32.0f };
+
+	graphRad = 0;
 }
 
 // --更新処理-- //
@@ -96,36 +98,42 @@ void TitleScene::Update() {
 			selectBox.pos.y = 850.0f;
 		}
 	}
+
+	graphRad += 3;
+	if (graphRad > 360) {
+		graphRad -= 360;
+	}
 }
 
 // --描画処理-- //
 void TitleScene::Draw() {
 	// --背景画像の描画-- //
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, sinf(graphRad / 180 * Util::PI) * 64 + 192);
 	DrawGraph(0, 0, backGroundGraph, true);
 
 #pragma region タイトルロゴ描画処理
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180  * Util::PI) * 64 + 128);
 
 	// --0番-- //
-	SetDrawBright(39, 32, 225);
+	Util::SetDrawBright2(LIGHTBLUE);
 	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 60, titlelogoGraph[0], true);
 	}
 
 	// --1番-- //
-	SetDrawBright(39, 32, 225);
+	//SetDrawBright(39, 32, 225);
 	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 60, titlelogoGraph[1], true);
 	}
 
 	// --2番-- //
-	SetDrawBright(39, 32, 225);
+	Util::SetDrawBright2(PURPLE);
 	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 60, titlelogoGraph[2], true);
 	}
 
 	// --3番-- //
-	SetDrawBright(39, 32, 225);
+	Util::SetDrawBright2(GREEN);
 	for (int i = 0; i < 20; i++) {
 		DrawGraph(354, 60, titlelogoGraph[3], true);
 	}

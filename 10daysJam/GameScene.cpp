@@ -142,6 +142,7 @@ GameScene::GameScene() {
 
 	//反転ボタン
 	LoadDivGraph("Resources/returnUI.png", 2, 2, 1, 58, 58, returnButton);
+	returnButton[0] = LoadGraph("Resources/LB.png");
 
 	// --レベルサークル-- //
 	LoadDivGraph("Resources/levelCircle.png", 2, 2, 1, 160, 160, levelCircleGraph);
@@ -157,6 +158,8 @@ GameScene::GameScene() {
 
 	//挟んだ演出
 	LoadDivGraph("Resources/value.png", 3, 3, 1, 212, 46, sandwichEffectGraph);
+
+	tutorialFontGraph = LoadGraph("Resources/tutorial.png");
 
 #pragma endregion
 }
@@ -982,7 +985,7 @@ void GameScene::Draw() {
 			DrawFormatString(0, 240, 0xFFFFFF, "短針の速度:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
 			DrawFormatString(0, 260, 0xFFFFFF, "長針の速度:%f", longHandSpeed);
 			DrawFormatString(0, 280, 0xFFFFFF, "逆走の速度(短針):%f", hourHandReverseSpeed);
-			DrawFormatString(0, 300, 0xFFFFFF, "エネミーのスポーンまでの残り時間:%d", spawnTimer);
+			DrawFormatString(0, 300, 0xFFFFFF, "逆走時間:%f", reverseTime);
 			DrawFormatString(0, 340, 0xFFFFFF, "敵の総数:%d", enemys.size());
 			DrawFormatString(0, 320, 0xFFFFFF, "FPS");
 			DrawFormatString(0, 360, 0xFFFFFF, "アイテムを挟んだ数:%d", itemSandwichCount);
@@ -1318,6 +1321,12 @@ void GameScene::UpdateTutorial() {
 			}
 		}
 
+	}
+
+	//画像用ラジアン処理
+	graphRad+= 4;
+	if (graphRad >= 360.0f) {
+		graphRad -= 360.0f;
 	}
 
 	//スタートボタンでチュートリアルクリア
@@ -1846,8 +1855,23 @@ void GameScene::DrawTutorial() {
 			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 		}
 	}
+		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
+	}
+
+
+	//チュートリアルのフォント描画
+	SetDrawBright2(YELLOW);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, sinf(graphRad / 180 * PI) * 255);
+	for (int i = 0; i < 10; i++) {
+		DrawGraph(0, 0, tutorialFontGraph, true);
+	}
+	
+
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+
+
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
