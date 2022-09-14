@@ -1865,6 +1865,7 @@ void GameScene::DrawTutorial() {
 			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 		}
 	}
+	SetDrawBright(255, 255, 255);
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
