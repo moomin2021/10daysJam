@@ -30,10 +30,6 @@ void Enemy::Initialize() {
 
 	//スポーンエフェクトを出す
 	for (int i = 0; i < particleNum; i++) {
-		c.red = Random(128, 200);
-		c.green = Random(128, 200);
-		c.blue = Random(224, 255);
-		//	color = c.red * pow(16, 4) + c.green * pow(16, 2) + c.blue;
 		EffectInitialize(color);
 	}
 	spawnAddRadius = 8.0f;
@@ -195,25 +191,16 @@ void Enemy::SetHandle(int handle[]) {
 void Enemy::SetState(State state_)
 {
 	state = state_;
-	//状態が変わったエフェクトを出す
-	for (int i = 0; i < 24; i++) {
-		if (state == State::Item) {
-			EffectInitialize(YELLOW);
-		}
-		else if (state == State::Enemy) {
-			EffectInitialize(RED);
-		}
-		
 
-	}
 
 }
 
-void Enemy::EffectInitialize(int color)
+void Enemy::EffectInitialize(int color,float particleRad)
 {
 	Particle newParticle;
 	newParticle.SetParent(obj.pos);
 	newParticle.SetColor(color);
+	newParticle.SetRadius(particleRad);
 	newParticle.Initialize(true);
 	spawnEffect.push_back(newParticle);
 
@@ -227,6 +214,15 @@ void Enemy::SetObj(Circle obj_)
 void Enemy::StateChange()
 {
 	isChange = true;
+	//状態が変わったエフェクトを出す
+	for (int i = 0; i < 24; i++) {
+		if (state == State::Item) {
+			EffectInitialize(YELLOW, Random(8.0f, 12.0f));
+		}
+		else if (state == State::Enemy) {
+			EffectInitialize(RED, Random(8.0f, 12.0f));
+		}
+	}
 }
 
 void Enemy::Death() {
