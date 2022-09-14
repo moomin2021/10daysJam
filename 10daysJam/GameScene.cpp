@@ -791,6 +791,27 @@ void GameScene::Draw() {
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
+#pragma region 12éûÇ…êjÇï`âÊ
+		SetDrawBlendMode(DX_BLENDMODE_ADD, brightLongHand);
+		color = HexadecimalColor(GREEN);
+		SetDrawBright(color.red, color.green, color.blue);
+		Line line;
+		line.start = { Vector2(640.0f, 480.0f) + camera.GetPos()};
+		line.end = { Vector2(640.0f, 480.0f + longHand.length) + camera.GetPos()};
+		line.color = hourHand.color;
+
+		// --êjÇÃï`âÊ-- //
+		for (int i = 0; i < longHand.length * 0.5f; i++) {
+			DrawRotaGraph(
+				hourHandLine.start.x + cosf(Degree2Radian(-90)) * (levelCircle.radius + i * 1.6f),
+				hourHandLine.start.y + sinf(Degree2Radian(-90)) * (levelCircle.radius + i * 1.6f),
+				0.5f, 0.0f, whiteCircleGraph, true);
+		}
+
+		SetDrawBright(255, 255, 255);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+#pragma endregion
+
 
 
 
@@ -812,7 +833,7 @@ void GameScene::Draw() {
 
 #pragma region ñ⁄àÛóp0éûÇÃêjÇÃï`âÊ
 		// --0éûÇÃêjÇÃç¿ïWÇ∆ÉJÉÅÉâÉVÉFÉCÉNÇÃç¿ïWë´ÇµÇΩCircleïœêî-- //
-		Line line;
+		line;
 		line.start = { clock.pos + camera.GetPos() };
 		line.end = { clock.pos.x + camera.GetPos().x, clock.pos.y - clock.radius + 16 + camera.GetPos().y };
 		line.color = 0x60FFBF;
@@ -1693,6 +1714,25 @@ void GameScene::DrawTutorial() {
 		}
 
 		SetDrawBright(255, 255, 255);
+
+#pragma region 12éûÇ…êjÇï`âÊ
+		color = HexadecimalColor(GREEN);
+		SetDrawBright(color.red, color.green, color.blue);
+		Line line;
+		line.start = { Vector2(640.0f, 480.0f) + camera.GetPos() };
+		line.end = { Vector2(640.0f, 480.0f + longHand.length) + camera.GetPos() };
+		line.color = hourHand.color;
+
+		// --êjÇÃï`âÊ-- //
+		for (int i = 0; i < longHand.length * 0.5f; i++) {
+			DrawRotaGraph(
+				line.start.x + cosf(Degree2Radian(-90)) * (levelCircle.radius + i * 1.6f),
+				line.start.y + sinf(Degree2Radian(-90)) * (levelCircle.radius + i * 1.6f),
+				0.5f, 0.0f, whiteCircleGraph, true);
+		}
+
+		SetDrawBright(255, 255, 255);
+#pragma endregion
 
 		// --íZêjÇÃç¿ïWÇ∆ÉJÉÅÉâÉVÉFÉCÉNÇÃç¿ïWë´ÇµÇΩLineïœêî-- //
 		Line hourHandLine;
