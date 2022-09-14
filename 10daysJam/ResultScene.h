@@ -46,6 +46,9 @@ private:
 
 	// --スコアゲージの枠-- //
 	int scoreGaugeLineGraph;
+
+	// --背景-- //
+	int backGroundGraph;
 #pragma endregion
 
 	// --選択表示の中心座標-- //

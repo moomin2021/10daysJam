@@ -11,6 +11,12 @@
 #include"Star.h"
 #include "Sound.h"
 
+enum RetuckValue {
+	GOOD,
+	GREAT,
+	EXCELLENT,
+};
+
 class GameScene {
 	/// --メンバ変数-- ///
 public:
@@ -59,6 +65,8 @@ private:
 	int sceneChangeTimer;
 	int tutorialStep;
 	bool isTutorialSkip = false;
+
+	int retuckEffectTimer = 0;
 
 #pragma region エネミーのスポーン関係変数の宣言
 	
@@ -210,6 +218,9 @@ private:
 
 	// --時計の枠-- //
 	int clockGraph;
+
+	//演出で使うようタイトル画像
+	int retuckGraph[2];
 
 #pragma endregion
 

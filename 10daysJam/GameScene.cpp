@@ -150,6 +150,9 @@ GameScene::GameScene() {
 	// --時計の枠-- //
 	clockGraph = LoadGraph("Resources/clock.png");
 
+	//リタック演出
+	LoadDivGraph("Resources/titleRogo.png", 2, 2, 1, 572, 572, retuckGraph);
+
 #pragma endregion
 }
 
@@ -383,7 +386,7 @@ void GameScene::Update() {
 				//レベルリセット
 				LevelReset();
 
-
+				
 
 				//はさんだ瞬間にはさまれている敵を消滅させる
 				for (int i = enemys.size() - 1; i >= 0; i--) {
@@ -425,6 +428,8 @@ void GameScene::Update() {
 					CreateBreakEffect(clock.pos, 128);
 					//レベルアップエフェクトを作成(綺麗なので)
 					LevelUpEfffect(64 * 3);
+					//タイトルロゴの描画時間リセット
+					retuckEffectTimer = 30;
 					//戻す力をリセット
 					reverseTime = 0;
 					//サウンド再生
@@ -625,6 +630,11 @@ void GameScene::Update() {
 			if (!levelChangeParticle[i].GetActive()) {
 				levelChangeParticle.erase(levelChangeParticle.begin() + i);
 			}
+		}
+
+		//タイトルロゴ演出の時間減らす
+		if (retuckEffectTimer > 0) {
+			retuckEffectTimer--;
 		}
 
 #pragma endregion
@@ -912,6 +922,21 @@ void GameScene::Draw() {
 			posx = 1280 - 234;
 			posy = 960 - 234;
 		}
+
+		//針が0になった時の演出
+		if (retuckEffectTimer > 0) {
+			SetDrawBlendMode(DX_BLENDMODE_ADD, (256.0f / 25.0f)* retuckEffectTimer);
+			SetDrawBright2(PURPLE);
+			for (int i = 0; i < 10; i++) {
+				DrawRotaGraph(clock.pos.x, clock.pos.y, 1.0f, 0, retuckGraph[0],true);
+			}
+			SetDrawBright2(GREEN);
+			for (int i = 0; i < 10; i++) {
+				DrawRotaGraph(clock.pos.x, clock.pos.y, 1.0f, 0, retuckGraph[1], true);
+			}
+		}
+
+		SetDrawBright2(0xffffff);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
 #pragma region デバッグ描画
@@ -1178,6 +1203,7 @@ void GameScene::OpeningUpdate() {
 	}
 	if (nowTime == openingTime) {
 		isOpening = false;
+		retuckEffectTimer = 30;
 	}
 }
 
