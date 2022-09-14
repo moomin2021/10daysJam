@@ -169,7 +169,7 @@ void ResultScene::Update() {
 			displayScore += addScore / 400 + 400;
 
 			// --実際のスコアを超えたら同じ値にする-- //
-			if (displayScore > Score::GetScore()) {
+			if (displayScore >= Score::GetScore()) {
 				displayScore = Score::GetScore();
 				isActive = true;
 			}
