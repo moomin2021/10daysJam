@@ -68,7 +68,7 @@ GameScene::GameScene() {
 	longHandSpeed = 0.1f;
 
 	// --長針の速度の追加値-- //
-	addLongHandSpeed = 0.01f;
+	addHandSpeed = 0.01f;
 
 	// --短針-- //
 	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
@@ -176,7 +176,7 @@ void GameScene::Initialize() {
 	longHandSpeed = 0.1f;
 
 	// --長針の速度の追加値-- //
-	addLongHandSpeed = 0.03f;
+	addHandSpeed = 0.03f;
 
 	// --短針-- //
 	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
@@ -311,7 +311,7 @@ void GameScene::Update() {
 
 		//ステートが通常なら短針は自動回転
 		if (hourHand.state == State::Normal) {
-			hourHand.radian += addLongHandSpeed + hourHandSpeed + hourHandlevelSpeed * (level - 1);
+			hourHand.radian += hourHandSpeed + hourHandlevelSpeed * (level - 1);
 
 			//任意のキーで短針を動かす(デバッグ用)
 			//hourHand.radian += ((pad->GetButton(PAD_INPUT_1)) - (pad->GetButton(PAD_INPUT_2))) * 2.0f;
@@ -325,7 +325,10 @@ void GameScene::Update() {
 				hourHand.state = State::Stop;
 
 				// --長針の速度を変更-- //
-				longHandSpeed += addLongHandSpeed;
+				longHandSpeed += addHandSpeed;
+
+				// --短針の速度を変更-- //
+				hourHandSpeed += addHandSpeed;
 
 				//はさんだオブジェクトの数で戻す力を増やす
 				reverseTime += level * 3;
