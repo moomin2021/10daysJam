@@ -1029,7 +1029,7 @@ void GameScene::Draw() {
 			DrawGraph(0, 0, tutorialBoardGraph[0], true);
 		}
 
-		SetDrawBright2(EFFECT_GREEN);
+		SetDrawBright2(GREEN);
 		for (int i = 0; i < 10; i++) {
 			DrawGraph(16, 16, gameRuleGraph[0], true);
 		}
