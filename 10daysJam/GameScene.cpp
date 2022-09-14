@@ -148,6 +148,72 @@ GameScene::~GameScene() {
 // --初期化処理-- //
 void GameScene::Initialize() {
 
+#pragma region エネミーのスポーン関係変数の初期化
+
+	// --次に敵が発生するまでの間隔-- //
+	spawnInterval = 20;
+
+	// --敵の発生タイマー-- //
+	spawnTimer = spawnInterval;
+
+	// --敵が短針上のどこでスポーンするかの変数-- //
+	enemyLength = 0.0f;
+
+	// --確定した敵のスポーン位置を保存する用変数-- //
+	enemyPos = { 0.0f, 0.0f };
+#pragma endregion
+
+	enemys.clear();
+
+#pragma region 時計関係変数の初期化
+	// --時計-- //
+	clock = { {640.0f, 480.0f}, 416.0f };
+
+	// --長針-- //
+	longHand = { {640.0f, 480.0f}, {640.0f, 0.0f}, clock.radius, 0.0f, 0xFF0000 };
+
+	// --長針の速度-- //
+	longHandSpeed = 0.1f;
+
+	// --長針の速度の追加値-- //
+	addLongHandSpeed = 0.01f;
+
+	// --短針-- //
+	hourHand = { {640.0f, 480.0f}, {640.0f, 32.0f}, clock.radius - 32.0f, 0, 0xFF };
+
+	// --短針の速度-- //
+	hourHandSpeed = 0.8f;
+
+	// --レベルによる短針の速度の上がり幅-- //
+	hourHandlevelSpeed = 0.5f;
+
+	// --短針が逆回りするときの速度-- //
+	hourHandReverseSpeed = 4.0f;
+#pragma endregion
+
+#pragma region レベル関係変数の初期化
+	// --真ん中のレベルを表記する円-- //
+	levelCircle = { {640.0f, 480.0f}, 78.0f };
+
+	// --レベルサークルの新しい半径-- //
+	newCircleRadius = 0.0f;
+
+	// --レベル-- //
+	level = 0;
+
+	// --経験値-- //
+	point = 0;
+
+	// --レベルによって必要な経験値-- //
+	int needPointCopy[10] = { 2, 2, 3, 4, 5, 10, 10, 10, 10, 10 };
+	for (int i = 0; i < 10; i++) { needPoint[i] = needPointCopy[i]; }
+#pragma endregion
+
+#pragma region エフェクト関係変数の初期化
+	// --敵の爆発したときの円の大きさ用-- //
+	burstCircle = { {0.0f, 0.0f}, 0.0f };
+#pragma endregion
+
 	lineParticleMax = 64;
 	for (int i = 0; i < lineParticleMax; i++) {
 		Particle newParticle;
@@ -511,6 +577,9 @@ void GameScene::Update() {
 
 			// --SPACEキーを押すと画面がシェイクする-- //
 			if (input->IsTrigger(KEY_INPUT_SPACE)) { camera.SetShakeCount(5); }
+
+			// --Sキーを押すとスコアが増える-- //
+			if (input->IsTrigger(KEY_INPUT_S)) Score::AddScore(10000);
 		}
 #pragma endregion
 	}
@@ -1500,19 +1569,19 @@ void GameScene::DrawTutorial() {
 	pos.y -=len  * sinf(rad / 180 * PI);
 	float radius = 16;
 
-	c = HexadecimalColor(GREEN);
+	c = HexadecimalColor(RED);
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
-		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[1], true);
+		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[2], true);
 	}
 
 	pos = player->GetPlayer().pos;
 	pos.x += len* cosf(rad / 180 * PI);
 	pos.y += len* sinf(rad / 180 * PI);
-	c = HexadecimalColor(RED);
+	c = HexadecimalColor(GREEN);
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
-		DrawExtendGraph(pos.x- radius, pos.y- radius, pos.x+ radius, pos.y+ radius, ButtonGraph[2], true);
+		DrawExtendGraph(pos.x- radius, pos.y- radius, pos.x+ radius, pos.y+ radius, ButtonGraph[1], true);
 	}
 
 	SetDrawBright(255, 255, 255);
