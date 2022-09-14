@@ -96,10 +96,10 @@ ResultScene::ResultScene() {
 	gaugeC = { {150.0f, 250.0f}, 0.0f, 100.0f };
 
 	// --各ランクのスコア-- //
-	scoreValueMax = 120000;
-	scoreValueS = 100000;
-	scoreValueA = 60000;
-	scoreValueB = 30000;
+	scoreValueMax = 600000;
+	scoreValueS = 150000;
+	scoreValueA = 90000;
+	scoreValueB = 40000;
 	scoreValueC = 10000;
 
 	// --入力受付-- //
