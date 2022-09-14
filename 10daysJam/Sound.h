@@ -11,7 +11,8 @@ enum SE {
 	SANDSE,
 	GETITEMSE,
 	HITENEMYSE,
-	SELECTSE
+	SELECTSE,
+	BUTTONSE
 };
 
 class Sound {
@@ -48,6 +49,9 @@ private:
 
 	// --Œˆ’èSE-- //
 	int selectSE;
+
+	// --‘I‘ð-- //
+	int buttonSE;
 #pragma endregion
 
 	// --BGM‘S‘Ì‚Ì‰¹—Ê-- //

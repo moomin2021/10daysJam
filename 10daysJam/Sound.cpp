@@ -53,6 +53,9 @@ Sound::Sound() {
 
 	// --決定SE-- //
 	selectSE = LoadSoundMem("Sounds/select.mp3");
+
+	// --選択SE-- //
+	buttonSE = LoadSoundMem("Sounds/button.mp3");
 #pragma endregion
 
 	// --BGM全体の音量初期化-- //
@@ -87,6 +90,9 @@ Sound::Sound() {
 
 	// --決定SE-- //
 	ChangeVolumeSoundMem(volumeSE, selectSE);
+
+	// --選択SE-- //
+	ChangeVolumeSoundMem(volumeSE, buttonSE);
 #pragma endregion
 }
 
@@ -167,6 +173,13 @@ void Sound::PlaySE(int seName) {
 	if (seName == SELECTSE) {
 		// --SEを再生-- //
 		PlaySoundMem(selectSE, DX_PLAYTYPE_BACK, true);
+		return;
+	}
+
+	// --選択SE再生-- //
+	if (seName == BUTTONSE) {
+		// --SEを再生-- //
+		PlaySoundMem(buttonSE, DX_PLAYTYPE_BACK, true);
 		return;
 	}
 }
