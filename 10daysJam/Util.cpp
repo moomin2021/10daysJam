@@ -179,3 +179,9 @@ int Util::ColorHexadecimal(Color color_)
 	a = color_.red * pow(16, 4) + color_.green * pow(16, 2) + color_.blue;
 	return a;
 }
+
+void Util::SetDrawBright2(int color)
+{
+	Color c = HexadecimalColor(color);
+	SetDrawBright(c.red, c.green,c.blue);
+}

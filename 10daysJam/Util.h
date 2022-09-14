@@ -139,4 +139,6 @@ namespace Util {
 		/// </summary>
 	int ColorHexadecimal(Color color_);
 
+	void SetDrawBright2(int color);
+
 } // namespace MathUtility

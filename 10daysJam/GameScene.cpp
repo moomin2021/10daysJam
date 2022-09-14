@@ -127,6 +127,7 @@ GameScene::GameScene() {
 
 	//UI
 	LoadDivGraph("Resources/controller_button.png", 3, 3, 1, 82, 82, ButtonGraph);
+	LoadDivGraph("Resources/playUI.png", 4, 4, 1, 190, 190, gameUIGraph);
 
 	//チュートリアル関係
 	tutorialTextGraph[0] = LoadGraph("Resources/tutorial_move.png");
@@ -142,6 +143,9 @@ GameScene::GameScene() {
 
 	// --レベル表記-- //
 	LoadDivGraph("Resources/levelNumbers.png", 6, 6, 1, 160, 160, levelGraph);
+
+	// --時計の枠-- //
+	clockGraph = LoadGraph("Resources/clock.png");
 
 #pragma endregion
 }
@@ -692,13 +696,10 @@ void GameScene::Draw() {
 		Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 
 		SetDrawBlendMode(DX_BLENDMODE_ADD, brightClock);
-		SetDrawBright(255, 255, 255);
-		// --時計の外枠の描画-- //
-		for (int i = 0; i < 1440; i++) {
-			DrawGraphF(
-				clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-				clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-				whiteCircleGraph, true);
+		Color color = HexadecimalColor(LIGHTBLUE);
+		SetDrawBright(color.red, color.green, color.blue);
+		for (int i = 0; i < 20; i++) {
+			DrawRotaGraph(640 + camera.GetPos().x, 480 + camera.GetPos().y, 1.0f, 0.0f, clockGraph, true);
 		}
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -768,12 +769,12 @@ void GameScene::Draw() {
 		// -- レベルサークル描画-- //
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-		Color color = HexadecimalColor(LIGHTBLUE);
+		color = HexadecimalColor(LIGHTBLUE);
 		SetDrawBright(color.red, color.green, color.blue);
 		for (int i = 0; i < 5; i++) {
 			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
 			// --レベルの描画-- //
-			DrawGraph(560, 400, levelGraph[level], true);
+			if (isOpening == false) DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 		}
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -872,6 +873,29 @@ void GameScene::Draw() {
 			for (int i = 0; i < 10; i++) {
 				DrawRotaGraph(pos.x, pos.y, (32.0f / 58.0f), (hourHand.radian - 90) / 180 * PI, returnButton[1], true);
 			}
+		}
+
+		if (!isOpening) {
+			//右下の操作UI描画
+			int posx = 1280 - 200;
+			int posy = 960 - 200;
+			SetDrawBright2(LIGHTBLUE);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[0], true);
+			}
+			SetDrawBright2(0xffffff);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[1], true);
+			}
+			SetDrawBright2(GREEN);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[2], true);
+			}
+			SetDrawBright2(RED);
+			for (int i = 0; i < 10; i++) {
+				DrawGraph(posx, posy, gameUIGraph[3], true);
+			}
+
 		}
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 
@@ -1540,13 +1564,11 @@ void GameScene::DrawTutorial() {
 	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
 	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-	SetDrawBright(255, 255, 255);
+	Color color = HexadecimalColor(LIGHTBLUE);
+	SetDrawBright(color.red, color.green, color.blue);
 	// --時計の外枠の描画-- //
-	for (int i = 0; i < 1440; i++) {
-		DrawGraphF(
-			clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-			clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-			whiteCircleGraph, true);
+	for (int i = 0; i < 20; i++) {
+		DrawRotaGraph(640 + camera.GetPos().x, 480 + camera.GetPos().y, 1.0f, 0.0f, clockGraph, true);
 	}
 	SetDrawBright(255, 255, 255);
 
@@ -1707,18 +1729,15 @@ void GameScene::DrawTutorial() {
 	// -- レベルサークル描画-- //
 	DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	Color color = HexadecimalColor(LIGHTBLUE);
+	color = HexadecimalColor(LIGHTBLUE);
 	SetDrawBright(color.red, color.green, color.blue);
 	for (int i = 0; i < 5; i++) {
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
 		// --レベルの描画-- //
-		DrawGraph(560, 400, levelGraph[level], true);
+		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelGraph[level], true);
 	}
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
-
-	// --レベルの描画-- //
-	DrawGraph(560, 400, levelGraph[level], true);
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
