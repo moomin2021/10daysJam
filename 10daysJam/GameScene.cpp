@@ -238,7 +238,7 @@ void GameScene::Initialize() {
 	}
 
 	//敵のスポーン時間のブレ
-
+	opSpawnFrame.clear();
 	for (int i = 0; i < opEnemyMax; i++) {
 		//敵のスポーンフレームをランダムに
 		int spawnFrame;
