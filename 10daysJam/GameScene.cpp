@@ -255,6 +255,7 @@ void GameScene::Initialize() {
 	sceneChangeTime = 75;
 	sceneChangeTimer = sceneChangeTime;
 	for (int i = 0; i < 3; i++) {
+		enemySpawnRate = 0;
 		EnemySpawn(Random(0.0f, 36.0f) + 36.0f + 108.0f * i);
 	}
 
@@ -997,7 +998,7 @@ void GameScene::Draw() {
 			DrawFormatString(0, 240, 0xFFFFFF, "’Zj‚Ì‘¬“x:%f", hourHandSpeed + hourHandlevelSpeed * (level - 1));
 			DrawFormatString(0, 260, 0xFFFFFF, "’·j‚Ì‘¬“x:%f", longHandSpeed);
 			DrawFormatString(0, 280, 0xFFFFFF, "‹t‘–‚Ì‘¬“x(’Zj):%f", hourHandReverseSpeed);
-			DrawFormatString(0, 300, 0xFFFFFF, "ƒGƒlƒ~[‚ÌƒXƒ|[ƒ“‚Ü‚Å‚ÌŽc‚èŽžŠÔ:%d", spawnTimer);
+			DrawFormatString(0, 300, 0xFFFFFF, "‹t‘–ŽžŠÔ:%f", reverseTime);
 			DrawFormatString(0, 340, 0xFFFFFF, "“G‚Ì‘”:%d", enemys.size());
 			DrawFormatString(0, 320, 0xFFFFFF, "FPS");
 			DrawFormatString(0, 360, 0xFFFFFF, "ƒAƒCƒeƒ€‚ð‹²‚ñ‚¾”:%d", itemSandwichCount);
