@@ -132,8 +132,13 @@ GameScene::GameScene() {
 	tutorialTextGraph[0] = LoadGraph("Resources/tutorial_move.png");
 	tutorialTextGraph[1] = LoadGraph("Resources/tutorial_enemy.png");
 	tutorialTextGraph[2] = LoadGraph("Resources/tutorial_return.png");
-LoadDivGraph("Resources/tutorialBoard.png",2,2,1,382,112,tutorialBoardGraph);
+	LoadDivGraph("Resources/tutorialBoard.png", 2, 2, 1, 382, 112, tutorialBoardGraph);
 
+	// --レベルサークル-- //
+	LoadDivGraph("Resources/levelCircle.png", 2, 2, 1, 160, 160, levelCircleGraph);
+
+	// --レベル表記-- //
+	LoadDivGraph("Resources/levelNumbers.png", 6, 6, 1, 160, 160, levelGraph);
 
 #pragma endregion
 }
@@ -734,12 +739,18 @@ void GameScene::Draw() {
 
 
 #pragma region レベルサークルの描画
-		// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
-		Circle circle;
-		circle = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
-
-		// --レベルサークルの描画-- //
-		DrawCircle(circle, 0xFFFFFF, false);
+		// -- レベルサークル描画-- //
+		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);
+		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+		Color color = HexadecimalColor(LIGHTBLUE);
+		SetDrawBright(color.red, color.green, color.blue);
+		for (int i = 0; i < 5; i++) {
+			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
+			// --レベルの描画-- //
+			DrawGraph(560, 400, levelGraph[level], true);
+		}
+		SetDrawBright(255, 255, 255);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
 #pragma endregion
 
 #pragma region 目印用0時の針の描画
@@ -810,8 +821,6 @@ void GameScene::Draw() {
 		DrawGraphF(589.0f, 412.5f, countNumGraph[graphNum], true);
 
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, countDownBright);
-
-		DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
 
 #pragma region デバッグ描画
 		if (SceneManager::GetDebugMode() == true) {
@@ -969,7 +978,7 @@ void GameScene::LevelUpdate() {
 		break;
 	case 1:
 		//チュートリアル中は敵が湧かないように
-		if(isTutorial)enemySpawnRate = 0.0f;
+		if (isTutorial)enemySpawnRate = 0.0f;
 		else enemySpawnRate = 15.0f;
 
 		spawnInterval = 45;
@@ -1160,11 +1169,11 @@ void GameScene::UpdateTutorial() {
 
 
 	//Lボタンで短針のステートを「反転」に(チュートリアルのステップが最後なら)
-	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0){
-		if (tutorialStep == 2)hourHand.state = State::Reverse; 
+	if (pad->GetButton(PAD_INPUT_5) && hourHand.state == State::Normal && level > 0) {
+		if (tutorialStep == 2)hourHand.state = State::Reverse;
 	}
 
-		//逆走の速度は短針の速度 * 速度倍率に
+	//逆走の速度は短針の速度 * 速度倍率に
 	hourHandReverseSpeed = (hourHandSpeed + hourHandlevelSpeed * (level - 1)) * reverseVelocityScale;
 
 	//ステートが通常なら短針は自動回転
@@ -1537,14 +1546,6 @@ void GameScene::DrawTutorial() {
 
 	SetDrawBright(255, 255, 255);
 
-
-	// --レベルサークルの座標とカメラシェイクの座標足したCircle変数-- //
-	Circle circle;
-	circle = { levelCircle.pos + camera.GetPos(), levelCircle.radius };
-
-	// --レベルサークルの描画-- //
-	DrawCircle(circle, 0xFFFFFF, false);
-
 	for (int i = 0; i < burstCircleEffects.size(); i++) {
 		SetDrawBlendMode(DX_BLENDMODE_ADD, burstEffectColorParam[i]);
 		int X1 = burstCircleEffects[i].pos.x;
@@ -1581,7 +1582,7 @@ void GameScene::DrawTutorial() {
 	DrawGraph(posx, posy, tutorialBoardGraph[1], true);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 	SetDrawBright(c.red, c.green, c.blue);
-	for (int i = 0; i <10; i++) {
+	for (int i = 0; i < 10; i++) {
 		DrawGraph(posx, posy, tutorialBoardGraph[0], true);
 	}
 
@@ -1603,15 +1604,15 @@ void GameScene::DrawTutorial() {
 			SetDrawBright(255, 255, 255);
 		}
 	}
-	
+
 
 
 	Vector2 pos;
 	float len = 48;
 	pos = player->GetPlayer().pos;
 	float rad = hourHand.radian - 90;
-	pos.x -=len  * cosf(rad / 180 * PI);
-	pos.y -=len  * sinf(rad / 180 * PI);
+	pos.x -= len * cosf(rad / 180 * PI);
+	pos.y -= len * sinf(rad / 180 * PI);
 	float radius = 16;
 
 	c = HexadecimalColor(RED);
@@ -1621,18 +1622,32 @@ void GameScene::DrawTutorial() {
 	}
 
 	pos = player->GetPlayer().pos;
-	pos.x += len* cosf(rad / 180 * PI);
-	pos.y += len* sinf(rad / 180 * PI);
+	pos.x += len * cosf(rad / 180 * PI);
+	pos.y += len * sinf(rad / 180 * PI);
 	c = HexadecimalColor(GREEN);
 	SetDrawBright(c.red, c.green, c.blue);
 	for (int i = 0; i < 10; i++) {
-		DrawExtendGraph(pos.x- radius, pos.y- radius, pos.x+ radius, pos.y+ radius, ButtonGraph[1], true);
+		DrawExtendGraph(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius, ButtonGraph[1], true);
 	}
 
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	//レベル
-	DrawFormatString(1280 / 2 - 20, 960 / 2 - 40, 0xFFFFFF, "%d", level);
+
+	// -- レベルサークル描画-- //
+	DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
+	Color color = HexadecimalColor(LIGHTBLUE);
+	SetDrawBright(color.red, color.green, color.blue);
+	for (int i = 0; i < 5; i++) {
+		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
+		// --レベルの描画-- //
+		DrawGraph(560, 400, levelGraph[level], true);
+	}
+	SetDrawBright(255, 255, 255);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
+
+	// --レベルの描画-- //
+	DrawGraph(560, 400, levelGraph[level], true);
 
 	if (SceneManager::GetDebugMode() == true) {
 		DrawFormatString(0, 100, 0xFFFFFF, "ADキー:レベルサークルの半径変更");
