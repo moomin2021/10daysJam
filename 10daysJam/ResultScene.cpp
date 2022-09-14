@@ -94,7 +94,7 @@ ResultScene::ResultScene() {
 	scoreValueC = 10000;
 
 	// --“ü—ÍŽó•t-- //
-	bool isActive = false;
+	isActive = false;
 
 	// --ƒ‰ƒ“ƒN‚Ì“YŽš-- //
 	rankIndex = 3;
@@ -124,7 +124,7 @@ void ResultScene::Initialize() {
 	gaugeC = { {150.0f, 250.0f}, 0.0f, 100.0f };
 
 	// --“ü—ÍŽó•t-- //
-	bool isActive = false;
+	isActive = false;
 
 	// --ƒ‰ƒ“ƒN‚Ì“YŽš-- //
 	rankIndex = 3;
@@ -309,4 +309,7 @@ void ResultScene::Draw() {
 		selectBox.pos.x - selectBox.radiusX, selectBox.pos.y - selectBox.radiusY,
 		selectBox.pos.x + selectBox.radiusX, selectBox.pos.y + selectBox.radiusY,
 		0xFFFFFF, false, 3);
+
+	DrawFormatString(0, 0, 0xFFFFFF, "score:%d", Score::GetScore());
+	DrawFormatString(0, 20, 0xFFFFFF, "displayScore:%d", displayScore);
 }
