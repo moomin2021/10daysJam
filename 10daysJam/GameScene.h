@@ -235,7 +235,15 @@ private:
 	//挟んだ時のエフェクト画像
 	int sandwichEffectGraph[3];
 
+	// --ゲーム終了-- //
+	int finishGraph;
+
 #pragma endregion
+
+	// --シーンを切り替えるまでの時間-- //
+	int Time;
+	int Timer;
+	bool isSceneChange;
 
 	/// --メンバ変数END-- ///
 	/// --------------- ///
