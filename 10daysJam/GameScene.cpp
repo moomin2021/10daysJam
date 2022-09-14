@@ -140,6 +140,9 @@ GameScene::GameScene() {
 	// --レベル表記-- //
 	LoadDivGraph("Resources/levelNumbers.png", 6, 6, 1, 160, 160, levelGraph);
 
+	// --時計の枠-- //
+	clockGraph = LoadGraph("Resources/clock.png");
+
 #pragma endregion
 }
 
@@ -666,13 +669,17 @@ void GameScene::Draw() {
 		Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 
 		SetDrawBlendMode(DX_BLENDMODE_ADD, brightClock);
-		SetDrawBright(255, 255, 255);
+		Color color = HexadecimalColor(LIGHTBLUE);
+		SetDrawBright(color.red, color.green, color.blue);
 		// --時計の外枠の描画-- //
-		for (int i = 0; i < 1440; i++) {
-			DrawGraphF(
-				clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-				clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-				whiteCircleGraph, true);
+		//for (int i = 0; i < 1440; i++) {
+		//	DrawGraphF(
+		//		clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+		//		clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+		//		whiteCircleGraph, true);
+		//}
+		for (int i = 0; i < 20; i++) {
+			DrawRotaGraph(640, 480, 1.0f, 0.0f, clockGraph, true);
 		}
 		SetDrawBright(255, 255, 255);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -742,7 +749,7 @@ void GameScene::Draw() {
 		// -- レベルサークル描画-- //
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);
 		SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-		Color color = HexadecimalColor(LIGHTBLUE);
+		color = HexadecimalColor(LIGHTBLUE);
 		SetDrawBright(color.red, color.green, color.blue);
 		for (int i = 0; i < 5; i++) {
 			DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);
@@ -1487,13 +1494,17 @@ void GameScene::DrawTutorial() {
 	// --時計の外枠の座標とカメラシェイクの座標足したCircle変数-- //
 	Circle clockCircle = { clock.pos + camera.GetPos(), clock.radius };
 	SetDrawBlendMode(DX_BLENDMODE_ADD, brightParam);
-	SetDrawBright(255, 255, 255);
+	Color color = HexadecimalColor(LIGHTBLUE);
+	SetDrawBright(color.red, color.green, color.blue);
 	// --時計の外枠の描画-- //
-	for (int i = 0; i < 1440; i++) {
-		DrawGraphF(
-			clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-			clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
-			whiteCircleGraph, true);
+	//for (int i = 0; i < 1440; i++) {
+	//	DrawGraphF(
+	//		clockCircle.pos.x + cosf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+	//		clockCircle.pos.y + sinf(Degree2Radian(i * 0.25f)) * clockCircle.radius - 16,
+	//		whiteCircleGraph, true);
+	//}
+	for (int i = 0; i < 20; i++) {
+		DrawRotaGraph(640, 480, 1.0f, 0.0f, clockGraph, true);
 	}
 	SetDrawBright(255, 255, 255);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);
@@ -1636,7 +1647,7 @@ void GameScene::DrawTutorial() {
 	// -- レベルサークル描画-- //
 	DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[1], true);
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
-	Color color = HexadecimalColor(LIGHTBLUE);
+	color = HexadecimalColor(LIGHTBLUE);
 	SetDrawBright(color.red, color.green, color.blue);
 	for (int i = 0; i < 5; i++) {
 		DrawGraph(560 + camera.GetPos().x, 400 + camera.GetPos().y, levelCircleGraph[0], true);

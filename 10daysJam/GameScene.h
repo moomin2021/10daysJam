@@ -196,6 +196,9 @@ private:
 	// --レベル表記-- //
 	int levelGraph[6];
 
+	// --時計の枠-- //
+	int clockGraph;
+
 #pragma endregion
 
 	/// --メンバ変数END-- ///
