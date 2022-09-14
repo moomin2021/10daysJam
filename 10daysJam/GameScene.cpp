@@ -308,7 +308,7 @@ void GameScene::Update() {
 #pragma region 針の座標計算
 
 	//チュートリアル処理
-	if (isTutorial) {
+	if (isTutorial && !isTutorialSkip) {
 		UpdateTutorial();
 	}
 	//オープニング処理
@@ -933,6 +933,7 @@ void GameScene::Draw() {
 
 			DrawFormatString(0, 400, 0xFFFFFF, "敵を挟んだ数:%d", enemySandwichCount);
 			DrawFormatString(0, 420, 0xFFFFFF, "point:%d", point);
+			DrawFormatString(0, 440, 0xFFFFFF, "敵のスポーン率:%d", enemySpawnRate);
 
 			/*SetFontSize(80);*/
 			/*SetFontSize(16);*/
@@ -1247,6 +1248,9 @@ void GameScene::UpdateTutorial() {
 	if (isTutorialClear) {
 		//シーン遷移タイマーを減らす
 		sceneChangeTimer--;
+		//敵を消す
+		enemys.clear();
+		LevelReset();
 		if (sceneChangeTimer < 24) {
 			longHand.radian = 0;
 			hourHand.radian = 0;
@@ -1259,6 +1263,10 @@ void GameScene::UpdateTutorial() {
 
 	}
 
+	//スタートボタンでチュートリアルクリア
+	if (pad->GetButton(PAD_INPUT_8)) {
+		isTutorialClear = true;
+	}
 
 	//Lボタンで短針のステートを「反転」に(チュートリアルのステップが最後なら)
 	if (pad->GetButton(PAD_INPUT_3) && hourHand.state == State::Normal && level > 0) {
@@ -1805,4 +1813,11 @@ void GameScene::DrawTutorial() {
 		/*SetFontSize(80);*/
 		/*SetFontSize(16);*/
 	}
+}
+
+void GameScene::TutorialSkip()
+{
+	isTutorialSkip = true;
+	enemys.clear();
+	enemySpawnRate = 0;
 }
